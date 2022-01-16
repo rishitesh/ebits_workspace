@@ -5,7 +5,7 @@ from datetime import date
 
 import dash_html_components as html
 import dash_table
-from admin.editor.view_constants import *
+from editor.view_constants import *
 
 LIGHT_BLUE_LEFT_ALLIGNED_STYLE ={'textAlign': 'left', 'color': '#7FDBFF'}
 LIGHT_BLUE_CENTER_ALLIGNED_STYLE ={'textAlign': 'center', 'color': '#7FDBFF'}
@@ -66,28 +66,87 @@ movie_form = html.Div(
         dbc.Row(
             [
                 dbc.Col(html.Label('Genres:'), width=2),
-                dbc.Col(dbc.Input(id='genres', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=4),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id='genres',
+                        options=[
+                            {'label': 'Thriller', 'value': 'Thriller'},
+                            {'label': 'Comedy', 'value': 'Comedy'},
+                            {'label': 'Family', 'value': 'Family'},
+                            {'label': 'Kids', 'value': 'Kids'},
+                            {'label': 'Action', 'value': 'Action'},
+                            {'label': 'Drama', 'value': 'Drama'},
+                            {'label': 'War', 'value': 'War'},
+                            {'label': 'Horror', 'value': 'Horror'},
+                            {'label': 'History', 'value': 'History'},
+                            {'label': 'Dark Comedy', 'value': 'Dark Comedy'},
+                            {'label': 'Biography', 'value': 'Biography'},
+                            {'label': 'Documentary', 'value': 'Documentary'},
+                            {'label': 'Animation', 'value': 'Animation'},
+                        ],
+                        placeholder="Select one or more genres",
+                        multi=True,
+                        clearable=False
+                    ),
+                    width=4),
             ]
         ),
 
         dbc.Row(
             [
-                dbc.Col(html.Label('Awards:'), width=2),
-                dbc.Col(dbc.Input(id='awards', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=4),
+                dbc.Col(html.Label('Awards:', style=TOP_MARGIN), width=2),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id='awards',
+                        options=[
+                            {'label': 'Filmfare', 'value': 'Filmfare'},
+                            {'label': 'The Academy Awards', 'value': 'The Academy Awards'},
+                            {'label': 'National Award, India', 'value': 'National Award, India'},
+                            {'label': 'Cannes Film Festival', 'value': 'Cannes Film Festival'},
+                            {'label': 'Golden Globe Awards', 'value': 'Golden Globe Awards'},
+                            {'label': 'Annual Directors Guild of America Awards',
+                             'value': 'Annual Directors Guild of America Awards'},
+                        ],
+                        placeholder="Select one or more awards",
+                        multi=True,
+                        clearable=False,
+                        style=TOP_MARGIN
+                    ),
+                    width=4),
             ]
         ),
 
         dbc.Row(
             [
-                dbc.Col(html.Label('Certificates:'), width=2),
-                dbc.Col(dbc.Input(id='certificates', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=4),
+                dbc.Col(html.Label('Certificates:', style=TOP_MARGIN), width=2),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id='certificates',
+                        options=[
+                            {'label': 'U/A', 'value': 'U/A'},
+                            {'label': 'A', 'value': 'A'},
+                            {'label': 'U', 'value': 'U'},
+                            {'label': 'PG', 'value': 'PG'},
+                            {'label': '7+', 'value': '7+'},
+                            {'label': '7+', 'value': '7+'},
+                            {'label': '13+', 'value': '13+'},
+                            {'label': '18+', 'value': '18+'},
+                            {'label': 'Suitable for all', 'value': 'Suitable for all'},
+
+                        ],
+                        placeholder="Select one or more certificates",
+                        multi=True,
+                        clearable=False,
+                        style=TOP_MARGIN
+                    ),
+                    width=4),
             ]
         ),
 
         dbc.Row(
             [
                 dbc.Col(html.Label('Storyline:'), width=2),
-                dbc.Col(dbc.Textarea(id='storyline', style={'width': '100%', 'height': 100, 'padding':2}, debounce=True), width=8),
+                dbc.Col(dbc.Textarea(id='storyline', style={'width': '100%', 'height': 100, 'margin-top':"15px"}, debounce=True), width=8),
             ]
         ),
 
@@ -104,28 +163,80 @@ movie_form = html.Div(
         dbc.Row(
             [
                 dbc.Col(html.Label('Platforms:', style=TOP_MARGIN), width=2),
-                dbc.Col(dbc.Input(id='platforms', placeholder="", type="text", bs_size="md", className="mb-3",
-                                  style=TOP_MARGIN,  debounce=True), width=4),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id='platforms',
+                        options=[
+                            {'label': 'Amazon Prime', 'value': 'Amazon Prime'},
+                            {'label': 'Netflix', 'value': 'Netflix'},
+                            {'label': 'Disney+ Hotstar', 'value': 'Disney+ Hotstar'},
+                            {'label': 'Sony Liv', 'value': 'Sony Liv'},
+                            {'label': 'Apple Tv', 'value': 'Apple Tv'},
+                            {'label': 'YouTube', 'value': 'YouTube'},
+                            {'label': 'Zee5', 'value': 'Zee5'},
+                            {'label': 'Hulu', 'value': 'Hulu'},
+                            {'label': 'Eros Now', 'value': 'Eros Now'},
+                            {'label': 'ALTBalaji', 'value': 'ALTBalaji'},
+                            {'label': 'Discovery+', 'value': 'Discovery+'},
+                            {'label': 'JioCinema', 'value': 'JioCinema'},
+                            {'label': 'MX Player', 'value': 'MX Player'},
+                            {'label': 'TVFPlay', 'value': 'TVFPlay'},
+
+                        ],
+                        placeholder="Select one or more platforms",
+                        multi=True,
+                        clearable=False,
+                        style=TOP_MARGIN
+                    ),
+                    width=4),
             ]
         ),
 
         dbc.Row(
             [
-                dbc.Col(html.Label('Languages:'), width=2),
-                dbc.Col(dbc.Input(id='languages', placeholder="", type="text", bs_size="md", className="mb-3",
-                                  debounce=True), width=4),
+                dbc.Col(html.Label('Languages:', style=TOP_MARGIN), width=2),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id='languages',
+                        options=[
+                            {'label': 'Hindi', 'value': 'Hindi'},
+                            {'label': 'English', 'value': 'English'},
+                            {'label': 'Marathi', 'value': 'Marathi'},
+                            {'label': 'Chinese', 'value': 'Chinese'},
+                            {'label': 'Korean', 'value': 'Korean'},
+                            {'label': 'French', 'value': 'French'},
+                            {'label': 'German', 'value': 'German'},
+                            {'label': 'Spanish', 'value': 'Spanish'},
+                            {'label': 'Italian', 'value': 'Italian'},
+                            {'label': 'Russian', 'value': 'Russian'},
+                            {'label': 'Tamil', 'value': 'Tamil'},
+                            {'label': 'Telugu', 'value': 'Telugu'},
+                            {'label': 'Kannada', 'value': 'Kannada'},
+                            {'label': 'Bengali', 'value': 'Bengali'},
+                            {'label': 'Gujarati', 'value': 'Gujarati'},
+                            {'label': 'Oriya', 'value': 'Oriya'},
+
+                        ],
+                        placeholder="Select one or more languages",
+                        multi=True,
+                        clearable=False,
+                        style=TOP_MARGIN
+                    ),
+                    width=4),
             ]
         ),
         dbc.Row(
             [
-                dbc.Col(html.Label('Labels:'), width=2),
-                dbc.Col(dbc.Input(id='labels', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=4),
+                dbc.Col(html.Label('Labels:', style=TOP_MARGIN), width=2),
+                dbc.Col(dbc.Input(id='labels', placeholder="", type="text", bs_size="md", className="mb-3",
+                                  debounce=True, style=TOP_MARGIN), width=4),
             ]
         ),
         dbc.Row(
             [
-                dbc.Col(html.Label('Trailers:'), width=2),
-                dbc.Col(dbc.Input(id='trailers', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=6),
+                dbc.Col(html.Label('Trailers:', style=TOP_MARGIN), width=2),
+                dbc.Col(dbc.Input(id='trailers', placeholder="", type="text", bs_size="md", className="mb-3",
+                                  debounce=True, style=TOP_MARGIN), width=6),
             ]
         ),
         dbc.Row(

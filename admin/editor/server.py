@@ -3,16 +3,18 @@ import pickle
 import dash
 import dash_bootstrap_components as dbc
 import json
+from datetime import date
 import bson
 import datetime
 from pymongo import MongoClient
 from dash.dependencies import Input, Output, State, MATCH, ALL
-from admin.editor.movie_view import final_layout
+from editor.movie_view import final_layout
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 
 empty_result = [""]
+TOP_MARGIN = {"margin-top": "15px"}
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -27,7 +29,7 @@ def get_cast_row(index, cast_name, cast_role, cast_image):
     return html.Div([
         dbc.Row(
             [
-                dbc.Col(html.Label(str(index) + "."), width=1),
+                dbc.Col(html.Label(str(index) + ".", style=TOP_MARGIN), width=1),
                 dbc.Col(html.Label('Name'), width=1),
                 dbc.Col(dbc.Input(id={'cast_name': index}, value=cast_name, type="text", bs_size="md",
                                   className="mb-3", debounce=True), width=2),
@@ -59,42 +61,50 @@ def get_cast_row(index, cast_name, cast_role, cast_image):
 
 def get_critics_review(index, publication_name, review_author, review_rating, review_title, review_date, critic_review):
     return \
-        html.Div([
-            dbc.Row(
-                [
-                    dbc.Col(html.Label(index), width=1),
-                    dbc.Col(html.Label('Publication'), width=1),
-                    dbc.Col(dbc.Input(id={'publication_name': index}, value=publication_name, type="text", bs_size="md",
-                                      className="mb-3", debounce=True), width=1),
-                    dbc.Col(html.Label('Author:'), width=1),
-                    dbc.Col(
-                        dbc.Input(id={'review_author': index}, value=review_author, type="text", bs_size="md",
-                                  className="mb-3", debounce=True),
-                        width=1),
-                    dbc.Col(html.Label('Rating:'), width=1),
-                    dbc.Col(
-                        dbc.Input(id={'review_rating': index}, value=review_rating, type="text", bs_size="md",
-                                  className="mb-3", debounce=True),
-                        width=1),
-                    dbc.Col(html.Label('Title:'), width=1),
+        html.Div(children = [
+            dbc.Row([
+                dbc.Col(html.Label('Publication'), width=2),
+                dbc.Col(dbc.Input(id={'publication_name': index}, value=publication_name, type="text", bs_size="md",
+                                  className="mb-3", debounce=True), width=3),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Label('Author:'), width=2),
+                dbc.Col(
+                    dbc.Input(id={'review_author': index}, value=review_author, type="text", bs_size="md",
+                              className="mb-3", debounce=True),
+                    width=3),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Label('Rating:'), width=2),
+                dbc.Col(
+                    dbc.Input(id={'review_rating': index}, value=review_rating, type="text", bs_size="md",
+                              className="mb-3", debounce=True),
+                    width=3),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Label('Title:'), width=2),
                     dbc.Col(
                         dbc.Input(id={'review_title': index}, value=review_title, type="text", bs_size="md",
                                   className="mb-3", debounce=True),
-                        width=1),
-                    dbc.Col(html.Label('Date:'), width=1),
-                    dbc.Col(
-                        dbc.Input(id={'review_date': index}, value=review_date, type="text", bs_size="md",
-                                  className="mb-3", debounce=True),
-                        width=1),
-                    dbc.Col(html.Label('Critic Review:'), width=1),
-                    dbc.Col(
-                        dbc.Input(id={'critic_review': index}, value=critic_review, type="text", bs_size="md",
-                                  className="mb-3", debounce=True),
-                        width=1),
-
-                ]
-            )
-        ]
+                        width=3),
+            ]),
+            dbc.Row([
+                dbc.Col(html.Label('Date:'), width=2),
+                dbc.Col(dcc.DatePickerSingle(
+                    id={'review_date': index},
+                    min_date_allowed=date(1925, 8, 5),
+                    max_date_allowed=date(2075, 9, 19),
+                    initial_visible_month=date(2022, 1, 1),
+                    date=review_date
+                ), width=3)
+            ]),
+            dbc.Row([
+                dbc.Col(html.Label('Critic Review:'), width=2),
+                dbc.Col(
+                    dbc.Textarea(id={'critic_review': index}, value=critic_review, style={'width': '100%', 'height': 100, "margin-top": "15px"}, debounce=True),
+                    width=8),
+            ])
+        ], style={"borderWidth": "1px", "borderStyle": "dashed",}
         )
 
 
@@ -108,7 +118,7 @@ def get_critics_review(index, publication_name, review_author, review_rating, re
     [
         State({"cast_name": ALL}, "value"),
         State({"cast_role": ALL}, "value"),
-        State({"cast_image": ALL}, "value"),
+        State({"cast_image": ALL}, "contents"),
     ])
 def add_cast(n_clicks, all_cast_names, all_cast_roles, all_cast_images):
     triggered = [t["prop_id"] for t in dash.callback_context.triggered]
@@ -209,6 +219,15 @@ def add_critic_review(n_clicks, all_publication_name, all_review_author, all_rev
         State('labels', 'value'),
         State('trailers', 'value'),
         State('movie-photos', 'contents'),
+        State({"cast_name": ALL}, "value"),
+        State({"cast_role": ALL}, "value"),
+        State({"cast_image": ALL}, "contents"),
+        State({"publication_name": ALL}, "value"),
+        State({"review_author": ALL}, "value"),
+        State({"review_rating": ALL}, "value"),
+        State({"review_title": ALL}, "value"),
+        State({"review_date": ALL}, "value"),
+        State({"critic_review": ALL}, "value")
     ]
 )
 def open_movie_add_new(add_clicks,
@@ -227,7 +246,15 @@ def open_movie_add_new(add_clicks,
                        languages,
                        labels,
                        trailers,
-                       photos,
+                       photos,all_cast_names,
+                       all_cast_roles,
+                       all_cast_images,
+                       all_publication_name,
+                       all_review_author,
+                       all_review_rating,
+                       all_review_title,
+                       all_review_date,
+                       all_critic_review
                        ):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 
@@ -253,6 +280,25 @@ def open_movie_add_new(add_clicks,
     post_dict["Labels"] = labels
     post_dict["Trailers"] = trailers
     post_dict["PostDate"] = datetime.datetime.utcnow()
+
+    cast_details = [
+        (cast_name, cast_role, cast_image) for cast_name, cast_role, cast_image in zip(all_cast_names, all_cast_roles,
+                                                                                       all_cast_images)
+    ]
+
+    print(cast_details)
+
+    if cast_details and len(cast_details) > 0:
+        post_dict["MovieCast"] = cast_details
+
+    critic_reviews = [
+        (publication_name, review_author, review_rating, review_title, review_date, critic_review)
+        for publication_name, review_author, review_rating, review_title, review_date, critic_review
+        in zip(all_publication_name, all_review_author, all_review_rating, all_review_title, all_review_date,
+               all_critic_review)
+    ]
+    if critic_reviews and len(critic_reviews) > 0:
+        post_dict["CriticReviews"] = critic_reviews
 
     photo_list = []
     if photos and len(photos) > 0:
