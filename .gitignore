@@ -1,1 +1,4 @@
 *.iml
+.idea
+.pyc
+admin/editor/__pycache__/*.pyc
