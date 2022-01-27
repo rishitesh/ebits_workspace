@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+<!-- <meta http-equiv="refresh" content="2" > -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="{% static 'review/vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'review/vendor/animate/animate.min.css' %}">
+  <link rel="stylesheet" href="{% static 'review/vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'review/vendor/slick/slick.css' %}">
+  <link rel="stylesheet" href="{% static 'review/vendor/slick/slick-theme.css' %}">
+  <link rel="stylesheet" href="{% static 'review/css/style.css' %}">
+  <script src="{% static 'review/vendor/chartjs/dist/chart.min.js' %}"></script>
+
+
+
+</head>
+<body>
+  <!-- main header -->
+    <header class="section section--main-header">
+      <div class="top-header-nav-wrap">
+        <div class="section__inner container">
+          <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="/">
+              <img src="{% static 'review/img/ebit-logo-white.png' %}" alt="" class="img-fluid">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="#">Wishlist <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://ghaas.xyz/blog">Username</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+       <!-- </div> -->
+      <div class="top-sidebar-nav__wrap">
+        <div class="top-sidebar-nav__logo">
+          <img src="{% static 'review/img/ebit-logo-white.png' %}" alt="" class="img-fluid">
+        </div>
+        <ul class="top-sidebar-nav__list">
+          <li>
+            <a href="" class="active">
+              <span class="icon">
+                <img src="{% static 'review/img/nav-movie.png' %}" alt="">
+              </span>
+              <span class="text">OTT</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span class="icon">
+                <img src="{% static 'review/img/nav-books.png' %}" alt="">
+              </span>
+              <span class="text">Books</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span class="icon">
+                <img src="{% static 'review/img/nav-podcast.png' %}" alt="">
+              </span>
+              <span class="text">Podcast</span>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span class="icon">
+                <img src="{% static 'review/img/nav-games.png' %}" alt="">
+              </span>
+              <span class="text">Games</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <script type='text/javascript'>
+        var movies = {{ movie_list | safe }};
+    </script>
+
+
+
+    <div class="section section--no-pad home-explorer-section">
+       <div class="section__inner container">
+         <ul class="home-explorer-top-list">
+           <li class="active">Trending Now</li>
+           <li>Popular</li>
+           <li>Recommended</li>
+           <li>Newly Added</li>
+         </ul>
+         <ul class="home-explorer-gener-list">
+           <li class="active"><a href="">Action</a></li>
+           <li><a href="">Suspense</a></li>
+           <li><a href="">Thriller</a></li>
+           <li><a href="">Adventure</a></li>
+           <li><a href="">Drama</a></li>
+         </ul>
+
+         <div id="mov">
+
+          <ul class="home-explorer-movie-list">
+            <li v-for="movie in movies">
+              <a href="">
+                    <div class="img-wrap"><img :src="[[movie.thumbnail_image]]" class="img-fluid" alt=""/></div>
+                    <div class="details">
+                      <div class="name">[[ movie.movie_name ]]</div>
+                      <div class="stat">
+                        <span class="icon"><img src="{% static 'review/img/rating-star.png' %}" alt="" class="img-fluid"></span>
+                        <span class="rating">8.9</span>
+                      </div>
+                    </div>
+                  </a>
+            </li>
+          </ul>
+        </div>
+
+       </div>
+     </div>
+
+    <script>
+        var mov = new Vue({
+          delimiters: ['[[', ']]'],
+          el: '#mov',
+          data: {
+              movies: movies
+          }
+        });
+      </script>
+</body>
+</html>
