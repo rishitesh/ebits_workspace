@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
 
@@ -18,10 +18,9 @@
   <link rel="stylesheet" href="{% static 'review/vendor/slick/slick-theme.css' %}">
   <link rel="stylesheet" href="{% static 'review/css/style.css' %}">
   <script src="{% static 'review/vendor/chartjs/dist/chart.min.js' %}"></script>
-
-
-
+  <script src="{% static 'review/js/index.js' %}"></script>
 </head>
+
 <body>
   <!-- main header -->
     <header class="section section--main-header">
@@ -90,57 +89,60 @@
       </div>
     </header>
 
-    <script type='text/javascript'>
-        var movies = {{ movie_list | safe }};
-    </script>
-
-
-
     <div class="section section--no-pad home-explorer-section">
-       <div class="section__inner container">
-         <ul class="home-explorer-top-list">
-           <li class="active">Trending Now</li>
-           <li>Popular</li>
-           <li>Recommended</li>
-           <li>Newly Added</li>
-         </ul>
-         <ul class="home-explorer-gener-list">
-           <li class="active"><a href="">Action</a></li>
-           <li><a href="">Suspense</a></li>
-           <li><a href="">Thriller</a></li>
-           <li><a href="">Adventure</a></li>
-           <li><a href="">Drama</a></li>
-         </ul>
-
-         <div id="mov">
-
-          <ul class="home-explorer-movie-list">
-            <li v-for="movie in movies">
-              <a href="">
-                    <div class="img-wrap"><img :src="[[movie.thumbnail_image]]" class="img-fluid" alt=""/></div>
-                    <div class="details">
-                      <div class="name">[[ movie.movie_name ]]</div>
-                      <div class="stat">
-                        <span class="icon"><img src="{% static 'review/img/rating-star.png' %}" alt="" class="img-fluid"></span>
-                        <span class="rating">8.9</span>
-                      </div>
-                    </div>
-                  </a>
-            </li>
-          </ul>
+       <div id="mov">
+         <div class="section__inner container">
+           <ul class="home-explorer-top-list" id="top-label-list">
+             <li class="active" id="top-label"><a href="#">Trending Now</a></li>
+             <li><a href="#">Popular</a></li>
+             <li><a href="#">Recommended</a></li>
+             <li><a href="#">Newly Added</a></li>
+           </ul>
+           <ol class="home-explorer-gener-list" id="top-genre-list"></ol>
+           <ul class="home-explorer-movie-list" id ="home-explorer-movie-list_id"></ul>
         </div>
-
        </div>
      </div>
 
-    <script>
-        var mov = new Vue({
-          delimiters: ['[[', ']]'],
-          el: '#mov',
-          data: {
-              movies: movies
-          }
-        });
-      </script>
+   <script>
+    var cur_label = "Trending Now"
+    var cur_genre = null
+    var clicked_label = null
+    var clicked_genre = null
+    $(document).ready(loadGenres())
+   </script>
+
+   <script>
+     $('#top-genre-list').on('click', 'li', function(event) {
+          $('#home-explorer-movie-list_id').empty();
+          var genre = $(event.target).text();
+          $(event.target).parent().toggleClass('active')
+          $('#top-genre').toggleClass('active')
+          if (clicked_genre !== null){
+              clicked_genre.parent().toggleClass('active')
+         }
+          cur_genre = genre
+          clicked_genre = $(event.target)
+          fetchMovies(category = cur_genre, cur_label)
+    });
+   </script>
+
+   <script>
+     $('#top-label-list').on('click', 'li', function(event) {
+         var label = $(event.target).text();
+         $('#home-explorer-movie-list_id').empty();
+         $(event.target).parent().toggleClass('active')
+         $('#top-label').toggleClass('active')
+         if (clicked_label !== null){
+              clicked_label.parent().toggleClass('active')
+         }
+         var label = $(event.target).text();
+         cur_label = label
+         clicked_label = $(event.target)
+         fetchMovies(category = cur_genre, cur_label)
+    });
+   </script>
+
+
 </body>
 </html>

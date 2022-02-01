@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
+    path('movie-genres/', views.all_genres, name='movie-genres'),
+    path('movie-by-label/', views.movie_by_label, name='movie-by-label'),
     path('', views.index, name='index'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

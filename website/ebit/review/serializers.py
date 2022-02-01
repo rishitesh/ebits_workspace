@@ -1,4 +1,4 @@
-from .models import MoviePost
+from .models import MoviePost, Genre
 from rest_framework import serializers
 
 
@@ -10,5 +10,18 @@ class MoviePostSerializer(serializers.ModelSerializer):
             'id',
             'movie_name',
             'release_date',
+            'positive',
+            'negative',
+            'neutral',
+            'ebits_rating',
             'thumbnail_image'
+        ]
+
+
+class GenreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Genre
+        fields = [
+            'name'
         ]

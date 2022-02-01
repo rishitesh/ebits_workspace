@@ -1,5 +1,5 @@
-dash==1.11.0
-pandas==0.25.3
+dash==2.0.0
+pandas
 dash-bootstrap-components
 dash_dangerously_set_inner_html
 gunicorn~=19.10

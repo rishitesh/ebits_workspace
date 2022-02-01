@@ -4,8 +4,6 @@ import dash_core_components as dcc
 from datetime import date
 
 import dash_html_components as html
-import dash_table
-from editor.view_constants import *
 
 LIGHT_BLUE_LEFT_ALLIGNED_STYLE ={'textAlign': 'left', 'color': '#7FDBFF'}
 LIGHT_BLUE_CENTER_ALLIGNED_STYLE ={'textAlign': 'center', 'color': '#7FDBFF'}
@@ -21,7 +19,10 @@ movie_form = html.Div(
         dbc.Row(
             [
                 dbc.Col(html.Label('Movie Name:'), width=2),
-                dbc.Col(dbc.Input(id='movie_name', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True), width=6),
+                dbc.Col(dbc.Input(id='movie_name', placeholder="", type="text", className="mb-3", debounce=True),
+                        width=4),
+                dbc.Col(dbc.Button(children='Search', id="movie-search", n_clicks=0, color="success", className="mr-1"),
+                        width=2),
             ]
         ),
 
@@ -45,13 +46,13 @@ movie_form = html.Div(
             [
 
                 dbc.Col(html.Label('Positive'), width=2),
-                dbc.Col(dbc.Input(id='positive', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True,
+                dbc.Col(dbc.Input(id='positive', placeholder="", type="text", className="mb-3", debounce=True,
                                   style={'width': '20%', 'display': 'inline-block', 'padding': '0 20'}), width=2),
                 dbc.Col(html.Label('Negative'), width=1),
-                dbc.Col(dbc.Input(id='negative', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True,
+                dbc.Col(dbc.Input(id='negative', placeholder="", type="text", className="mb-3", debounce=True,
                                   style={'width': '20%', 'display': 'inline-block', 'padding': '0 20'}), width=2),
                 dbc.Col(html.Label('Neutral'), width=1),
-                dbc.Col(dbc.Input(id='neutral', placeholder="", type="text", bs_size="sx", className="mb-6", debounce=True,
+                dbc.Col(dbc.Input(id='neutral', placeholder="", type="text", className="mb-6", debounce=True,
                                   style={'width': '20%', 'display': 'inline-block', 'padding': '0 20'}), width=2),
             ]
         ),
@@ -59,7 +60,7 @@ movie_form = html.Div(
         dbc.Row(
                 [
                     dbc.Col(html.Label('Ebit Rating:'), width=2),
-                    dbc.Col(dbc.Input(id='ebitRating', placeholder="", type="text", bs_size="md", className="mb-3", debounce=True,
+                    dbc.Col(dbc.Input(id='ebitRating', placeholder="", type="text", className="mb-3", debounce=True,
                                       style={'width': '20%', 'display': 'inline-block', 'padding': '0 20'}), width=2),
                 ]
         ),
@@ -228,14 +229,14 @@ movie_form = html.Div(
         dbc.Row(
             [
                 dbc.Col(html.Label('Labels:', style=TOP_MARGIN), width=2),
-                dbc.Col(dbc.Input(id='labels', placeholder="", type="text", bs_size="md", className="mb-3",
+                dbc.Col(dbc.Input(id='labels', placeholder="", type="text", className="mb-3",
                                   debounce=True, style=TOP_MARGIN), width=4),
             ]
         ),
         dbc.Row(
             [
                 dbc.Col(html.Label('Trailers:', style=TOP_MARGIN), width=2),
-                dbc.Col(dbc.Input(id='trailers', placeholder="", type="text", bs_size="md", className="mb-3",
+                dbc.Col(dbc.Input(id='trailers', placeholder="", type="text", className="mb-3",
                                   debounce=True, style=TOP_MARGIN), width=6),
             ]
         ),
@@ -287,12 +288,12 @@ movie_form = html.Div(
 
         dbc.Row(
             [
-                dbc.Col(dbc.Button(children='Add', id="movie-add", n_clicks=0, color="success", className="mr-1"), width=0.5),
-                dbc.Col(dbc.Button(children='Modify', id="movie-modify", n_clicks=0, color="success", className="mr-1"),width=0.5),
+                dbc.Col(dbc.Button(children='Submit', id="movie-add", n_clicks=0, color="success", className="mr-1"), width=0.5),
                 dbc.Col(dbc.Button(children='Clear', id="movie-clear", n_clicks=0, color="success", className="mr-1"), width=0.5),
             ]
         ),
-        html.Div(id="output")
+        html.Div(id="output"),
+        html.Div(id="output1")
     ]
 
 )

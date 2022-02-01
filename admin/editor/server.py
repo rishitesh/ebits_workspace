@@ -1,11 +1,13 @@
 import pickle
 
 import dash
-import dash_bootstrap_components as dbc
-import json
 from datetime import date
 import bson
+import json
+import pprint
 import datetime
+
+from dash.exceptions import PreventUpdate
 from pymongo import MongoClient
 from dash.dependencies import Input, Output, State, MATCH, ALL
 from editor.movie_view import final_layout
@@ -14,6 +16,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 
 empty_result = [""]
+empty_search =  [None] * 13
 TOP_MARGIN = {"margin-top": "15px"}
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -21,7 +24,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.layout = final_layout
 
-client = MongoClient('mongodb://0.0.0.0:27017/')
+client = MongoClient('mongodb://0.0.0.0:55000/')
 mongodb = client.ebit_database
 
 
@@ -31,11 +34,11 @@ def get_cast_row(index, cast_name, cast_role, cast_image):
             [
                 dbc.Col(html.Label(str(index) + ".", style=TOP_MARGIN), width=1),
                 dbc.Col(html.Label('Name'), width=1),
-                dbc.Col(dbc.Input(id={'cast_name': index}, value=cast_name, type="text", bs_size="md",
+                dbc.Col(dbc.Input(id={'cast_name': index}, value=cast_name, type="text",
                                   className="mb-3", debounce=True), width=2),
                 dbc.Col(html.Label('Role:'), width=1),
                 dbc.Col(
-                    dbc.Input(id={'cast_role': index}, value=cast_role, type="text", bs_size="md",
+                    dbc.Input(id={'cast_role': index}, value=cast_role, type="text",
                               className="mb-3", debounce=True),
                     width=2),
                 dbc.Col(html.Label('Image:'), width=1),
@@ -64,27 +67,27 @@ def get_critics_review(index, publication_name, review_author, review_rating, re
         html.Div(children = [
             dbc.Row([
                 dbc.Col(html.Label('Publication'), width=2),
-                dbc.Col(dbc.Input(id={'publication_name': index}, value=publication_name, type="text", bs_size="md",
+                dbc.Col(dbc.Input(id={'publication_name': index}, value=publication_name, type="text",
                                   className="mb-3", debounce=True), width=3),
             ]),
             dbc.Row([
                 dbc.Col(html.Label('Author:'), width=2),
                 dbc.Col(
-                    dbc.Input(id={'review_author': index}, value=review_author, type="text", bs_size="md",
+                    dbc.Input(id={'review_author': index}, value=review_author, type="text",
                               className="mb-3", debounce=True),
                     width=3),
             ]),
             dbc.Row([
                 dbc.Col(html.Label('Rating:'), width=2),
                 dbc.Col(
-                    dbc.Input(id={'review_rating': index}, value=review_rating, type="text", bs_size="md",
+                    dbc.Input(id={'review_rating': index}, value=review_rating, type="text",
                               className="mb-3", debounce=True),
                     width=3),
             ]),
             dbc.Row([
                 dbc.Col(html.Label('Title:'), width=2),
                     dbc.Col(
-                        dbc.Input(id={'review_title': index}, value=review_title, type="text", bs_size="md",
+                        dbc.Input(id={'review_title': index}, value=review_title, type="text",
                                   className="mb-3", debounce=True),
                         width=3),
             ]),
@@ -194,6 +197,65 @@ def add_critic_review(n_clicks, all_publication_name, all_review_author, all_rev
     final_lst = [html.Div(new_list)]
     return final_lst
 
+@app.callback(
+    [
+        Output('movie_release_date', 'date'),
+        Output('positive', 'value'),
+        Output('negative', 'value'),
+        Output('neutral', 'value'),
+        Output('ebitRating', 'value'),
+        Output('genres', 'value'),
+        Output('awards', 'value'),
+        Output('certificates', 'value'),
+        Output('ebitsReview', 'value'),
+        Output('platforms', 'value'),
+        Output('languages', 'value'),
+        Output('labels', 'value'),
+        Output('trailers', 'value'),
+        Output('cast_name', 'value'),
+        Output('cast_role', 'value'),
+    ],
+    [
+        Input('movie-search', 'n_clicks'),
+    ],
+    [
+        State('movie_name', 'value'),
+    ],
+    prevent_initial_call=True,
+)
+def searh_movie(search_clicks,
+                       movie_name):
+    if not search_clicks:
+        raise PreventUpdate
+
+    posts = mongodb.posts
+    post_dict = posts.find_one({"MovieName": movie_name})
+
+    if post_dict:
+        movie_release_date = post_dict["MovieReleaseDate"]
+        positive = post_dict["Positive"]
+        negative = post_dict["Negative"]
+        neutral = post_dict["Neutral"]
+        ebits_rating = post_dict["EbitRating"]
+        genres = post_dict["Genres"]
+        awards = post_dict["Awards"]
+        certificates = post_dict["Certificates"]
+        ebits_review = post_dict["EbitsReview"]
+        platforms = post_dict["Platforms"]
+        languages = post_dict["Languages"]
+        labels = post_dict["Labels"]
+        trailers = post_dict["Trailers"]
+        movie_photos = post_dict["MoviePhotos"]
+        cast_details = post_dict["MovieCast"]
+
+        if cast_details and len(cast_details) > 0:
+            cast_role = cast_details[]
+
+        return [movie_release_date, positive, negative, neutral, ebits_rating,genres, awards, certificates,
+                ebits_review,
+                platforms, languages, labels, trailers, cast_details]
+    else:
+        return empty_search
 
 @app.callback(
     [
@@ -285,8 +347,6 @@ def open_movie_add_new(add_clicks,
         (cast_name, cast_role, cast_image) for cast_name, cast_role, cast_image in zip(all_cast_names, all_cast_roles,
                                                                                        all_cast_images)
     ]
-
-    print(cast_details)
 
     if cast_details and len(cast_details) > 0:
         post_dict["MovieCast"] = cast_details
