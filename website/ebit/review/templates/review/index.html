@@ -90,7 +90,8 @@
     </header>
 
     <div class="section section--no-pad home-explorer-section">
-       <div id="mov">
+       <div id="mov" style="position: relative; height: 0; margin:0 auto;
+	width:100%; max-width:2000px; padding-bottom:30%;">
          <div class="section__inner container">
            <ul class="home-explorer-top-list" id="top-label-list">
              <li class="active" id="top-label"><a href="#">Trending Now</a></li>
@@ -104,11 +105,32 @@
        </div>
      </div>
 
+    <!-- best in story section -->
+    <div class="section section--md-pad home-best-in-story-section">
+      <div class="section__inner container">
+        <div class="box-heading">Best In Story</div>
+
+        <div class="row" style="position: relative; height: 0; margin:0 auto;
+	overflow: hidden;width:100%; max-width:2000px; padding-bottom:25%;">
+          <div class="col-md-6">
+            <div class="selected-best-story__wrap"></div>
+          </div>
+          <div class="col-md-6 best-in-story-slider__wrap">
+            <div class="best-in-story-slider__inner"></div>
+        </div>
+      </div>
+    </div>
+  <!-- best in story section -->
+
+
+  <!-- Simplify the action codes -->
    <script>
     var cur_label = "Trending Now"
     var cur_genre = null
     var clicked_label = null
     var clicked_genre = null
+
+    $(document).ready(renderBestInStories("Best In Story"))
     $(document).ready(loadGenres())
    </script>
 
@@ -118,9 +140,9 @@
           var genre = $(event.target).text();
           $(event.target).parent().toggleClass('active')
           $('#top-genre').toggleClass('active')
-          if (clicked_genre !== null){
+          if (clicked_genre !== null) {
               clicked_genre.parent().toggleClass('active')
-         }
+          }
           cur_genre = genre
           clicked_genre = $(event.target)
           fetchMovies(category = cur_genre, cur_label)
@@ -133,7 +155,7 @@
          $('#home-explorer-movie-list_id').empty();
          $(event.target).parent().toggleClass('active')
          $('#top-label').toggleClass('active')
-         if (clicked_label !== null){
+         if (clicked_label !== null) {
               clicked_label.parent().toggleClass('active')
          }
          var label = $(event.target).text();
@@ -142,7 +164,6 @@
          fetchMovies(category = cur_genre, cur_label)
     });
    </script>
-
 
 </body>
 </html>

@@ -20,7 +20,7 @@ def all_genres(request):
     return JsonResponse({'all_genres': all_genre})
 
 
-def movie_by_label(request):
+def movie_by_label_genre(request):
     genre = request.GET.get('genre')
     label = request.GET.get('label')
     print(genre)
@@ -42,6 +42,33 @@ def movie_by_label(request):
                                   and  genre_id = '%s'  
                                   and label_id = '%s' 
                                   """ % (genre, label)
+                               )
+                              )
+        , many=True)
+
+    movie_post_data = json.dumps(serializer.data)
+    pprint(movie_post_data)
+    return JsonResponse({'movie_list': movie_post_data})
+
+
+def movie_by_label(request):
+    label = request.GET.get('label')
+    print(label)
+    serializer = MoviePostSerializer(
+        MoviePost.objects.raw(("""
+                                  SELECT \
+                                  review_moviepost.id, 
+                                  movie_name, \
+                                  release_date, \
+                                  positive, \
+                                  negative, \
+                                  neutral, \
+                                  ebits_rating, \
+                                  thumbnail_image \
+                                  FROM review_moviepost , review_movietolabel \
+                                  where review_moviepost.id = review_movietolabel.movie_id_id \
+                                  and label_id = '%s' 
+                                  """ % (label)
                                )
                               )
         , many=True)

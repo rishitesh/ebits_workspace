@@ -5,7 +5,7 @@
           label: label,
         }
         $.ajax({
-          url: '/movie-by-label/',
+          url: '/movie-by-label-genre/',
           type: 'GET',
           dataType: 'json',
           data: data,
@@ -32,7 +32,53 @@
                   $('.home-explorer-movie-list').append(movie) // append the new item to the <ul> tag
               }
         })
+    }
 
+    function renderBestInStories(label) {
+       var data = {
+          label: label,
+        }
+        $.ajax({
+          url: '/movie-by-label/',
+          type: 'GET',
+          dataType: 'json',
+          data: data,
+          }).done(function(response) {
+            movArr = JSON.parse(response.movie_list);
+              var firstEntry = true
+              for (var m in movArr) {
+                var image = movArr[m].thumbnail_image
+                var name = movArr[m].movie_name
+
+                var ebits_rating = movArr[m].ebits_rating
+                if (firstEntry) {
+                    firstEntry = false
+                    var movie = `
+                        <div class="first-entry">
+                            <div class="img-wrap"><img src="${image}" alt="" class="img-fluid"></div>
+                            <div class="content-wrap">
+                            <div class="rating-wrap">
+                              <div class="rating-star">
+                                <span class="icon"><img src="static/review/img/rating-star.png" alt="" class="img-fluid"></span>
+                              </div>
+                              <div class="rating-value">${ebits_rating}</div>
+                            </div>
+                            <div class="title">${name}</div>
+                            <div class="sub-heading">Action | Thriller | Drama</div>
+                            <div class="btn-wrap">
+                              <a href="" class="btn btn--red"><span class="icon"><img src="static/review/img/details-play-trailer.png" alt="" class="img-fluid"></span>Play Trailer</a>
+                              <a href="" class="btn btn--glass">View Details</a>
+                            </div>
+                    </div>`
+
+                  $('.selected-best-story__wrap').append(movie)
+                } else {
+                    alert(name)
+                    var movie = `<div class="best-in-story-slider-item"><img src="${image}" alt="" class="img-fluid"></div>`
+                    $('.best-in-story-slider__inner').append(movie)
+                }
+              }
+        })
     }
 
    function loadGenres() {
