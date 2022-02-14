@@ -111,6 +111,8 @@ class MovieToGenre(models.Model):
 
 class Label(models.Model):
     name = models.TextField(primary_key=True)
+    type = models.TextField(default='general')
+    photo = models.ImageField(default=None, null=True, upload_to='upload/')
 
     def __str__(self):
         return "%s" % self.name

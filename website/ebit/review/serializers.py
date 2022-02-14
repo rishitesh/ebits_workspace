@@ -1,4 +1,4 @@
-from .models import MoviePost, Genre
+from .models import MoviePost, Genre, Label
 from rest_framework import serializers
 
 
@@ -24,4 +24,14 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = [
             'name'
+        ]
+
+
+class LabelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Label
+        fields = [
+            'name',
+            'photo'
         ]

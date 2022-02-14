@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('movie-genres/', views.all_genres, name='movie-genres'),
+    path('movie-moods/', views.all_moods, name='movie-moods'),
     path('movie-by-label/', views.movie_by_label, name='movie-by-label'),
     path('movie-by-label-genre/', views.movie_by_label_genre, name='movie-by-label-genre'),
     path('', views.index, name='index'),

@@ -3,8 +3,8 @@ from pprint import pprint
 
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from review.models import MoviePost, MovieToGenre, Genre
-from review.serializers import MoviePostSerializer, GenreSerializer
+from review.models import MoviePost, MovieToGenre, Genre, Label
+from review.serializers import MoviePostSerializer, GenreSerializer, LabelSerializer
 
 
 def index(request):
@@ -20,11 +20,16 @@ def all_genres(request):
     return JsonResponse({'all_genres': all_genre})
 
 
+def all_moods(request):
+    moods_serialized = LabelSerializer(
+        Label.objects.raw("select name, photo from review_label where type = 'mood'"), many=True)
+    every_moods = json.dumps(moods_serialized.data)
+    return JsonResponse({'all_moods': every_moods})
+
+
 def movie_by_label_genre(request):
     genre = request.GET.get('genre')
     label = request.GET.get('label')
-    print(genre)
-    print(label)
     serializer = MoviePostSerializer(
         MoviePost.objects.raw(("""
                                   SELECT \
@@ -53,7 +58,6 @@ def movie_by_label_genre(request):
 
 def movie_by_label(request):
     label = request.GET.get('label')
-    print(label)
     serializer = MoviePostSerializer(
         MoviePost.objects.raw(("""
                                   SELECT \

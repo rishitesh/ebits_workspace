@@ -7000,18 +7000,26 @@ h1, h2, h3, h4, h5 {
   align-items: flex-end;
   position: relative;
 }
+
+.selected-best-story__wrap .first-entry {
+  width: 600px;
+  height: 250px;
+}
+
 .selected-best-story__wrap .img-wrap {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 600px;
+  height: 250px;
+  border: 2px solid transparent;
+  margin-bottom: 0.5rem;
 }
 .selected-best-story__wrap .content-wrap {
   position: relative;
-  padding-top: 10rem;
+  padding-top: 6rem;
   padding-bottom: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
-  width: 100%;
+
   background: rgba(0, 0, 0, 0.2);
 }
 .selected-best-story__wrap .rating-wrap {
@@ -7030,6 +7038,10 @@ h1, h2, h3, h4, h5 {
 .selected-best-story__wrap .sub-heading {
   font-size: 0.9rem;
   margin-bottom: 1rem;
+}
+.best-in-story-slider__inner {
+  display:flex;
+  flex-direction: row;
 }
 .best-in-story-slider__inner.slick-slider {
   margin-left: -15px;
@@ -7080,12 +7092,37 @@ h1, h2, h3, h4, h5 {
   transform: rotateZ(180deg);
 }
 
+.best-in-story-slider-item {
+  text-align: center;
+}
+
+.best-in-story-slider-item  .img-wrap .img-fluid {
+    width:100%;
+    height:100%;
+}
+
+.best-in-story-slider-item .img-wrap {
+  width: 200px;
+  height: 250px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  margin-bottom: 0.5rem;
+}
+
+.selected-best-story__wrap .img-wrap .img-fluid {
+    width:100%;
+    height:100%;
+}
+
+
+
+
 .home-mood-section {
   background: linear-gradient(270.05deg, #151F30 0.04%, #0E1826 74.14%, #051019 99.95%);
 }
 .home-mood-section__heading {
-  font-size: 2.5rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 200;
 }
 .home-mood-section__heading span {
   color: #ED2961;
@@ -7094,6 +7131,12 @@ h1, h2, h3, h4, h5 {
 .mood-row-top {
   align-items: center;
   margin-bottom: 2rem;
+  display:flex;
+  flex-direction: row;
+}
+.mood-slider-top__inner {
+  display:flex;
+  flex-direction: row;
 }
 
 .mood-slider-top__inner .slick-track {
@@ -7156,12 +7199,19 @@ h1, h2, h3, h4, h5 {
   display: none;
 }
 .mood-slider-top-item .img-wrap {
-  width: 150px 150px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
   border-radius: 100%;
   border: 2px solid transparent;
   margin-bottom: 0.5rem;
 }
+
+.mood-slider-top-item .img-wrap .img-fluid {
+    width:100%;
+    height:100%;
+}
+
 .mood-slider-top-item .title {
   color: rgba(255, 255, 255, 0.75);
 }
@@ -7182,7 +7232,7 @@ h1, h2, h3, h4, h5 {
 .mood-slider-main__wrap {
   padding: 0.5rem;
   background: #051019;
-  margin-left: 218px;
+  margin-left: 118px;
   position: relative;
 }
 .mood-slider-main__wrap .slick-track {
@@ -7192,14 +7242,20 @@ h1, h2, h3, h4, h5 {
 }
 .mood-slider-main__wrap:before {
   content: " ";
-  width: 526px;
-  height: 297px;
+  width: 326px;
+  height: 250px;
+  background-size: contains;
+
   background: url("../img/mood-popcorn.png") no-repeat;
   background-position: center center;
   z-index: 10000;
-  left: -218px;
+  left: -118px;
   top: -2rem;
   position: absolute;
+}
+.mood-slider-main__inner {
+  display:flex;
+  flex-direction: row;
 }
 .mood-slider-main__inner.slick-slider {
   margin-left: -10px;
@@ -7250,7 +7306,8 @@ h1, h2, h3, h4, h5 {
   transform: rotateZ(180deg);
 }
 .mood-slider-main-item {
-  max-height: 182px;
+  max-height: 132px;
+  width: 350px;
   border-radius: 0.5rem;
   overflow: hidden;
 }
