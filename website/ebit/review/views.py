@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.http import require_http_methods
 
+from review.models import Platform, Award
 from review.serializers import *
 from review.utils import format_uuid, is_empty, raw_sql, clean_json_dump
 
@@ -45,10 +46,48 @@ def movie_details(request):
     return HttpResponse(template.render(context, request))
 
 
+def all_moods(request):
+    moods_serialized = LabelSerializer(
+        Label.objects.raw("select name from review_label where LOWER(type) = 'mood'"), many=True)
+    moods = json.dumps(moods_serialized.data)
+    return JsonResponse({'moods': moods})
+
+
+def all_labels(request):
+    labels_serialized = LabelSerializer(
+        Label.objects.raw("select name from review_label where LOWER(type) != 'mood'"), many=True)
+    labels = json.dumps(labels_serialized.data)
+    return JsonResponse({'labels': labels})
+
+
 def all_genres(request):
     genres_serialized = GenreSerializer(Genre.objects.all(), many=True)
-    all_genre = json.dumps(genres_serialized.data)
-    return JsonResponse({'all_genres': all_genre})
+    genres = json.dumps(genres_serialized.data)
+    return JsonResponse({'genres': genres})
+
+
+def all_platforms(request):
+    platforms_serialized = PlatformSerializer(Platform.objects.all(), many=True)
+    platforms = json.dumps(platforms_serialized.data)
+    return JsonResponse({'platforms': platforms})
+
+
+def all_awards(request):
+    awards_serialized = PlatformSerializer(Award.objects.all(), many=True)
+    awards = json.dumps(awards_serialized.data)
+    return JsonResponse({'awards': awards})
+
+
+def all_languages(request):
+    language_serialized = LanguageSerializer(Language.objects.all(), many=True)
+    languages = json.dumps(language_serialized.data)
+    return JsonResponse({'languages': languages})
+
+
+def all_certificates(request):
+    certificate_serialized = CertificateSerializer(Certificate.objects.all(), many=True)
+    certificates = json.dumps(certificate_serialized.data)
+    return JsonResponse({'certificates': certificates})
 
 
 def all_collections(request):
@@ -112,13 +151,6 @@ def collection_details(request, collection_id):
     col_data_json_dict['entries'] = collection_entry_data
     response = {'collection': col_data_json}
     return JsonResponse(response)
-
-
-def all_moods(request):
-    moods_serialized = LabelSerializer(
-        Label.objects.raw("select name, photo from review_label where type = 'mood'"), many=True)
-    every_moods = json.dumps(moods_serialized.data)
-    return JsonResponse({'all_moods': every_moods})
 
 
 @require_http_methods(["POST"])
@@ -236,28 +268,3 @@ def movies(request):
     pprint(movie_post_data)
     return JsonResponse({'movies': movie_post_data})
 
-
-def movie_by_label(request):
-    label = request.GET.get('label')
-    serializer = MoviePostSerializer(
-        MoviePost.objects.raw(("""
-                                  SELECT \
-                                  review_moviepost.id, 
-                                  movie_name, \
-                                  release_date, \
-                                  positive, \
-                                  negative, \
-                                  neutral, \
-                                  ebits_rating, \
-                                  thumbnail_image \
-                                  FROM review_moviepost , review_movietolabel \
-                                  where review_moviepost.id = review_movietolabel.movie_id_id \
-                                  and label_id = '%s' 
-                                  """ % (label)
-                               )
-                              )
-        , many=True)
-
-    movie_post_data = json.dumps(serializer.data)
-    pprint(movie_post_data)
-    return JsonResponse({'movie_list': movie_post_data})

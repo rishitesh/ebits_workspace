@@ -1,4 +1,5 @@
-from .models import MoviePost, Genre, Label, MovieCollection, MovieCollectionDetail
+from .models import MoviePost, Genre, Label, MovieCollection,\
+    MovieCollectionDetail, Platform, Language, Certificate
 from rest_framework import serializers
 
 
@@ -53,6 +54,33 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
+        fields = [
+            'name'
+        ]
+
+
+class PlatformSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Platform
+        fields = [
+            'name'
+        ]
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Language
+        fields = [
+            'name'
+        ]
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Certificate
         fields = [
             'name'
         ]
