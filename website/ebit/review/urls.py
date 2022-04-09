@@ -8,6 +8,8 @@ from . import views
 urlpatterns = [
     path('api/v1/collections/', views.all_collections, name='collections'),
     path('api/v1/collections/<slug:collection_id>/', views.collection_details, name='collection_details'),
+
+
     path('api/v1/moods/', views.all_moods, name='movie-moods'),
     path('api/v1/genres/', views.all_genres, name='movie-genres'),
     path('api/v1/platforms/', views.all_platforms, name='movie-platforms'),
@@ -15,8 +17,12 @@ urlpatterns = [
     path('api/v1/labels/', views.all_labels, name='movie-labels'),
     path('api/v1/certificates/', views.all_certificates, name='all_certificates'),
     path('api/v1/languages/', views.all_languages, name='all_languages'),
-
     path('api/v1/movies/', csrf_exempt(views.movies), name='movies'),
+
+
+    # Reports Section
+    path('api/v1/reports/', views.all_reports, name='all_reports'),
+    path('api/v1/reports/<slug:report_id>/', views.report_details, name='report_details'),
     path('', views.index, name='index'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

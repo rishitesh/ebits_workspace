@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.http import require_http_methods
 
-from review.models import Platform, Award
+from review.models import Platform, Award, Report
 from review.serializers import *
 from review.utils import format_uuid, is_empty, raw_sql, clean_json_dump
 
@@ -90,6 +90,59 @@ def all_certificates(request):
     return JsonResponse({'certificates': certificates})
 
 
+def all_reports(request):
+    """
+    This method returns all the Report collection list. See Report model object
+    for the detailed fields.
+    :param request:
+    :return:
+    """
+    final_query = """Select
+                     review_report.id, \
+                     review_moviecollection.name,\
+                     description as summary,\
+                     chart_data_json, \
+                     publish_date \
+                     from  review_report, review_moviecollection \
+                     where review_report.collection_id_id = review_moviecollection.id \
+                     order by publish_date desc limit 20       
+                     """
+    row_dict = raw_sql(final_query)
+    reports = clean_json_dump(row_dict)
+    return JsonResponse({'reports': reports})
+
+
+def report_details(request, report_id):
+    formatted_uuid = format_uuid(report_id)
+    final_query = """Select
+                         review_report.id, \
+                         review_report.collection_id_id as collectionId,\
+                         review_moviecollection.name as title,\
+                         description as summary,\
+                         chart_data_json \
+                         from  review_report, review_moviecollection \
+                         where review_report.collection_id_id = review_moviecollection.id \
+                         and   review_report.id = '%s'   
+                         """ % formatted_uuid
+    row_dict = raw_sql(final_query)
+    pprint(row_dict)
+    if is_empty(row_dict):
+        return JsonResponse({})
+
+    first_entry = row_dict[0]
+    collection_id = first_entry.get("collectionId", None)
+    if not collection_id:
+        return JsonResponse({})
+
+    reports = clean_json_dump(row_dict)
+    collection_entry_data = get_collection_details(collection_id, True)
+
+    first_entry['entries'] = collection_entry_data
+    response = {'report': first_entry}
+
+    return JsonResponse(response)
+
+
 def all_collections(request):
     """
     This method returns all the movie/OTT collection list. See MovieCollection model object
@@ -97,8 +150,22 @@ def all_collections(request):
     :param request:
     :return:
     """
-    collections_serialized = CollectionSerializer(MovieCollection.objects.all(), many=True)
-    collections = json.dumps(collections_serialized.data)
+    final_query = """Select
+                         id, \
+                         name,\
+                         description as summary,\
+                         bgImage , \
+                         publish_date \
+                         from  review_moviecollection \
+                         where not is_report \
+                         order by publish_date desc limit 20       
+                         """
+
+    row_dict = raw_sql(final_query)
+    if is_empty(row_dict):
+        return JsonResponse({})
+
+    collections = clean_json_dump(row_dict)
     return JsonResponse({'collections': collections})
 
 
@@ -126,32 +193,41 @@ def collection_details(request, collection_id):
         return JsonResponse({})
 
     col_data_json_dict = col_data_json[0]
-    serializer = CollectionDetailSerializer(
-        MovieCollectionDetail.objects.raw(("""
-                                          SELECT \
-                                          id, \
-                                          movie_name, \
-                                          description, \
-                                          release_date, \
-                                          positive, \
-                                          negative, \
-                                          neutral, \
-                                          ebits_rating, \
-                                          thumbnail_image, \
-                                          movie_id_id \
-                                          FROM review_moviecollectiondetail
-                                          where collection_id_id = '%s' 
-                                          """ % formatted_uuid
-                                           )
-                                          )
-        , many=True)
-
-    collection_entry_data = json.dumps(serializer.data)
+    collection_entry_data = get_collection_details(formatted_uuid, False)
 
     col_data_json_dict['entries'] = collection_entry_data
     response = {'collection': col_data_json}
     return JsonResponse(response)
 
+
+def get_collection_details(collection_id, is_report):
+    report_redicate = "review_moviecollection.is_report" \
+        if is_report else "not review_moviecollection.is_report"
+    final_query = """
+                                                SELECT \
+                                                review_moviecollectiondetail.id ,\
+                                                movie_name as title, \
+                                                ebits_rating as rating, \
+                                                review_moviecollectiondetail.description,\
+                                                thumbnail_image as bgImage, \
+                                                release_date as releaseDate, \
+                                                aspect_story as story, \
+                                                aspect_direction as direction,\
+                                                aspect_music as music, \
+                                                aspect_performance as performance, \
+                                                aspect_costume as costume, \
+                                                aspect_screenplay as screenplay, \
+                                                aspect_vxf as vxf, \
+                                                genres  \
+                                                FROM review_moviecollectiondetail, review_moviecollection
+                                                where 
+                                                review_moviecollectiondetail.collection_id_id = review_moviecollection.id 
+                                                and collection_id_id = '%s' and %s
+                                                  """ % (collection_id, report_redicate)
+    pprint(final_query)
+    row_dict = raw_sql(final_query)
+    collection_entry_data = clean_json_dump(row_dict)
+    return collection_entry_data
 
 @require_http_methods(["POST"])
 def movies(request):
@@ -171,7 +247,7 @@ def movies(request):
     # Add all labels together
     if not is_empty(category_list) or not is_empty(mood_list):
         label_list = category_list + mood_list
-        single_quoted_list = map( lambda s :  "'" + s + "'", label_list)
+        single_quoted_list = map(lambda s: "'" + s + "'", label_list)
         in_clause = ",".join(single_quoted_list)
         filter_clause = filter_clause + " review_movietolabel.label_id in (%s)" % in_clause
 
@@ -267,4 +343,3 @@ def movies(request):
     movie_post_data = clean_json_dump(row_dict)
     pprint(movie_post_data)
     return JsonResponse({'movies': movie_post_data})
-

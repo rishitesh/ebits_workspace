@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from datetime import datetime
 
 
 class MovieCollection(models.Model):
@@ -8,6 +9,8 @@ class MovieCollection(models.Model):
     name = models.TextField()
     description = models.TextField()
     bgImage = models.ImageField(default=None, null=True, upload_to='upload/')
+    is_report = models.BooleanField(default=False)
+    publish_date = models.DateField(default=datetime.now)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.name)
@@ -48,13 +51,19 @@ class MovieCollectionDetail(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4, help_text='Unique ID for this particular item')
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE)
+
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE, default=None, blank=True, null=True)
     movie_name = models.TextField()
     description = models.TextField()
     release_date = models.DateField()
-    positive = models.IntegerField()
-    negative = models.IntegerField()
-    neutral = models.IntegerField()
+    aspect_story = models.FloatField(default=None, null=True, blank=True)
+    aspect_direction = models.FloatField(default=None, null=True, blank=True)
+    aspect_music = models.FloatField(default=None, null=True, blank=True)
+    aspect_performance = models.FloatField(default=None, null=True, blank=True)
+    aspect_costume = models.FloatField(default=None, null=True, blank=True)
+    aspect_screenplay = models.FloatField(default=None, null=True, blank=True)
+    aspect_vxf = models.FloatField(default=None, null=True, blank=True)
+    genres = models.TextField(default=None, null=True, blank=True)
     ebits_rating = models.FloatField()
     thumbnail_image = models.ImageField(default=None, null=True, upload_to='upload/')
 
@@ -199,3 +208,13 @@ class MovieToPhoto(models.Model):
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.photo)
 
+
+class Report(models.Model):
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4, help_text='Unique ID for this particular item')
+    collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE, default=None, blank=True,
+                                             null=True)
+    chart_data_json = models.TextField(default=None, null=True)
+
+    def __str__(self):
+        return "%s->%s" % (self.id, self.collection_id)
