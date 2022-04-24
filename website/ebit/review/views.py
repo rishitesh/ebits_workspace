@@ -229,6 +229,7 @@ def get_collection_details(collection_id, is_report):
     collection_entry_data = clean_json_dump(row_dict)
     return collection_entry_data
 
+
 @require_http_methods(["POST"])
 def movies(request):
     data = json.loads(request.body.decode("utf-8"))
@@ -343,3 +344,4 @@ def movies(request):
     movie_post_data = clean_json_dump(row_dict)
     pprint(movie_post_data)
     return JsonResponse({'movies': movie_post_data})
+

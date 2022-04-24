@@ -1,6 +1,7 @@
-from django.db import models
 import uuid
 from datetime import datetime
+
+from django.db import models
 
 
 class MovieCollection(models.Model):
@@ -19,20 +20,28 @@ class MovieCollection(models.Model):
 class MoviePost(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4, help_text='Unique ID for this particular book across whole library')
-    movie_name = models.TextField()
+    movie_name = models.CharField(max_length=120)
     description = models.TextField(default=None, null=True, blank=True)
-    release_date = models.DateField()
+
+    # Sentimeter
     positive = models.IntegerField()
     negative = models.IntegerField()
     neutral = models.IntegerField()
+
+    # Overview
+    release_date = models.DateField()
     duration = models.FloatField(default=2.0)
-    actors_display_comma_separated = models.TextField(default=None, null=True, blank=True)
-    directors_display_comma_separated = models.TextField(default=None, null=True, blank=True)
+    actors_display_comma_separated = models.CharField(max_length=200, default=None, null=True, blank=True)
+    directors_display_comma_separated = models.CharField(max_length=200, default=None, null=True, blank=True)
+
+    # Ratings & Review
     ebits_rating = models.FloatField()
     ebits_review = models.TextField(default=None, null=True, blank=True)
-    ebits_reviewer_name = models.TextField(default=None, null=True, blank=True)
+    ebits_reviewer_name = models.CharField(max_length=100, default=None, null=True, blank=True)
     ebits_reviewer_image = models.ImageField(default=None, null=True, blank=True, upload_to='upload/')
     critics_rating = models.FloatField(default=None, null=True, blank=True)
+
+    # Aspects
     aspect_story = models.FloatField(default=None, null=True, blank=True)
     aspect_direction = models.FloatField(default=None, null=True, blank=True)
     aspect_music = models.FloatField(default=None, null=True, blank=True)
@@ -40,6 +49,8 @@ class MoviePost(models.Model):
     aspect_costume = models.FloatField(default=None, null=True, blank=True)
     aspect_screenplay = models.FloatField(default=None, null=True, blank=True)
     aspect_vxf = models.FloatField(default=None, null=True, blank=True)
+
+    # Images
     thumbnail_image = models.ImageField(default=None, null=True, upload_to='upload/')
     potrait_image = models.ImageField(default=None, null=True,blank=True, upload_to='upload/')
 
@@ -53,7 +64,7 @@ class MovieCollectionDetail(models.Model):
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE)
 
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE, default=None, blank=True, null=True)
-    movie_name = models.TextField()
+    movie_name = models.CharField(max_length=100)
     description = models.TextField()
     release_date = models.DateField()
     aspect_story = models.FloatField(default=None, null=True, blank=True)
@@ -63,7 +74,7 @@ class MovieCollectionDetail(models.Model):
     aspect_costume = models.FloatField(default=None, null=True, blank=True)
     aspect_screenplay = models.FloatField(default=None, null=True, blank=True)
     aspect_vxf = models.FloatField(default=None, null=True, blank=True)
-    genres = models.TextField(default=None, null=True, blank=True)
+    genres = models.CharField(max_length=150, default=None, null=True, blank=True)
     ebits_rating = models.FloatField()
     thumbnail_image = models.ImageField(default=None, null=True, upload_to='upload/')
 
@@ -111,6 +122,7 @@ class Award(models.Model):
 class MovieToAward(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
     award_name = models.ForeignKey(Award, on_delete=models.CASCADE)
+    award_for = models.CharField(max_length=200, default=None, null=True, blank=True)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.award_name)
