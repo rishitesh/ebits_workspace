@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 
 from review.models import Platform, Award, Report
 from review.serializers import *
-from review.utils import format_uuid, is_empty, raw_sql, clean_json_dump
+from review.utils import format_uuid, is_empty, raw_sql
 
 
 def index(request):
@@ -108,8 +108,7 @@ def all_reports(request):
                      order by publish_date desc limit 20       
                      """
     row_dict = raw_sql(final_query)
-    reports = clean_json_dump(row_dict)
-    return JsonResponse({'reports': reports})
+    return JsonResponse({'reports': row_dict})
 
 
 def report_details(request, report_id):
@@ -134,7 +133,6 @@ def report_details(request, report_id):
     if not collection_id:
         return JsonResponse({})
 
-    reports = clean_json_dump(row_dict)
     collection_entry_data = get_collection_details(collection_id, True)
 
     first_entry['entries'] = collection_entry_data
@@ -165,8 +163,7 @@ def all_collections(request):
     if is_empty(row_dict):
         return JsonResponse({})
 
-    collections = clean_json_dump(row_dict)
-    return JsonResponse({'collections': collections})
+    return JsonResponse({'collections': row_dict})
 
 
 def collection_details(request, collection_id):
@@ -226,8 +223,7 @@ def get_collection_details(collection_id, is_report):
                                                   """ % (collection_id, report_redicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
-    collection_entry_data = clean_json_dump(row_dict)
-    return collection_entry_data
+    return row_dict
 
 
 @require_http_methods(["POST"])
@@ -340,8 +336,5 @@ def movies(request):
                                   """ % filter_clause
     print(final_query)
     row_dict = raw_sql(final_query)
-
-    movie_post_data = clean_json_dump(row_dict)
-    pprint(movie_post_data)
-    return JsonResponse({'movies': movie_post_data})
+    return JsonResponse({'movies': row_dict})
 
