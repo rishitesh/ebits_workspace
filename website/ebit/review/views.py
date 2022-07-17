@@ -1,12 +1,12 @@
 import json
 from pprint import pprint
+from datetime import date
 
-from django.core import serializers as sz
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.http import require_http_methods
 
-from review.models import Award
+from review.models import Award, UserReviewDetail
 from review.serializers import *
 from review.utils import format_uuid, is_empty, raw_sql
 
@@ -16,6 +16,214 @@ def index(request):
     context = {
     }
     return HttpResponse(template.render(context, request))
+
+
+def get_critics_reviews(movie_id):
+    critics_reviews_query = """select publication_name,\
+                                   review_author, \
+                                   review_rating, \
+                                   review_title, \
+                                   review_date, \
+                                   critic_review 
+                                   from review_CriticReviewDetail
+                                    where movie_id_id = '%s' """ % movie_id
+    critics_review_rows = raw_sql(critics_reviews_query)
+    critics_reviews_list = []
+    for row in critics_review_rows:
+        critics_review = {'authorName': row.get("review_author"),
+                          'publication': row.get("publication_name"),
+                          'ratings': row.get("review_rating"),
+                          'title': row.get("review_title"),
+                          'review': row.get("critic_review"),
+                          'dateTime': row.get("review_date")
+                          }
+
+        critics_reviews_list.append(critics_review)
+
+    return critics_reviews_list
+
+
+def get_user_reviews(movie_id):
+    user_reviews_query = """select 
+                                   review_author, \
+                                   review_rating, \
+                                   review_title, \
+                                   review_date, \
+                                   review_text,\
+                                   reviewer_image
+                                   from review_UserReviewDetail
+                                    where movie_id_id = '%s' and review_approved is True""" % movie_id
+    user_review_rows = raw_sql(user_reviews_query)
+    user_reviews_list = []
+    for row in user_review_rows:
+        user_review = {'authorName': row.get("review_author"),
+                       'ratings': row.get("review_rating"),
+                       'title': row.get("review_title"),
+                       'review': row.get("critic_review"),
+                       'dateTime': row.get("review_date"),
+                       'image': row.get("reviewer_image")
+                       }
+
+        user_reviews_list.append(user_review)
+
+    return user_reviews_list
+
+
+def get_movie_genres(movie_id):
+    genre_query = """select genre_id from review_movietogenre where movie_id_id = '%s' """ % movie_id
+    genre_rows = raw_sql(genre_query)
+    genre_list = []
+    for row in genre_rows:
+        genre_list.append(row.get("genre_id"))
+
+    return genre_list
+
+
+def get_movie_certificates(movie_id):
+    certificate_query = """select certificate_id_id from review_movietocertificate where movie_id_id = '%s' """ % movie_id
+    cert_rows = raw_sql(certificate_query)
+    cert_list = []
+    for row in cert_rows:
+        cert_list.append(row.get("certificate_id_id"))
+
+    return cert_list
+
+
+def get_movie_platforms(movie_id):
+    platform_query = """select platform_id from review_MovieToPlatform where movie_id_id = '%s' """ % movie_id
+    platform_rows = raw_sql(platform_query)
+    platform_list = []
+    for row in platform_rows:
+        platform_list.append(row.get("platform_id"))
+
+    return platform_list
+
+
+def get_movie_languages(movie_id):
+    language_query = """select language_id_id from review_MovieToLanguage where movie_id_id = '%s' """ % movie_id
+    language_rows = raw_sql(language_query)
+    language_list = []
+    for row in language_rows:
+        language_list.append(row.get("language_id_id"))
+
+    return language_list
+
+
+def get_movie_trailers(movie_id):
+    trailer_query = """select trailers from review_MovieToTrailer where movie_id_id = '%s' """ % movie_id
+    trailer_rows = raw_sql(trailer_query)
+    trailer_list = []
+    for row in trailer_rows:
+        trailer_list.append(row.get("trailers"))
+
+    return trailer_list
+
+
+def get_movie_photos(movie_id):
+    photo_query = """select photo from review_MovieToPhoto where movie_id_id = '%s' """ % movie_id
+    photo_rows = raw_sql(photo_query)
+    photo_list = []
+    for row in photo_rows:
+        photo_list.append(row.get("photo"))
+
+    return photo_list
+
+
+def get_movie_awards(movie_id):
+    award_query = """select award_name_id, award_for from review_MovieToAward where movie_id_id = '%s' """ \
+                  % movie_id
+    award_rows = raw_sql(award_query)
+    award_list = []
+    for row in award_rows:
+        award = {"awardName": row.get("award_name_id"), "awardFor": row.get("award_for")}
+        award_list.append(award)
+
+    return award_list
+
+
+@require_http_methods(["POST"])
+def add_user_comment(request):
+    data = json.loads(request.body.decode("utf-8"))
+    print(data)
+    movie_id = data.get('id', [])
+    review_author = data.get('author', [])
+    review_rating = data.get('ratings', [])
+    review_title = data.get('title', [])
+    review_text = data.get('review', [])
+    reviewer_image = data.get('image', [])
+
+    formatted_uuid = format_uuid(movie_id)
+    movie = MoviePost.objects.get(id=formatted_uuid)
+
+    if not movie:
+        message = "Invalid movie reference"
+        return JsonResponse({"message": message})
+
+    user_review = UserReviewDetail(movie_id=movie,
+                                   review_author= review_author,
+                                   review_rating=review_rating,
+                                   review_title=review_title,
+                                   review_date=date.today(),
+                                   review_text=review_text,
+                                   reviewer_image=reviewer_image,
+                                   review_approved=False)
+
+    user_review.save()
+
+    message = "Successfully added user review"
+    return JsonResponse({"message": message})
+
+
+def similar_by_genres(request, movie_id):
+    formatted_uuid = format_uuid(movie_id)
+    genre_list = get_movie_genres(formatted_uuid)
+    if is_empty(genre_list):
+        return JsonResponse({})
+
+    single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
+    in_clause = ",".join(single_quoted_list)
+    filter_clause = " review_movietogenre.genre_id in (%s)" % in_clause
+
+    final_query = """
+                                      SELECT \
+                                      review_moviepost.id as id, 
+                                      movie_name, \
+                                      duration, \
+                                      description, \
+                                      actors_display_comma_separated, \
+                                      directors_display_comma_separated, \
+                                      release_date, \
+                                      ebits_rating, \
+                                      critics_rating , \
+                                      thumbnail_image \
+                                      FROM 
+                                      review_moviepost,\
+                                      review_movietogenre
+                                      
+                                      WHERE review_moviepost.id = review_movietogenre.movie_id_id \
+                                      and review_moviepost.id != '%s' \
+                                      and  %s ORDER BY random()  limit 10
+                                      """ % (formatted_uuid, filter_clause)
+    # print(final_query)
+    similar_movies_row = raw_sql(final_query)
+
+    similar_movies_list = []
+    for row in similar_movies_row:
+        movie = {'id': row.get("id"),
+                               'title': row.get("movie_name"),
+                               'description': row.get("duration"),
+                               'image': row.get("thumbnail_image"),
+                               'releaseDate': row.get("release_date"),
+                               'duration': row.get("review_date"),
+                               'ebitsRatings': row.get("ebits_rating"),
+                               'criticRatings': row.get("critics_rating"),
+                               'directors': row.get("directors_display_comma_separated"),
+                               'casts': row.get("actors_display_comma_separated")
+                               }
+
+        similar_movies_list.append(movie)
+
+    return JsonResponse({"movies": similar_movies_list})
 
 
 def movie_details(request, movie_id):
@@ -56,77 +264,21 @@ def movie_details(request, movie_id):
                                       """ % formatted_uuid
 
     row_dict = raw_sql(final_query)
-    pprint(row_dict)
     if is_empty(row_dict):
         return JsonResponse({})
     movie_dict = row_dict[0]
 
-    genre_query = """select genre_id from review_movietogenre where movie_id_id = '%s' """ % formatted_uuid
-    genre_rows = raw_sql(genre_query)
-    genre_list = []
-    for row in genre_rows:
-        genre_list.append(row.get("genre_id"))
+    genre_list = get_movie_genres(formatted_uuid)
+    cert_list = get_movie_certificates(formatted_uuid)
+    platform_list = get_movie_platforms(formatted_uuid)
+    language_list = get_movie_languages(formatted_uuid)
+    trailer_list = get_movie_trailers(formatted_uuid)
+    photo_list = get_movie_photos(formatted_uuid)
+    critics_reviews_list = get_critics_reviews(formatted_uuid)
+    user_reviews_list = get_user_reviews(formatted_uuid)
+    award_list = get_movie_awards(formatted_uuid)
 
-    certificate_query = """select certificate_id_id from review_movietocertificate where movie_id_id = '%s' """ % formatted_uuid
-    cert_rows = raw_sql(certificate_query)
-    cert_list = []
-    for row in cert_rows:
-        cert_list.append(row.get("certificate_id_id"))
-
-    platform_query = """select platform_id from review_MovieToPlatform where movie_id_id = '%s' """ % formatted_uuid
-    platform_rows = raw_sql(platform_query)
-    platform_list = []
-    for row in platform_rows:
-        platform_list.append(row.get("platform_id"))
-
-    language_query = """select language_id_id from review_MovieToLanguage where movie_id_id = '%s' """ % formatted_uuid
-    language_rows = raw_sql(language_query)
-    language_list = []
-    for row in language_rows:
-        language_list.append(row.get("language_id_id"))
-
-    trailer_query = """select trailers from review_MovieToTrailer where movie_id_id = '%s' """ % formatted_uuid
-    trailer_rows = raw_sql(trailer_query)
-    trailer_list = []
-    for row in trailer_rows:
-        trailer_list.append(row.get("trailers"))
-
-    photo_query = """select photo from review_MovieToPhoto where movie_id_id = '%s' """ % formatted_uuid
-    photo_rows = raw_sql(photo_query)
-    photo_list = []
-    for row in photo_rows:
-        photo_list.append(row.get("photo"))
-
-    gallery_dict = {"trailers": trailer_list, "photos":photo_list}
-
-    award_query = """select award_name_id, award_for from review_MovieToAward where movie_id_id = '%s' """\
-                  % formatted_uuid
-    award_rows = raw_sql(award_query)
-    award_list = []
-    for row in award_rows:
-        award = {"awardName": row.get("award_name_id"), "awardFor": row.get("award_for")}
-        award_list.append(award)
-
-    critics_reviews_query = """select publication_name,\
-                                review_author, \
-                                review_rating, \
-                                review_title, \
-                                review_date, \
-                                critic_review 
-                                from review_CriticReviewDetail
-                                 where movie_id_id = '%s' """ % formatted_uuid
-    critics_review_rows = raw_sql(critics_reviews_query)
-    critics_reviews_list = []
-    for row in critics_review_rows:
-        critics_review = {'authorName': row.get("review_author"),
-                          'publication': row.get("publication_name"),
-                          'ratings': row.get("review_rating"),
-                          'title': row.get("review_title"),
-                          'review': row.get("critic_review"),
-                          'dateTime': row.get("review_date")
-                          }
-
-        critics_reviews_list.append(critics_review)
+    gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
     sentimeter_dict = {"positive": movie_dict.get("positive"),
                        "negative": movie_dict.get("negative"),
@@ -165,7 +317,8 @@ def movie_details(request, movie_id):
                     "overview": overview_dict,
                     "genres": genre_list,
                     "certifications": cert_list,
-                    "criticReviews": critics_reviews_list
+                    "criticReviews": critics_reviews_list,
+                    "userReviews": user_reviews_list
                     }
 
     return JsonResponse(movie_detail)
@@ -176,9 +329,7 @@ def all_moods(request):
     js_val = {}
     records = []
     for d in moods:
-        obj = {}
-        obj["name"] = d.name
-        obj["photo"] = ""
+        obj = {"name": d.name, "photo": ""}
         records.append(obj)
     js_val["moods"] = records
     return JsonResponse(js_val)
@@ -189,9 +340,7 @@ def all_labels(request):
     js_val = {}
     records = []
     for d in labels:
-        obj = {}
-        obj["name"] = d.name
-        obj["photo"] = ""
+        obj = {"name": d.name, "photo": ""}
         records.append(obj)
     js_val["labels"] = records
     return JsonResponse(js_val)
@@ -479,6 +628,6 @@ def movies(request):
                                   and review_moviepost.id = review_movietoplatform.movie_id_id \
                                   and  %s
                                   """ % filter_clause
-    print(final_query)
+    # print(final_query)
     row_dict = raw_sql(final_query)
     return JsonResponse({'movies': row_dict})

@@ -112,6 +112,20 @@ class CriticReviewDetail(models.Model):
         return "%s->%s" % (self.movie_id, self.publication_name)
 
 
+class UserReviewDetail(models.Model):
+    movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
+    review_author = models.TextField()
+    review_rating = models.FloatField()
+    review_title = models.TextField()
+    review_date = models.DateField()
+    review_text = models.TextField()
+    review_approved = models.BooleanField(default=False)
+    reviewer_image = models.ImageField(default=None, null=True, blank=True, upload_to='upload/')
+
+    def __str__(self):
+        return "%s->%s->%s->%s" % (self.movie_id, self.review_author, self.review_date, self.review_approved)
+
+
 class Award(models.Model):
     name = models.TextField(primary_key=True)
 
