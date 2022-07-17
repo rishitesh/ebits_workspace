@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import MoviePost, Platform, Genre, Language, Certificate, \
     MovieToPhoto, CastDetail, CriticReviewDetail, Award, MovieToAward, MovieToCertificate, \
     MovieToLanguage, MovieToLabel, MovieToGenre, Label, MovieCollection, MovieCollectionDetail, \
-    MovieToPlatform, Report
+    MovieToPlatform, Report, MovieToTrailer
 
 # Movie Section
 admin.site.register(MoviePost)
@@ -22,6 +22,7 @@ admin.site.register(MovieToLanguage)
 admin.site.register(MovieToLabel)
 admin.site.register(Label)
 admin.site.register(MovieToPlatform)
+admin.site.register(MovieToTrailer)
 
 # Collection Section
 admin.site.register(MovieCollection)

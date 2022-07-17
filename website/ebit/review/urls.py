@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/v1/certificates/', views.all_certificates, name='all_certificates'),
     path('api/v1/languages/', views.all_languages, name='all_languages'),
     path('api/v1/movies/', csrf_exempt(views.movies), name='movies'),
+    path('api/v1/movies/<slug:movie_id>/', csrf_exempt(views.movie_details), name='movie_details'),
 
 
     # Reports Section
