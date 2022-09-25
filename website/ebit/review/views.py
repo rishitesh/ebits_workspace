@@ -367,21 +367,33 @@ def all_platforms(request):
 
 
 def all_awards(request):
-    awards_serialized = PlatformSerializer(Award.objects.all(), many=True)
-    awards = json.dumps(awards_serialized.data)
-    return JsonResponse({'awards': awards})
+    data = list(Award.objects.values())
+    js_val = {}
+    records = []
+    for d in data:
+        records.append(d.get("name"))
+    js_val["awards"] = records
+    return JsonResponse(data, safe=False)
 
 
 def all_languages(request):
-    language_serialized = LanguageSerializer(Language.objects.all(), many=True)
-    languages = json.dumps(language_serialized.data)
-    return JsonResponse({'languages': languages})
+    data = list(Language.objects.values())
+    js_val = {}
+    records = []
+    for d in data:
+        records.append(d.get("name"))
+    js_val["languages"] = records
+    return JsonResponse(data, safe=False)
 
 
 def all_certificates(request):
-    certificate_serialized = CertificateSerializer(Certificate.objects.all(), many=True)
-    certificates = json.dumps(certificate_serialized.data)
-    return JsonResponse({'certificates': certificates})
+    data = list(Certificate.objects.values())
+    js_val = {}
+    records = []
+    for d in data:
+        records.append(d.get("name"))
+    js_val["certificates"] = records
+    return JsonResponse(data, safe=False)
 
 
 def all_reports(request):
