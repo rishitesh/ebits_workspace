@@ -1,0 +1,36 @@
+<!-- home explorer section -->
+<div class="section section--no-pad home-explorer-section">
+  <div class="section__inner container">
+    <ul class="home-explorer-top-list">
+      <li class="active">Trending Now</li>
+      <li>Popular</li>
+      <li>Recomended</li>
+      <li>Newly Added</li>
+    </ul>
+    <ul class="home-explorer-gener-list">
+      <li *ngFor="let gener of movieGeners" class="{{ movieGenersSelection.includes(gener) ? 'active' : '' }}">
+        <span (click)="updateGenerSelection(gener)">{{gener}}</span>
+      </li>
+    </ul>
+
+    <ngx-slick-carousel class="home-explorer-movie-list-carousel" #slickModal="slick-carousel"
+      [config]="movieSlideConfig" (init)="slickInit($event)" (breakpoint)="breakpoint($event)"
+      (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+      <div ngxSlickItem *ngFor="let movie of movies" class="slide">
+        <a href="{{'/details?' + 'id=' +movie.id}}">
+          <div class="img-wrap"><img class="img-fluid" src="{{ 'assets/img/preview/' + movie.image }}" alt=""></div>
+          <div class="details">
+            <div class="name" style="width: 70%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+              {{ movie.title }}
+            </div>
+            <div class="stat">
+              <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+              <span class="rating">{{movie.ebitsRatings}}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </ngx-slick-carousel>
+  </div>
+</div>
+<!-- home explorer section -->

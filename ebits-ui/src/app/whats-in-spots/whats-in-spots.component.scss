@@ -1,0 +1,124 @@
+.home-spotlight-slider{
+  &__wrap{
+    max-width: 80%;
+    margin-left: 10%;
+    position: relative;
+
+    &:after{
+      position: absolute;
+      content: " ";
+      width: 474px;
+      height: 557px;
+      background: url('../../assets/img/home-spotlight-projector.png') no-repeat;
+      background-size: cover;
+      background-position: center center;
+      bottom: -60px;
+      right: -200px;
+    }
+  }
+
+  &__inner{
+
+    .slick-track {
+      max-width: 100%!important;
+      transform: translate3d(0, 0, 0)!important;
+      // perspective: 100px;
+    }
+
+    .slick-list{
+      overflow: visible;
+    }
+
+  }
+
+  &-item{
+    height: 540px;
+    padding: 4rem;
+    background: red;
+    background: url('../../assets/img/preview/ebit-treasure-preview.png');
+    background-size: cover;
+    position: absolute;
+    transform: rotateX(20deg) rotateY(-20deg);
+    perspective: 1000px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    box-shadow: 0 0 50px #1C190D;
+    transition: all 1s;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .top-row,
+    .bottom-row{
+      width: 100%;
+      display: block;
+
+      // > *{
+      //   position: relative;
+      // }
+    }
+
+    .top-row{
+      &:before{
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: " ";
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,.2);
+        display: block;
+      }
+    }
+
+    .rating{
+      margin-bottom: 1rem;
+      display: inline-block;
+
+      .progress{
+        margin-left: 0px;
+      }
+    }
+
+    .progress-value{
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .bottom-row{
+     .title{
+        font-size: 2rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+
+      .sub-heading{
+        font-size: 0.9rem;
+        font-weight: 300;
+      } 
+    }
+
+    &.slick-current{
+      transform: scale(1) translate(0%,0%) rotateX(15deg) rotateY(-20deg) skewY(5deg)!important;
+      z-index: 10000;
+      position: relative;
+      display: flex;
+    }
+
+    &:nth-of-type(1){
+      transform: scale(0.8) translate(-40%,0) rotateX(15deg) rotateY(-20deg) skewY(5deg);
+    }
+
+    &:nth-of-type(2){
+      transform: scale(0.85) translate(-30%,0) rotateX(15deg) rotateY(-20deg) skewY(5deg);
+    }
+
+    &:nth-of-type(3){
+      transform: scale(0.90) translate(-20%,0) rotateX(15deg) rotateY(-20deg) skewY(5deg);
+    }
+
+    &:nth-of-type(4){
+      transform: scale(0.95) translate(-10%,0) rotateX(15deg) rotateY(-20deg) skewY(5deg);
+    }
+  }
+}

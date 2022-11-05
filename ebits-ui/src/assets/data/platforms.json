@@ -1,0 +1,32 @@
+{
+  "platforms": [
+    {
+      "id": "1",
+      "name": "Amazon Prime"
+    },
+    {
+      "id": "2",
+      "name": "Netflix"
+    },
+    {
+      "id": "3",
+      "name": "Hotstar"
+    },
+    {
+      "id": "4",
+      "name": "Zee 5"
+    },
+    {
+      "id": "5",
+      "name": "Sony Liv"
+    },
+    {
+      "id": "6",
+      "name": "HBO Max"
+    },
+    {
+      "id": "7",
+      "name": "MX Player"
+    }
+  ]
+}

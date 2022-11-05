@@ -1,0 +1,396 @@
+@import 'ngx-slider-custom.scss';
+
+/* Start - Custome css for material components */
+
+.mat-expansion-panel {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  
+}
+.mat-expansion-panel-header {
+  border-bottom: 2px solid #051019;
+}
+
+.mat-expansion-panel-header-custom {
+  font-size: 1.2rem;
+    line-height: 1.2;
+    font-family: "Poppins", sans-serif;
+}
+
+.mat-expansion-panel-header-title {
+  color: rgba(255, 255, 255, 0.75);
+}
+.mat-expansion-panel-header-description, .mat-expansion-indicator, .mat-expansion-indicator::after {
+  color: rgba(255, 255, 255, 0.75);
+}
+.mat-expansion-panel-body {
+  padding: 0;
+}
+
+.filter-spacer {
+  flex: 1 1 auto;
+  /* border: #A5002F solid 1px; */
+}
+
+.mat-tab-group {
+  margin-bottom: 48px;
+}
+
+.mat-tab-label-content {
+  color: rgba(226, 216, 216, 0.87);
+}
+
+/* End - Custome css for material components */
+
+.archive-main{
+
+  &-info-section{
+    min-height: 400px;
+    background: url('../../assets/img/movie-hero.jpg');
+    background-size: cover;  
+    display: flex;
+    align-items: flex-end;
+
+    &--about{
+      background-color: rgba(0,0,0,0.5);
+      background-image: url('../../assets/img/about-hero.jpg');
+    }
+  }
+
+  &-info-section__inner{
+    margin-top: auto;
+    margin-bottom: 0rem;
+    padding-bottom: 2rem;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 28.21%, rgba(4, 3, 9, 0.514342) 57.37%, rgba(8, 6, 16, 0.76) 97.6%);
+  }
+
+  &-content{
+
+    &__main-heading{
+      font-size: 2rem;
+      border-left: 1px solid #ED2860;
+      border-width: 4px;
+      padding-left: 0.5rem;
+      margin-left: -0.5rem;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.movie-sort{
+  
+  &__wrap{
+    font-size: 1rem;
+    background: #051019;
+    margin-bottom: 1rem;
+    color: #c4c6cb;
+  }
+  &__label{
+    color:#FFF;
+  }
+
+}
+
+.movie-filter{
+  
+  &__wrap{
+    font-size: 1.2rem;
+    line-height: 1.2;
+    font-family: "Poppins", sans-serif;
+    background: #151F30;
+    margin-bottom: 1rem;
+  }
+
+  &__heading{
+    padding: 1rem;
+    border-bottom: 1px solid #051019;
+
+  }
+}
+
+.movie-filter-option-list{
+  padding: 0.5rem 0;
+  margin: 0;
+  /* margin-bottom: 1rem; */
+
+  li{
+    display: block;
+    padding: 0.5rem 1rem;
+    color: rgba(255, 255, 255, 0.75);
+
+    &:hover{
+      color: rgba(255, 255, 255, 1);
+    }
+
+     /* Customize the label (the m-checkbox-container) */
+    .m-checkbox-container {
+      display: block;
+      position: relative;
+      padding-left: 35px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .m-checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 20px;
+      background-color: rgba(28, 46, 78, 1);
+    }
+
+    /* On mouse-over, add a grey background color */
+    .m-checkbox-container:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .m-checkbox-container input:checked ~ .checkmark {
+      // background-color: #2196F3;
+      background: linear-gradient(180deg, #FE316C 0%, #ED2860 26.77%, #A5002F 100%);
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .m-checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .m-checkbox-container .checkmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    } 
+  }
+}
+
+.archive-preview-inactive {
+  display: none;
+}
+
+.archive-preview-grid {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+
+  .archive-preview-item {
+    width: 18%;
+    display: block;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 1rem;
+
+    &__content {
+      font-weight: normal;
+      display: flex;
+      justify-content: space-between;
+
+      .desc {
+        width: 70%;
+  
+        .title {
+          padding: 0.5rem 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .desc {
+          display: none;
+        }
+      }
+
+      .stat {
+        padding: 0.5rem 0;
+
+        .icon {
+          display: inline-block;
+          margin-right: 4px;
+          position: relative;
+          top: -4px;
+        }
+        .rating {
+
+        }
+      }
+    }
+  }
+}
+
+
+
+.archive-preview-list {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+
+  .archive-preview-item {
+    width: 100%;
+    display: flex;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 1rem;
+    background: #151f30;
+
+    &__img {
+      width: 15%;
+      margin: 0.5rem;
+    }
+
+    &__content {
+      font-weight: normal;
+      /* display: flex; */
+      justify-content: space-between;
+      width: 85%;
+      margin: 0.5rem;
+
+      .title-bar {
+        width: 100%;
+        display: flex;
+        margin: 5px 0px;
+
+        .title {
+          .title-text{
+            font-weight: bold;
+          }
+          .movie-length {
+            margin-top: 3px;
+            font-size: small;
+            display: flex;
+          }
+        }
+        .sharelinks {
+          margin: auto 10px;
+        }
+      }
+      .info {
+        width: 100%;
+        display: flex;
+        margin-top: 10px;
+        font-size: small;
+        justify-content: space-between;
+
+        .desc {
+          width: 70%;
+          .summary {
+            line-height: 1.5;
+          }
+          .casts {
+            color: #ED2860;
+          }
+          .casts-names {
+            margin-left: 5px;
+          }
+        }
+        .stat {
+          padding: 0.5rem 1rem;
+
+          .stat-rating{
+            &__wrap{
+              display: flex;
+              align-items: center;
+              margin-bottom: 2rem;
+            }
+          
+            &__brief{
+              font-weight: 500;
+              margin-right: 1.5rem;
+            }
+          
+            &__item{
+              display: flex;
+              align-items: center;
+              margin-right: 1.5rem;
+              margin-top: 0.5rem;
+          
+              .progress-wrap{
+                margin-right: 0.5rem
+              }
+          
+              .name{
+                font-size: 0.9rem;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+
+      
+
+      .stat {
+        padding: 0.5rem 0;
+
+        .icon {
+          display: inline-block;
+          margin-right: 4px;
+          position: relative;
+          top: -4px;
+        }
+        .rating {
+
+        }
+      }
+    }
+  }
+}
+
+.rating-filters-container {
+  width: fit-content;
+  margin: auto 15px;
+  align-items: center;
+  color: #c4c6cb;
+}
+
+.listing-views {
+  display: flex;
+  
+  &__option {
+    background: #151f30;
+    margin: auto 5px;
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    border: 1px solid #151f30;
+    padding: 5px;    
+  }
+  .selected {
+    background: #eb2668;
+  }
+}

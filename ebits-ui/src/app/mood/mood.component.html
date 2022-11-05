@@ -1,0 +1,40 @@
+<!-- home mood section -->
+<div class="section section--md-pad home-mood-section">
+  <div class="section__inner container">
+    <div class="mood-row-top row">
+      <div class="col-md-5">
+        <div class="home-mood-section__heading">Tell Us what are you in <span>mood</span> for today ...</div>
+      </div>
+      <div class="col-md-7">
+        <div class="mood-slider-top__wrap">
+          <div class="slick-wrapper">
+            <ngx-slick-carousel class="mood-slider-top-carousel" #slickModal="slick-carousel"
+              [config]="moodsSlideConfig" (init)="slickInit($event)" (breakpoint)="breakpoint($event)"
+              (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+              <div ngxSlickItem *ngFor="let movieMood of movieMoods" class="slide">
+                <div class="img-wrap"><img src="assets/img/preview/mood-preview-1.png" alt="" class="img-fluid"></div>
+                <div class="content">
+                  <div class="title">{{movieMood.name}}</div>
+                </div>
+              </div>
+            </ngx-slick-carousel>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mood-row-bottom">
+      <div class="mood-slider-main__wrap">
+        <div class="slick-wrapper">
+          <ngx-slick-carousel class="mood-slider-main-carousel" #slickModal="slick-carousel"
+            [config]="moodsMainSlideConfig" (init)="slickInit($event)" (breakpoint)="breakpoint($event)"
+            (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+            <div ngxSlickItem *ngFor="let movieMood of movieMoods" class="slide">
+              <div class="img-wrap"><img src="assets/img/preview/mood-main-1.png" alt="" class="img-fluid"></div>
+            </div>
+          </ngx-slick-carousel>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- home mood section -->

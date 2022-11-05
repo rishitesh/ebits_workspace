@@ -1,0 +1,16 @@
+{
+  "geners": [
+    "Action",
+    "Suspense",
+    "Thriller",
+    "Adventure",
+    "Drama",
+    "sci-fi",
+    "Romance",
+    "Crime",
+    "Comedy",
+    "Biography",
+    "Animation",
+    "Documentry"
+  ]
+}

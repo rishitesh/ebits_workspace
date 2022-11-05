@@ -1,0 +1,95 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "The Mentalist (1) Title here",
+      "description": "The Mentalist (1) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 9.4,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Crime", "Drama", "Thriller"]
+    },
+    {
+      "id": 2,
+      "title": "The Mentalist (2) Title here",
+      "description": "The Mentalist (2) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-1.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 8.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Crime", "Suspence", "Thriller"]
+    },
+    {
+      "id": 3,
+      "title": "The Mentalist (3) Title here",
+      "description": "The Mentalist (3) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-2.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 8.9,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Comedy", "Drama"]
+    },
+    {
+      "id": 4,
+      "title": "The Mentalist (4) Title here",
+      "description": "The Mentalist (4) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-3.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 8.8,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Comedy", "Drama", "Thriller"]
+    },
+    {
+      "id": 5,
+      "title": "The Mentalist (5) Title here",
+      "description": "The Mentalist (5) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-1.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 7.3,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Crime", "Drama", "Thriller"]
+    },
+    {
+      "id": 6,
+      "title": "The Mentalist (6) Title here",
+      "description": "The Mentalist (6) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-2.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 9.2,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Crime", "Drama", "Thriller"]
+    },
+    {
+      "id": 7,
+      "title": "The Mentalist (7) Title here",
+      "description": "The Mentalist (7) Description here. Golden Globe nominee Simon Baker stars as an independent consultant for the California Bureau of Investigation with a remarkable track record for solving crimes using only his razor sharp skills of observation.",
+      "image": "ebit-treasure-preview-3.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 8.1,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR",
+      "genres": ["Crime", "Drama", "Thriller"]
+    }
+  ]
+}

@@ -1,0 +1,456 @@
+<!-- details header -->
+<div class="details-hero section">
+  <div class="details-hero__inner container">
+    <div class="row">
+      <div class="details-hero-content__wrap col-md-6">
+        <div class="details-hero-content__time">
+          <span class="icon">
+            <img src="assets/img/preview-time.png" alt="" class="img-fluid">
+          </span>
+          <span class="time">
+            {{movieDetails.length}} mins
+          </span>
+        </div>
+        <div class="details-hero-content__heading">{{movieDetails.title}}</div>
+        <div class="details-hero-content__subheading">{{movieGenres.join(' | ')}}</div>
+        <div class="details-hero-rating__wrap">
+          <div class="details-hero-rating__brief">Sentimeter</div>
+          <div class="details-hero-rating__item">
+            <span class="progress-wrap">
+              <div class="blue-progress-md">
+                <div class="progress" [attr.data-percentage]="movieDetails.sentimeter ? movieDetails.sentimeter.positive : 0">
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value">
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span class="name"><strong>{{movieDetails.sentimeter ? movieDetails.sentimeter.positive : 0}}</strong> Positive</span>
+          </div>
+          <div class="details-hero-rating__item">
+            <span class="progress-wrap">
+              <div class="yellow-progress-md">
+                <div class="progress" [attr.data-percentage]="movieDetails.sentimeter ? movieDetails.sentimeter.mixed : 0">
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value">
+                    <!-- <div>
+                          74%<br>
+                          <span>completed</span>
+                        </div> -->
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span class="name"><strong>{{movieDetails.sentimeter ? movieDetails.sentimeter.mixed : 0}}</strong> Mixed</span>
+          </div>
+          <div class="details-hero-rating__item">
+            <span class="progress-wrap">
+              <div class="red-progress-md">
+                <div class="progress" [attr.data-percentage]="movieDetails.sentimeter ? movieDetails.sentimeter.negative : 0">
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value">
+                    <!-- <div>
+                          74%<br>
+                          <span>completed</span>
+                        </div> -->
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span class="name"><strong>{{movieDetails.sentimeter ? movieDetails.sentimeter.negative : 0}}</strong> Negative</span>
+          </div>
+        </div>
+        <div class="details-ebit-rating__wrap">
+          <div class="row">
+            <div class="details-ebit-rating__main col-md-3">
+              <div class="red-progress-big">
+                <div class="progress" [attr.data-percentage]="movieDetails.ebitsRatings ? (movieDetails.ebitsRatings.overall * 10) : 0">
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value">
+                    {{movieDetails.ebitsRatings ? movieDetails.ebitsRatings.overall : 0}}
+                    <!-- <div>
+                            74%<br>
+                            <span>completed</span>
+                          </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="details-ebit-rating__secondary col-md-6">
+              <ul class="ebit-movie-details-rating-list">
+                <li>
+                  <div class="progress-wrap">
+                    <div class="progress">
+                      <div class="progress-bar" [ngStyle]="{width: (movieDetails.ebitsRatings ? movieDetails.ebitsRatings.story * 10 : 0)+'%'}" role="progressbar" aria-valuenow="40"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="parameter">Story</div>
+                </li>
+                <li>
+                  <div class="progress-wrap">
+                    <div class="progress">
+                      <div class="progress-bar" [ngStyle]="{width: (movieDetails.ebitsRatings ? movieDetails.ebitsRatings.direction * 10 : 0)+'%'}" role="progressbar" aria-valuenow="50"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="parameter">Direction</div>
+                </li>
+                <li>
+                  <div class="progress-wrap">
+                    <div class="progress">
+                      <div class="progress-bar" [ngStyle]="{width: (movieDetails.ebitsRatings ? movieDetails.ebitsRatings.performance * 10 : 0)+'%'}" role="progressbar" aria-valuenow="60"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="parameter">Performance</div>
+                </li>
+                <li>
+                  <div class="progress-wrap">
+                    <div class="progress">
+                      <div class="progress-bar" [ngStyle]="{width: (movieDetails.ebitsRatings ? movieDetails.ebitsRatings.music * 10 : 0)+'%'}" role="progressbar" aria-valuenow="80"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="parameter">Music</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="details-hero-btn-wrap">
+          <div class="btn btn-md btn--red details-trailer-player"
+            data-frame='<iframe width="560" height="315" src="https://www.youtube.com/embed/rt-2cxAiPJk?autoplay=1" title="YouTube video player" frameborder="0" autoplay="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'>
+            <span class="icon"><img src="assets/img/details-play-trailer.png" alt="" class="img-fluid"></span>Play
+            Trailer</div>
+          <div class="btn btn-md btn--white-transparent"><span class="icon"><img src="assets/img/.png" alt=""
+                class="img-fluid"></span>Write a Review</div>
+          <div class="btn btn-md btn--white-transparent"><span class="icon"><img src="assets/img/whish-ribbon.png"
+                alt="" class="img-fluid"></span>Wishlist</div>
+          <div class="btn btn-md btn--white-transparent"><span class="icon"><img src="assets/img/share-btn.png" alt=""
+                class="img-fluid"></span>Share</div>
+        </div>
+      </div>
+      <div class="details-hero-rating-col__wrap col-md-6">
+        <ul class="ebit-internal-ratings-list">
+          <li>
+            <div class="icon">
+              <img src="assets/img/details-rating-start.png" alt="" class="img-fluid">
+            </div>
+            <div class="content">
+              <div class="main">
+                <strong>{{movieDetails.criticRatings ? movieDetails.criticRatings.overall : 0}}</strong>
+                <span>Critic Rating</span>
+              </div>
+              <div class="sub-text">Based on {{movieDetails.criticRatings ? movieDetails.criticRatings.count : 0}} review</div>
+            </div>
+          </li>
+          <li>
+            <div class="icon">
+              <span class="progress-wrap">
+                <div class="red-progress-md">
+                  <div class="progress" data-percentage="21">
+                    <span class="progress-left">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <span class="progress-right">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <div class="progress-value">
+                      <!-- <div>
+                            74%<br>
+                            <span>completed</span>
+                          </div> -->
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </div>
+            <div class="content">
+              <div class="main">
+                <strong>{{movieDetails.userRatings ? movieDetails.userRatings.overall : 0}}</strong>
+                <span>User Rating</span>
+              </div>
+              <div class="sub-text">Based on {{movieDetails.userRatings ? movieDetails.userRatings.count : 0}} review</div>
+            </div>
+          </li>
+          <li>
+            <div class="icon">
+              <span class="progress-wrap">
+                <div class="red-progress-md">
+                  <div class="progress" data-percentage="21">
+                    <span class="progress-left">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <span class="progress-right">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <div class="progress-value">
+                      <!-- <div>
+                          74%<br>
+                          <span>completed</span>
+                        </div> -->
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </div>
+            <div class="content">
+              <div class="main">
+                <strong>{{movieDetails.userRatings ? movieDetails.userRatings.overall : 0}}</strong>
+                <span>User Rating</span>
+              </div>
+              <!-- <div class="sub-text">Based on 2345 review</div> -->
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="details-hero-video__wrap">
+    <div class="details-hero-video__inner">
+      <div class="video-wrap">
+        <div class="embed-responsive embed-responsive-16by9" id="details-video-target">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/TcMBFSGVi1c?autoplay=1"
+            title="YouTube video player" frameborder="0" autoplay="1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="btn-wrap"><a href="" class="btn">Go Back</a></div>
+    </div>
+  </div>
+</div>
+<!-- details header -->
+<!-- main section -->
+<div class="main-section__wrap section section--details section--medium-pad">
+  <div class="main-section__inner container">
+    <ul class="nav nav-pills mb-3 ebit-details-nav-tab" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+          aria-controls="pills-home" aria-selected="true">Overview</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+          aria-controls="pills-profile" aria-selected="false">Reviews & Ratings</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab"
+          aria-controls="pills-contact" aria-selected="false">Trailers & Photos</a>
+      </li>
+    </ul>
+    <div class="tab-content ebit-details-nav-tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="box-heading">Overview</div>
+            <div class="overview-movie-stat-list">
+              <li>
+                <div class="stat-name">Release Date :</div>
+                <div class="value">{{movieDetails.overview ? movieDetails.overview.realeaseDate : 'NA'}}</div>
+              </li>
+              <li>
+                <div class="stat-name">Language :</div>
+                <div class="value">{{movieDetails.overview ? movieDetails.overview.language : 'NA'}}</div>
+              </li>
+              <li>
+                <div class="stat-name">Genre :</div>
+                <div class="value">{{movieGenres.join(' | ')}}</div>
+              </li>
+              <li>
+                <div class="stat-name">Awards :</div>
+                <div *ngIf="movieAwards.length > 0" class="value">
+                  <span *ngFor="let award of movieAwards">
+                    {{award.awardName + " - " + award.awardFor}},
+                  </span>
+                </div>
+                <div *ngIf="movieAwards.length == 0" class="value"></div>
+              </li>
+              <li>
+                <div class="stat-name">Censor Certification :</div>
+                <div class="value">{{movieDetails.overview ? movieDetails.overview.certifications.join(' | ') : 'NA'}}</div>
+              </li>
+              <li>
+                <div class="stat-name">Storyline</div>
+                <div class="value">
+                  {{movieDetails.overview ? movieDetails.overview.storyLine : 'NA'}}
+                </div>
+              </li>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="box-heading">Where to Watch</div>
+            <ul *ngIf="movieDetails.platforms && movieDetails.platforms.length > 0" class="details-stream-provider-list">
+              <li *ngFor="let platform of movieDetails.platforms">
+                <a href=""><img class="img-fluid" src="{{'assets/img/' + platform.image}}" alt=""></a>
+              </li>
+            </ul>
+            <ul *ngIf="!movieDetails.platforms || movieDetails.platforms.length == 0" class="details-stream-provider-list">
+              <li>Details Not Available</li>
+            </ul>
+            <div class="box-heading">E-bits Review</div>
+            <div class="details-ebit-review">
+              {{movieDetails.ebitsRatings ? movieDetails.ebitsRatings.review : 'NA'}}
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-heading">Cast & Crew</div>
+            <ul class="details-cast-crew-list">
+              <li *ngFor="let cast of movieCasts">
+                <div class="img-wrap"><img class="img-fluid" src="{{'assets/img/preview/' + cast.image}}" alt=""></div>
+                <div class="content">
+                  <div class="name">{{cast.name}}</div>
+                  <div class="role">as {{cast.roleName}}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-heading">Similar by Genre</div>
+
+            <ul class="similar-by-list">
+              <li *ngFor="let movie of moviesSimilarByGenre">
+                <a href="">
+                  <div class="img-wrap"><img class="img-fluid" src="{{'assets/img/preview/' + movie.image}}" alt=""></div>
+                  <div class="details">
+                    <div class="name" style="width: 70%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                      {{movie.title}}
+                    </div>
+                    <div class="stat">
+                      <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+                      <span class="rating">{{movie.ebitsRatings}}</span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-heading">Recommended For You</div>
+
+            <ul class="similar-by-list">
+              <li *ngFor="let movie of moviesRecommended">
+                <a href="">
+                  <div class="img-wrap"><img class="img-fluid" src="{{'assets/img/preview/' + movie.image}}" alt=""></div>
+                  <div class="details">
+                    <div class="name" style="width: 70%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                      {{movie.title}}
+                    </div>
+                    <div class="stat">
+                      <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+                      <span class="rating">{{movie.ebitsRatings}}</span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-heading">Crtic Review ({{criticReviews.length}})</div>
+            <div *ngIf="criticReviews.length > 0" class="details-critique-slider__wrap">
+              <div class="details-critique-slider__inner">
+                <div *ngFor="let review of criticReviews" class="details-critique-slider-item">
+                  <div class="author-wrap">
+                    <div class="icon"><img src="{{'assets/img/preview/' + review.image}}" alt="" class="img-fluid"></div>
+                    <div class="author-details">
+                      <div class="publication">{{review.publication}}</div>
+                      <div class="name">{{review.autherName}}</div>
+                    </div>
+                    <div class="rating">
+                      <div class="icon"><img src="assets/img/rating-star.png" alt=""></div>
+                      <div class="count">{{review.ratings}}</div>
+                    </div>
+                  </div>
+                  <div class="title">Title : {{review.title}}
+                  </div>
+                  <div class="content">Moview critic reviews : {{review.review}}
+                  </div>
+                  <div class="btn-wrap"><a href="" class="readmore">Read More</a></div>
+                </div>
+              </div>
+            </div>
+            <div class="box-heading">User Reviews ({{userReviews.length}})</div>
+            <div *ngIf="userReviews.length > 0" class="details-critique-slider__wrap">
+              <div class="details-critique-slider__inner">
+                <div *ngFor="let review of userReviews" class="details-critique-slider-item">
+                  <div class="author-wrap">
+                    <div class="icon"><img src="{{'assets/img/preview/' + review.image}}" alt="" class="img-fluid"></div>
+                    <div class="author-details">
+                      <div class="publication">{{review.publication}}</div>
+                      <div class="name">{{review.autherName}}</div>
+                    </div>
+                    <div class="rating">
+                      <div class="icon"><img src="assets/img/rating-star.png" alt=""></div>
+                      <div class="count">{{review.ratings}}</div>
+                    </div>
+                  </div>
+                  <div class="title">Title : {{review.title}}
+                  </div>
+                  <div class="content">Moview critic reviews : {{review.review}}
+                  </div>
+                  <div class="btn-wrap"><a href="" class="readmore">Read More</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-heading">Trailers</div>
+            <ul *ngIf="trailers.length > 0" class="details-trailer-list">
+              <li *ngFor="let trailer of trailers">
+                <a href="" class="details-trailer-player"
+                  data-frame="getTrailerIFrame(trailer.trailerUrl)">
+                  <div class="img-wrap"><img src="{{trailer.imageUrl}}" alt="" class="img-fluid">
+                  </div>
+                  <div class="content">
+                    <div class="icon"><img src="assets/img/preview-time.png" alt="" class="img-fluid"></div>
+                    <div class="time">{{trailer.length}}</div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <div class="box-heading">Photos</div>
+            <div class="details-photos-preview-list">
+              <li *ngFor="let photo of moviePhotos"><a href=""><img src="{{photo}}" alt="" class="img-fluid"></a></li>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- main section -->

@@ -1,0 +1,215 @@
+{
+    "id": 1,
+    "title": "This is Title",
+    "length": 160,
+    "genre": ["Drama", "Suspense", "Thriller"],
+    "sentimeter" : {
+        "positive": 40,
+        "negative": 35,
+        "mixed": 25
+    },
+    "ebitsRatings": {
+        "story": 4,
+        "direction": 7,
+        "performance": 8,
+        "music": 9,
+        "overall": 7,
+        "count": 120,
+        "review": "Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. Ebits movie review goes here. "
+    },
+    "criticRatings": {
+        "story": 6,
+        "direction": 7,
+        "performance": 8,
+        "music": 8,
+        "overall": 8,
+        "count": 20,
+        "review": "Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. Critics movie review goes here. "
+    },
+    "userRatings": {
+        "story": 4,
+        "direction": 7,
+        "performance": 8,
+        "music": 9,
+        "overall": 6,
+        "count": 240,
+        "review": "Users movie review goes here. Users movie review goes hereUsers movie review goes hereUsers movie review goes hereUsers movie review goes hereUsers movie review goes hereUsers movie review goes here"
+    },
+    "overview": {
+        "realeaseDate": "10 Jan 2022",
+        "language": "English, Hindi",
+        "genre": ["Drama", "Suspense", "Thriller"],
+        "awards": [
+            {
+                "awardFor": "Direction",
+                "awardName": "IFFA" 
+            },{
+                "awardFor": "Music",
+                "awardName": "IMA" 
+            }
+        ],
+        "certifications": ["U", "U/A", "14 years +"],
+        "storyLine": "Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline.Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline. Here goes a storiline.",
+        "directors": ["A B CDE", "H G HIJ"],
+        "casts": [
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-1.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-2.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-4.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-3.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-1.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-2.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-4.jpg"
+            },
+            {
+                "name": "K LMN",
+                "roleName": "O PQR",
+                "image": "caste-3.jpg"
+            }
+        ]
+        
+    },
+    "userReviews": [
+        {
+            "autherName": "Mr. Noname",
+            "publication": "NA",
+            "ratings": 6,
+            "title": "This is Title",
+            "review": "This is User's review. This is User's review. This is User's review.",
+            "dateTime": "10 Jan 2022",
+            "image": "cauthor-1.png"
+        },
+        {
+            "autherName": "Mr. Noname",
+            "publication": "NA",
+            "ratings": 9,
+            "title": "This is Title",
+            "review": "This is User's review. This is User's review. This is User's review.",
+            "dateTime": "11 Jan 2022",
+            "image": "cauthor-1.png"
+        },
+        {
+            "autherName": "Mr. Noname",
+            "publication": "NA",
+            "ratings": 7,
+            "title": "This is Title",
+            "review": "This is User's review. This is User's review. This is User's review.",
+            "dateTime": "11 Jan 2022",
+            "image": "cauthor-1.png"
+        },
+        {
+            "autherName": "Mr. Noname",
+            "publication": "NA",
+            "ratings": 7,
+            "title": "This is Title",
+            "review": "This is User's review. This is User's review. This is User's review.",
+            "dateTime": "11 Jan 2022",
+            "image": "cauthor-1.png"
+        }
+    ],
+    "criticReviews": [
+        {
+            "autherName": "Tony D",
+            "publication": "New York Times",
+            "ratings": 6,
+            "title": "This is Title",
+            "review": "This is Critc's review. This is Critc's review.",
+            "dateTime": "11 Jan 2022",
+            "image": "cauthor.png"
+         },
+         {
+            "autherName": "John Doe",
+            "publication": "New York Times",
+            "ratings": 6,
+            "title": "This is Title",
+            "review": "This is Critc's review. This is Critc's review.",
+            "dateTime": "13 Jan 2022",
+            "image": "cauthor.png"
+         },
+         {
+            "autherName": "Tony D",
+            "publication": "New York Times",
+            "ratings": 6,
+            "title": "This is Title",
+            "review": "This is Critc's review. This is Critc's review.",
+            "dateTime": "11 Jan 2022",
+            "image": "cauthor.png"
+         },
+         {
+            "autherName": "John Doe",
+            "publication": "New York Times",
+            "ratings": 6,
+            "title": "This is Title",
+            "review": "This is Critc's review. This is Critc's review.",
+            "dateTime": "13 Jan 2022",
+            "image": "cauthor.png"
+         }
+    ],
+    "platforms": [
+        {
+            "name": "NetFlix",
+            "image": "provider-hbo.png"
+        },
+        {
+            "name": "Netflix",
+            "image": "provider-netflix.png"
+        }
+    ],
+    "gallery" : {
+        "trailers": [
+            {
+                "trailerUrl": "https://www.youtube.com/embed/rt-2cxAiPJk?autoplay=1",
+                "imageUrl": "assets/img/preview/details-bg-preview.png",
+                "length": "10 mins"
+            },
+            {
+                "trailerUrl": "https://www.youtube.com/embed/rt-2cxAiPJk?autoplay=1",
+                "imageUrl": "assets/img/preview/details-bg-preview.png",
+                "length": "4 mins"
+            },
+            {
+                "trailerUrl": "https://www.youtube.com/embed/rt-2cxAiPJk?autoplay=1",
+                "imageUrl": "assets/img/preview/details-bg-preview.png",
+                "length": "5 mins"
+            },
+            {
+                "trailerUrl": "https://www.youtube.com/embed/rt-2cxAiPJk?autoplay=1",
+                "imageUrl": "assets/img/preview/details-bg-preview.png",
+                "length": "8 mins"
+            }
+        ],
+        "photos": [
+            "assets/img/preview/details-bg-preview.png",
+            "assets/img/preview/details-bg-preview.png",
+            "assets/img/preview/details-bg-preview.png",
+            "assets/img/preview/details-bg-preview.png"
+        ]
+    }
+}
+

@@ -1,0 +1,124 @@
+{
+  "product_name": "eBitsIQ",
+  "baseURL": "http://34.173.70.28:8000/",
+  "mode": "prod",
+  "webApi": {
+    "platforms":{
+      "url": "api/v1/platforms/",
+      "method": "get"
+    },
+    "languages":{
+      "url": "api/v1/languages/",
+      "method": "get"
+    },
+    "certificates":{
+      "url": "api/v1/certificates/",
+      "method": "get"
+    },
+    "ethinicity":{
+      "url": "assets/data/ethinicity.json",
+      "method": "get"
+    },
+    "moods":{
+      "url": "api/v1/moods/",
+      "method": "get"
+    },
+    "genres" :{
+      "url": "api/v1/genres/",
+      "method": "get"
+    },
+    "categories":{
+      "url": "api/v1/labels/",
+      "method": "get"
+    },
+    "collections": {
+      "url": "assets/data/collections.json",
+      "method": "get"
+    },
+    "collection": {
+      "url": "assets/data/collections.json",
+      "method": "get"
+    },
+    "reports":{
+      "url": "assets/data/reports.json",
+      "method": "get"
+    },
+    "movies":{
+      "url": "assets/data/movies.json",
+      "method": "get"
+    },
+    "blogs":{
+      "url": "assets/data/blogs.json",
+      "method": "get"
+    }
+  },
+  "webApiSample": {
+    "platforms":"",
+    "languages":"",
+    "certificates":"",
+    "ethinicity":"",
+    "moods":"",
+    "categories":"",
+    "collections": {
+      "url": "api/v1/collections",
+      "method": "get"
+    },
+    "collection": {
+      "url": "api/v1/collections/{id}",
+      "method": "get"
+    },
+    "reports":"",
+    "movies":"",
+    "blogs":""
+  },
+  "webApi_dummy": {
+    "platforms":{
+      "url": "assets/data/platforms.json",
+      "method": "get"
+    },
+    "languages":{
+      "url": "assets/data/languages.json",
+      "method": "get"
+    },
+    "certificates":{
+      "url": "assets/data/certificates.json",
+      "method": "get"
+    },
+    "ethinicity":{
+      "url": "assets/data/ethinicity.json",
+      "method": "get"
+    },
+    "moods":{
+      "url": "assets/data/moods.json",
+      "method": "get"
+    },
+    "genres" :{
+      "url": "assets/data/movie-geners.json",
+      "method": "get"
+    },
+    "categories":{
+      "url": "assets/data/categories.json",
+      "method": "get"
+    },
+    "collections": {
+      "url": "assets/data/collections.json",
+      "method": "get"
+    },
+    "collection": {
+      "url": "assets/data/collections.json",
+      "method": "get"
+    },
+    "reports":{
+      "url": "assets/data/reports.json",
+      "method": "get"
+    },
+    "movies":{
+      "url": "assets/data/movies.json",
+      "method": "get"
+    },
+    "blogs":{
+      "url": "assets/data/blogs.json",
+      "method": "get"
+    }
+  }
+}

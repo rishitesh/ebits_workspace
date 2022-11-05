@@ -1,0 +1,33 @@
+<!-- upcoming movie explorer -->
+<div class="section section--no-pad home-upcoming-movies-section">
+  <div class="home-upcoming-movies-section-item active">
+    <div class="home-upcoming-movies-section-item__inner container">
+      <div class="home-top-upcoming-movies__wrap">
+        <div class="heading-wrap">
+          <div class="box-heading">Upcoming Movies</div>
+        </div>
+        <div class="main-content">
+          <div class="title">{{selectedMovie.title}}</div>
+          <div class="sub-heading">{{selectedMovie.genres ? selectedMovie.genres.join(' | ') : ""}}</div>
+          <div class="btn-wrap">
+            <div class="btn btn--red"><span class="icon"><img src="assets/img/details-play-trailer.png" alt="" class="img-fluid"></span> Play Trailer</div>
+            <div class="btn btn-md btn--white-transparent">Read More</div>
+          </div>
+        </div>
+      </div>    
+    </div>
+  </div>
+  <div class="home-upcoming-movies-slider__wrap">
+    <div class="home-upcoming-movies-slider__heading">New Trailer Release</div>
+    <div class="home-upcoming-movies-slider__inner">
+      <div *ngFor="let movie of upcomigMovies"  class="home-upcoming-movies-slider-item">
+        <div class="img-wrap"><img src="{{ 'assets/img/preview/' + movie.image }}" alt="" class="img-fluid"></div>
+        <div class="date-wrap">
+          <div class="title">Release Date</div>
+          <div class="date">{{movie.releaseDate}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- upcoming movie explorer -->

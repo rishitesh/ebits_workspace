@@ -1,0 +1,313 @@
+{
+  "collections": [
+    {
+      "id": 1,
+      "name": "collection 1",
+      "description": "This is first collection of movies.",
+      "bgImage": "collection1.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 1 Movie Title 1",
+          "ebitsRatings": 3.5,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 1 Movie 2 Title",
+          "ebitsRatings": 2,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 3,
+          "name": "Movie Title 3",
+          "ebitsRatings": 4,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "collection 2",
+      "description": "This is second collection of movies.",
+      "bgImage": "collection2.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 2,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 3,
+          "name": "collection 2 Movie Title 3",
+          "ebitsRatings": 3.5,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 4,
+          "name": "collection 2 Movie Title 4",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 5,
+          "name": "collection 2 Movie Title 5",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "collection 3",
+      "description": "This is third collection of movies.",
+      "bgImage": "collection3.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "collection 4",
+      "description": "This is forth collection of movies.",
+      "bgImage": "collection4.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "collection 5",
+      "description": "This is fifth collection of movies.",
+      "bgImage": "collection5.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "collection 6",
+      "description": "This is sixth collection of movies.",
+      "bgImage": "collection6.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "collection 7",
+      "description": "This is seventh collection of movies.",
+      "bgImage": "collection7.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "collection 6",
+      "description": "This is sixth collection of movies.",
+      "bgImage": "collection6.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "collection 7",
+      "description": "This is seventh collection of movies.",
+      "bgImage": "collection7.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 2 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 2 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "collection 6",
+      "description": "This is sixth collection of movies.",
+      "bgImage": "collection6.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 6 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 6 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 6 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "collection 7",
+      "description": "This is seventh collection of movies.",
+      "bgImage": "collection7.png",
+      "type": "movie",
+      "entries": [
+        {
+          "id": 1,
+          "name": "collection 7 Movie Title 1",
+          "ebitsRatings": 3,
+          "image": "movie-1.png"
+        },
+        {
+          "id": 2,
+          "name": "collection 7 Movie 2 Title",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        },
+        {
+          "id": 1,
+          "name": "collection 7 Movie Title 2",
+          "ebitsRatings": 3,
+          "image": "movie-2.png"
+        }
+      ]
+    }
+  ]
+}

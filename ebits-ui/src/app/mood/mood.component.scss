@@ -1,0 +1,64 @@
+/* mood scroller */
+
+.mood-slider-top-carousel {
+  position: relative;
+}
+
+.mood-slider-top-carousel div.slick-slide {
+  text-align: center;
+  transform: scale(0.9);
+}
+
+.mood-slider-top-carousel div.slick-slide::after {
+  content: " ";
+  width: 62px;
+  height: 50px;
+  background: url("../../assets/img/mood-triangle.png") no-repeat;
+    background-position-x: 0%;
+    background-position-y: 0%;
+  background-position: center center;
+  transform: translate(50%, 0);
+  display: none;
+}
+
+.mood-slider-top-carousel div.slick-slide.slick-current::after, .mood-slider-top-carousel  div.slick-slide:hover::after {
+  display: block;
+}
+
+.mood-slider-top-carousel div.slick-slide.slick-current, .mood-slider-top-carousel div.slick-slide:hover {
+  cursor: pointer;
+  transform: scale(1);
+}
+
+.mood-slider-top-carousel div.slick-slide .img-wrap {
+  width: 150px 150px;
+  overflow: hidden;
+  border-radius: 100%;
+  border: 2px solid transparent;
+  margin-bottom: 0.5rem;
+}
+
+.mood-slider-top-carousel div.slick-current .img-wrap, .mood-slider-top-carousel div.slick-slide:hover .img-wrap {
+  border-color: #fff;
+}
+
+.mood-slider-top-carousel div.slick-slide .content {
+  text-align: center;
+}
+
+/* selected mood movie list */
+
+.mood-slider-main-carousel {
+  position: relative;
+}
+
+.mood-slider-main-carousel.slick-slider {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.mood-slider-main-carousel .slick-slide {
+  text-align: center;
+  margin-right: 5px;
+  margin-left: 5px;
+}

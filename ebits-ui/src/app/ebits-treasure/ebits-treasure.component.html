@@ -1,0 +1,58 @@
+<!-- ebit treasure -->
+<div class="section section-md-pad ebit-treasure-section">
+  <div class="section__inner container">
+    <h2 class="ebit-treasure-section__heading">E-bits Treasure</h2>
+    <ul class="nav nav-pills ebit-treasure-nav-tab" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+      </li>
+    </ul>
+    <div class="tab-content ebit-treasure-tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="ebit-treasure-slider__wrap">
+              <div class="ebit-treasure-slider__inner">
+                <div *ngFor="let movie of movieTreasure" class="ebit-treasure-slide"
+                  [ngStyle]="{'background': 'url(\'assets/img/preview/' + movie.image +'\')'}">
+                  <div class="row ebit-treasure-slide__content">
+                    <div class="col-md-9">
+                      <div class="title">{{movie.title}}</div>
+                      <div class="sub-heading">{{movie.genres.join(' | ')}}</div>
+                      <div class="content">{{movie.description}}</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="rating-wrap">
+                        <span class="progress-wrap">
+                          <div class="red-progress-md">
+                            <div class="progress" data-percentage="21">
+                              <span class="progress-left">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <span class="progress-right">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <div class="progress-value">
+                                  {{movie.ebitsRatings}}
+                              </div>
+                            </div>
+                          </div>
+                        </span>
+                        <div class="rating-title">E-bits Ratings</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>    
+      </div>
+      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+    </div>
+  </div>
+</div>
+<!-- ebit treasure -->

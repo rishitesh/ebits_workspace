@@ -1,0 +1,26 @@
+<!-- home blog explorer -->
+<div class="section section--pad-md home-blog-explorer-section">
+  <div class="section__inner container">
+    <div class="heading-wrap">
+      <div class="box-heading">Something for your mind to crunch on (Blogs)</div>
+    </div>
+    <div class="home-blog-explorer-slider__wrap">
+      <ngx-slick-carousel class="home-blog-explorer-slider__inner" #slickModal="slick-carousel" [config]="blogsSlideConfig"
+          (init)="slickInit($event)" (breakpoint)="breakpoint($event)" (afterChange)="afterChange($event)"
+          (beforeChange)="beforeChange($event)">
+          <div ngxSlickItem *ngFor="let blog of blogs" class="home-blog-explorer-slider-slide">
+            <div class="img-wrap">
+              <img src="{{ 'assets/img/preview/' + blog.image }}" alt="" class="img-fluid">
+              <div class="date">{{blog.date}}</div>
+            </div>
+            <div class="content-wrap">
+              <div class="title">{{blog.title}}</div>
+              <div class="content">{{blog.description}}</div>
+              <div class="btn-wrap"><a href="" class="btn btn--red">Read More</a></div>
+            </div>
+          </div>
+      </ngx-slick-carousel>
+    </div>
+  </div>
+</div>
+<!-- home blog explorer -->

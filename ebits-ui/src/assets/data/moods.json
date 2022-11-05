@@ -1,0 +1,44 @@
+{
+  "moods": [
+    {
+      "id": "1",
+      "name": "Happy",
+      "photo": "happy.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Sad",
+      "photo": "sad.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Inspiring",
+      "photo": "inspiring.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Heartbreak",
+      "photo": "heartbreak.jpg"
+    },
+    {
+      "id": "5",
+      "name": "Happy",
+      "photo": "happy.jpg"
+    },
+    {
+      "id": "6",
+      "name": "Sad",
+      "photo": "sad.jpg"
+    },
+    {
+      "id": "7",
+      "name": "Inspiring",
+      "photo": "inspiring.jpg"
+    },
+    {
+      "id": "8",
+      "name": "Heartbreak",
+      "photo": "heartbreak.jpg"
+    }
+  ]
+}

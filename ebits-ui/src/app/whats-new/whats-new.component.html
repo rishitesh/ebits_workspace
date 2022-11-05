@@ -1,0 +1,34 @@
+<!-- stream explorer -->
+<div class="section section-md-pad home-ebit-stream-section section--grey-gradient">
+  <div class="section__inner container">
+    <div class="heading-wrap">
+      <div class="box-heading">Explore whats cooking new and where</div>
+    </div>
+    <ul class="nav nav-pill home-ebit-stream-nav-tab" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="trending-home-tab" data-toggle="tab" href="#trending-home" role="tab" aria-controls="trending-home" aria-selected="true">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="trending-profile-tab" data-toggle="tab" href="#trending-profile" role="tab" aria-controls="trending-profile" aria-selected="false">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="trending-contact-tab" data-toggle="tab" href="#trending-contact" role="tab" aria-controls="trending-contact" aria-selected="false">Contact</a>
+      </li>
+    </ul>
+    <div class="tab-content home-ebit-stream-nav-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="trending-home" role="tabpanel" aria-labelledby="trending-home-tab">
+        <ngx-slick-carousel class="home-ebit-stream-slider_inner" #slickModal="slick-carousel" [config]="movieSlideConfig"
+          (init)="slickInit($event)" (breakpoint)="breakpoint($event)" (afterChange)="afterChange($event)"
+          (beforeChange)="beforeChange($event)">
+          <div ngxSlickItem *ngFor="let movie of newMovies" class="slide">
+            <div class="img-wrap"><img src="{{ 'assets/img/preview/' + movie.image }}" alt="" class="img-fluid"></div>
+            <div class="title"><span class="count">{{movie.trending}}</span>Trending</div>
+          </div>
+        </ngx-slick-carousel>
+      </div>
+      <div class="tab-pane fade" id="trending-profile" role="tabpanel" aria-labelledby="trending-profile-tab">PPP</div>
+      <div class="tab-pane fade" id="trending-contact" role="tabpanel" aria-labelledby="trending-contact-tab">CCC</div>
+    </div>
+  </div>
+</div>  
+<!-- stream explorer -->

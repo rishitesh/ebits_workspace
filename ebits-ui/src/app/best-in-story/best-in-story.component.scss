@@ -1,0 +1,71 @@
+.best-in-story-list-carousel {
+  position: relative;
+}
+
+.best-in-story-list-carousel.slick-slider {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.best-in-story-list-carousel .slick-slide {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.best-in-story-list-carousel .slick-slide a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.best-in-story-list-carousel .slick-slide a .img-wrap {
+  margin-bottom: 1rem;
+}
+
+.best-in-story-list-carousel .slick-slide a .details {
+  font-weight: normal;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  bottom: 50px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.best-in-story-list-carousel .slick-slide a .details .icon {
+  display: inline-block;
+  margin-right: 4px;
+  position: relative;
+  top: -4px;
+}
+
+.best-in-story-list-carousel div .title {
+  position: absolute;
+  bottom: 0px;
+  padding: 1rem;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.best-in-story-list-carousel div .img-wrap {
+  position: relative;
+}
+
+.best-in-story-list-carousel div .img-wrap::after {
+  position: absolute;
+  display: block;
+  content: " ";
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 31.98%, rgba(4, 3, 9, 0.514342) 59.06%, rgba(6, 4, 12, 0.694493) 70%, rgba(7, 5, 15, 0.84) 83.54%, rgba(8, 6, 16, 0.76) 97.6%);
+  opacity: 0.75;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.best-in-story-list-carousel .slick-prev {
+	left: 10px;
+}
+
+.best-in-story-list-carousel .slick-next {
+	right: 10px;
+}

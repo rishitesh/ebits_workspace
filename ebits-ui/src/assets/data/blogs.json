@@ -1,0 +1,46 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Money Heist (1): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-1.png",
+      "date": "Wednesday, 11 May 2022"
+    },
+    {
+      "id": 2,
+      "title": "Money Heist (2): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-2.png",
+      "date": "Sunday, 15 May 2022"
+    },
+    {
+      "id": 3,
+      "title": "Money Heist (3): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-1.png",
+      "date": "Wednesday, 18 May 2022"
+    },
+    {
+      "id": 4,
+      "title": "Money Heist (4): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-2.png",
+      "date": "Friday, 03 Jun 2021"
+    },
+    {
+      "id": 5,
+      "title": "Money Heist (5): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-1.png",
+      "date": "Wednesday, 20 Sept 2021"
+    },
+    {
+      "id": 6,
+      "title": "Money Heist (6): Behind The Scenes",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "image": "details-bg-preview-2.png",
+      "date": "Wednesday, 20 Sept 2021"
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+<!-- main section -->
+<div class="archive-main-info-section">
+  <div class="archive-main-info-section__inner">
+      <div class="container">
+          <div class="archive-main-content">
+            <h1 class="archive-main-content__main-heading">
+                 Movies & Series
+            </h1>
+            <div class="archive-main-content__sub-heading">
+              Search for the perfect movie that suits your taste ...
+            </div>
+          </div> 
+      </div> 
+  </div>
+</div>
+<div class="main-section__wrap section section--medium-pad">
+  <div class="main-section__inner container">
+    <div class="row">
+      <aside class="main-section-sidebar col-md-2">
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Categories
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let category of categories">
+                <label class="m-checkbox-container">{{category.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Genres
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let genre of genres">
+                <label class="m-checkbox-container">{{genre}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Moods
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let mood of moods">
+                <label class="m-checkbox-container">{{mood.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Certifications
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let certification of certifications">
+                <label class="m-checkbox-container">{{certification.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Ethinicity
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let ethinicity of ethinicities">
+                <label class="m-checkbox-container">{{ethinicity.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Platforms
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let platform of platforms">
+                <label class="m-checkbox-container">{{platform.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+        <div class="movie-filter__wrap">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header class="mat-expansion-panel-header-custom">
+              <mat-panel-title>
+                Languages
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="movie-filter-option-list">
+              <li *ngFor="let language of languages">
+                <label class="m-checkbox-container">{{language.name}}
+                  <input type="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </div>
+      </aside>
+      <div class="main-section-content col-md-10">
+        <div class="main-section-content__inner">
+          <div>
+            <mat-toolbar class="movie-sort__wrap">
+              <mat-form-field appearance="standard">
+                <mat-label class="movie-sort__label">Sort By</mat-label>
+                <mat-select [(value)]="sortBySelection" class="movie-sort__label">
+                  <mat-option value="option1">Option 1</mat-option>
+                  <mat-option value="option2">Option 2</mat-option>
+                  <mat-option value="option3">Option 3</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <!-- <span class="filter-spacer"></span> -->
+              <div class="row rating-filters-container">
+                <div class="col-md-3">E-bits Ratings</div>
+                <div class="col-md-3 custom-slider">
+                  <ngx-slider [(value)]="minEbitsRatingValue" [(highValue)]="maxEbitsRatingValue" [options]="ebitsRatingOptions"
+                    (valueChange)="onEbitsRatingSelectionChange()" (highValueChange)="onEbitsRatingSelectionChange()">
+                  </ngx-slider>
+                </div>
+                <div class="col-md-3">Critics Ratings</div>
+                <div class="col-md-3 custom-slider">
+                  <ngx-slider [(value)]="minCriticsRatingValue" [(highValue)]="maxCriticsRatingValue" [options]="criticsRatingOptions"
+                    (valueChange)="onCriticsRatingSelectionChange()" (highValueChange)="onCriticsRatingSelectionChange()">
+                  </ngx-slider>
+                </div>
+              </div>
+              <span class="filter-spacer"></span>
+              <div class="listing-views">
+                <div class="listing-views__option" [ngClass]="{ 'selected': listViewOptionSelected == DISPLAY_VIEW_GRID }" (click)="onGridViewSelection()">
+                  <mat-icon>view_module</mat-icon>
+                </div>
+                <div class="listing-views__option" [ngClass]="{ 'selected': listViewOptionSelected == DISPLAY_VIEW_LIST }"(click)="onListViewSelection()">
+                  <mat-icon>view_list</mat-icon>
+                </div>
+              </div>
+            </mat-toolbar>
+          </div>
+          <!-- Grid View Listing -->
+          <div [ngClass]="{ 'archive-preview-inactive': listViewOptionSelected != DISPLAY_VIEW_GRID }">
+            <ul class="archive-preview-grid">
+              <li *ngFor="let movie of movies" class="archive-preview-item">
+                <div class="archive-preview-item__img">
+                  <a href="{{'/details?' + 'id=' +movie.id}}">
+                    <img src="assets/img/preview/movie-1.png" class="img-fluid" alt="">
+                  </a>
+                </div>
+                <div class="archive-preview-item__content">
+                  <div class="desc">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="desc">{{ movie.description }}</div>
+                  </div>
+                  <div class="stat">
+                    <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+                    <span class="rating">{{ movie.ebitsRatings }}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- List View Listing -->
+          <div [ngClass]="{ 'archive-preview-inactive': listViewOptionSelected != DISPLAY_VIEW_LIST }">
+            <ul class="archive-preview-list">
+              <li *ngFor="let movie of movies" class="archive-preview-item">
+                <div class="archive-preview-item__img">
+                  <a href="{{'/details?' + 'id=' +movie.id}}">
+                    <img src="assets/img/preview/movie-1.png" class="img-fluid" alt="">
+                  </a>
+                </div>
+                <div class="archive-preview-item__content">
+                  <div class="title-bar">
+                    <div class="title">
+                      <div class="title-text">{{ movie.title }} <span>({{movie.releaseYear}})</span></div>
+                      <div class="movie-length"><i class="material-icons movie-length">timer</i> &nbsp; 90 mins</div>
+                    </div>
+                    <span class="filter-spacer"></span>
+                    <div class="sharelinks">
+                      <mat-icon>share</mat-icon>
+                      <mat-icon>bookmark_border</mat-icon>
+                    </div>
+                  </div>
+                  <div class="info">
+                    <div class="desc">
+                      <div class="summary">{{ movie.description }}</div>
+                      <div style="display: flex; margin-top: 5px;">
+                        <div style="width: 50%; display: flex; margin-left: 5px;">
+                          <div class="casts">Directors : </div><div class="casts-names">{{ movie.directors }}</div>
+                        </div>
+                        <div style="width: 50%; display: flex; margin-left: 5px;">
+                          <div class="casts">Casts : </div><div class="casts-names">{{ movie.casts }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-rating__item">
+                        <span class="progress-wrap">
+                          <div class="red-progress-md">
+                            <div class="progress" [attr.data-percentage]="movie.ebitsRatings ? movie.ebitsRatings : 0">
+                              <span class="progress-left">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <span class="progress-right">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <div class="progress-value">
+                              </div>
+                            </div>
+                          </div>
+                        </span>
+                        <span class="name"><strong>{{movie.ebitsRatings ? movie.ebitsRatings : 0}}</strong> E-bits Ratings</span>
+                      </div>
+                      <div class="stat-rating__item">
+                        <span class="progress-wrap">
+                          <div class="red-progress-md">
+                            <div class="progress" [attr.data-percentage]="movie.ebitsRatings ? movie.ebitsRatings : 0">
+                              <span class="progress-left">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <span class="progress-right">
+                                <span class="progress-bar"></span>
+                              </span>
+                              <div class="progress-value">
+                              </div>
+                            </div>
+                          </div>
+                        </span>
+                        <span class="name"><strong>{{movie.ebitsRatings ? movie.ebitsRatings : 0}}</strong> E-bits Ratings</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="desc">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="desc">{{ movie.description }}</div>
+                  </div>
+                  <div class="stat">
+                    <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+                    <span class="rating">{{ movie.ebitsRatings }}</span>
+                  </div> -->
+                </div>
+              </li>
+            </ul>
+          </div>
+          
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- main section -->

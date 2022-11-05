@@ -1,0 +1,116 @@
+.home-upcoming-movies-slider{
+  &__wrap{
+    width: 40%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #051019;
+    padding: 1rem;
+    padding-left: 3rem;
+  }
+
+  &__heading{
+    font-size: 1.5rem;
+    left: 1.5rem;
+    position: absolute;
+    transform: translate(-50%,-50%) rotateZ(-90deg);
+    top: 50%;
+  }
+
+  &__inner{
+    &.slick-slider {
+      margin-left: -15px;
+      margin-right: -15px;
+    }
+
+    .slick-slide {
+        // padding:10px;
+        // background-color:red;
+        text-align:center;
+        margin-right:10px;
+        margin-left:10px;
+    }
+
+    &.slick-slider{
+      .slick-arrow{
+          display:none !important;
+      }
+      &:hover{
+          .slick-arrow{
+              display:block !important;
+          }
+      }
+    }
+
+    .slick-arrow{
+      width: 60px;
+      height: 100%;
+      z-index:1000;
+      background: linear-gradient(276.97deg, #051019 31.09%, rgba(5, 16, 25, 0) 102.62%);
+      &.slick-disabled{
+        display: none!important;
+        opacity: 0;
+      }
+    }
+
+    .slick-next{
+      right: 0;
+
+      &:before{
+        content: " ";
+        background: url('../../assets/img/home-slide-arrow.png') no-repeat;
+        width:15px;
+        height: 30px;
+        background-position: center center;
+        display: inline-block;
+      }
+    }
+
+    .slick-prev{
+      left: 0;
+
+      &:before{
+        content: " ";
+        background: url('../../assets/img/home-slide-arrow.png') no-repeat;
+        width:15px;
+        height: 30px;
+        background-position: center center;
+        display: inline-block;
+        transform: rotateZ(180deg);
+      }
+    }
+  }
+
+  &-item{
+    position: relative;
+
+    &:before{
+      content: " ";
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      left: 0;
+      top: 0;
+      position: absolute;
+      border-left: 2px dashed #051019;
+      border-right: 2px dashed #051019;
+      z-index: 1000;
+    }
+
+    .date-wrap{
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      padding: 1rem;
+      background: linear-gradient(270deg, #ED2961 0%, #BD0F40 100%);
+
+      .title{
+        font-size: .9rem;
+      }
+
+      .date{
+        font-weight: 500;
+      }
+    }
+  }
+}

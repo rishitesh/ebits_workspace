@@ -1,0 +1,20 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "New"
+    },
+    {
+      "id": "2",
+      "name": "Popular"
+    },
+    {
+      "id": "3",
+      "name": "Trending"
+    },
+    {
+      "id": "4",
+      "name": "Upcoming"
+    }
+  ]
+}

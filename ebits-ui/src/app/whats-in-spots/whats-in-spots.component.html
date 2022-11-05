@@ -1,0 +1,41 @@
+<!-- in the spot light explorer -->
+<div class="section section--pad-md home-spotlight-explorer">
+  <div class="section__inner container">
+    <div class="heading-wrap">
+      <div class="box-heading">Upcoming Movies</div>
+    </div>
+    <div class="home-spotlight-slider__wrap">
+      <div class="home-spotlight-slider__inner">
+        <div *ngFor="let movie of whatsInSpotMovies" class="home-spotlight-slider-item"
+          [ngStyle]="{'background': 'url(\'assets/img/preview/' + movie.image +'\')'}">
+          <div class="top-row">
+            <div class="rating">
+              <span class="progress-wrap">
+                <div class="red-progress-big">
+                  <div class="progress" data-percentage="94">
+                    <span class="progress-left">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <span class="progress-right">
+                      <span class="progress-bar"></span>
+                    </span>
+                    <div class="progress-value">
+                      {{movie.ebitsRatings}}
+                    </div>
+                  </div>
+                </div>
+              </span>
+              <div class="rating-title">E-bits ratings</div>
+            </div>
+            <div class="social-wrap"></div>
+          </div>
+          <div class="bottom-row">
+            <div class="tilte">{{movie.title}}</div>
+            <div class="sub-heading">{{movie.genres.join(' | ')}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- in the spot light explorer -->

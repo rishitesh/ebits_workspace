@@ -1,0 +1,148 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "Movie 1 Title cacasc sac as cas c asc",
+      "description": "Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description Movie 1 description ",
+      "image": "movie-1.png",
+      "releaseYear": 2022,
+      "length": 180,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 2,
+      "title": "Movie 2 Title",
+      "description": "Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description Movie 2 description ",
+      "image": "movie-2.png",
+      "releaseYear": 2012,
+      "length": 160,
+      "ebitsRatings": 3.8,
+      "criticRatings": 3.2,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 3,
+      "title": "Movie 3 Title",
+      "description": "Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description Movie 3 description ",
+      "image": "movie-3.png",
+      "releaseYear": 2018,
+      "length": 170,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 4,
+      "title": "Movie 4 Title",
+      "description": "Movie 4 Title",
+      "image": "movie-4.png",
+      "releaseYear": 2021,
+      "length": 180,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 5,
+      "title": "Movie 5 Title",
+      "description": "Movie 5 Title",
+      "image": "movie-5.png",
+      "releaseYear": 2015,
+      "length": 170,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 6,
+      "title": "Movie 6 Title",
+      "description": "Movie 6 Title",
+      "image": "movie-6.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 7,
+      "title": "Movie 7 Title",
+      "description": "Movie 7 Title",
+      "image": "movie-1.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 8,
+      "title": "Movie 8 Title",
+      "description": "Movie 8 Title",
+      "image": "movie-2.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 9,
+      "title": "Movie 9 Title",
+      "description": "Movie 9 Title",
+      "image": "movie-3.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 10,
+      "title": "Movie 10 Title",
+      "description": "Movie 10 Title",
+      "image": "movie-3.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 11,
+      "title": "Movie 11 Title",
+      "description": "Movie 11 Title",
+      "image": "movie-3.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    },
+    {
+      "id": 12,
+      "title": "Movie 12 Title",
+      "description": "Movie 12 Title",
+      "image": "movie-3.png",
+      "releaseYear": 2021,
+      "length": 160,
+      "ebitsRatings": 3.5,
+      "criticRatings": 3,
+      "directors": "A B CDH, E F GHI",
+      "casts": "A B CDH, E F GHI, J KLMN, O PQR"
+    }
+  ]
+}

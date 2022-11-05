@@ -1,0 +1,65 @@
+<!-- best in story section -->
+<div class="section section--md-pad home-best-in-story-section">
+  <div class="section__inner container">
+    <div class="box-heading">Best In Story</div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="selected-best-story__wrap">
+          <div class="img-wrap"><img src="assets/img/preview/details-bg-preview.png" alt="" class="img-fluid"></div>
+          <div class="content-wrap">
+            <div class="rating-wrap">
+              <div class="rating-star">
+                <img src="assets/img/rating-star.png" alt="" class="img-fluid">
+              </div>
+              <div class="rating-value">
+                8.9
+              </div>
+            </div>
+            <div class="title">Avengers: Infinity War</div>
+            <div class="sub-heading">Action | Thriller | Drama</div>
+            <div class="btn-wrap">
+              <a href="" class="btn btn--red"><span class="icon"><img src="assets/img/details-play-trailer.png" alt=""
+                    class="img-fluid"></span>Play Trailer</a>
+              <a href="" class="btn btn--glass">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 best-in-story-slider__wrap">
+        <!-- <div class="best-in-story-slider__inner">
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-1.png" alt="" class="img-fluid">
+          </div>
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-2.png" alt="" class="img-fluid">
+          </div>
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-1.png" alt="" class="img-fluid">
+          </div>
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-2.png" alt="" class="img-fluid">
+          </div>
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-1.png" alt="" class="img-fluid">
+          </div>
+          <div class="best-in-story-slider-item"><img src="assets/img/preview/movie-2.png" alt="" class="img-fluid">
+          </div>
+        </div> -->
+        <ngx-slick-carousel class="best-in-story-list-carousel" #slickModal="slick-carousel"
+          [config]="bisSlideConfig" (init)="slickInit($event)" (breakpoint)="breakpoint($event)"
+          (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+          <div ngxSlickItem *ngFor="let movie of movies" class="slide">
+            <a href="">
+              <div class="img-wrap"><img class="img-fluid" src="{{ 'assets/img/preview/' + movie.image }}" alt=""></div>
+              <div class="details">
+                <div class="name" style="width: 70%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                  {{ movie.title }}
+                </div>
+                <div class="stat">
+                  <span class="icon"><img src="assets/img/rating-star.png" alt="" class="img-fluid"></span>
+                  <span class="rating">{{movie.ebitsRatings}}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </ngx-slick-carousel>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- best in story section -->

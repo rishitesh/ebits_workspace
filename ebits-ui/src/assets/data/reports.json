@@ -1,0 +1,358 @@
+{
+  "reports": [
+    {
+      "id": 1,
+      "title": "Report 1 Title goes here.",
+      "summary": "Report 1 summary goes here. Report 1 summary goes here. Report 1 summary goes here. Report 1 summary goes here.",
+      "chart": {
+        "type": "pie",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "type": "column",
+              "backgroundColor": "#151f30",
+              "height": "70%"
+            },
+            "title": {
+              "text": "Movie Ratings - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "xAxis": {
+                "categories": ["Movie 1", "Movie 2", "Movie 3", "Movie 4", "Movie 5"]
+            },
+            "yAxis": {
+                "min": 0,
+                "title": {
+                    "text": "Ratings"
+                },
+                "stackLabels": {
+                    "enabled": true,
+                    "style": {
+                        "fontWeight": "bold",
+                        "color": "gray",
+                        "textOutline": "none"
+                    }
+                }
+            },
+            "legend": {
+                "align": "right",
+                "x": -30,
+                "verticalAlign": "top",
+                "y": 25,
+                "floating": true,
+                "backgroundColor": "#151f30",
+                "borderWidth": 0,
+                "shadow": false,
+                "itemStyle": {
+                    "color": "#FFFFFF"
+                  }
+            },
+            "tooltip": {
+                "headerFormat": "<b>{point.x}</b><br/>",
+                "pointFormat": "{series.name}: {point.y}<br/>Total: {point.stackTotal}"
+            },
+            "plotOptions": {
+              "column": {
+                "stacking": "normal",
+                "dataLabels": {
+                    "enabled": true
+                }
+              }
+            },
+            "series": [{
+                "name": "User",
+                "data": [5, 3, 4, 7, 2]
+            }, {
+                "name": "Critic",
+                "data": [2, 2, 3, 2, 1]
+            }, {
+                "name": "Ebits",
+                "data": [3, 4, 3, 2, 5]
+            }]
+          }
+      },
+      "chartImage": "home-graph-1.png"
+    },
+    {
+      "id": 2,
+      "title": "Report 2 Title goes here.",
+      "summary": "Report 2 summary goes here. Report 2 summary goes here. Report 2 summary goes here. Report 2 summary goes here.",
+      "chart": {
+        "type": "bar",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "type": "pie",
+              "backgroundColor": "#151f30",
+              "height": "70%",
+              "options3d": {
+                "enabled": true,
+                "alpha": 45
+              }
+            },
+            "title": {
+              "text": "Box Office Collections - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "subtitle": {
+                "text": "3D donut in Highcharts"
+            },
+            "plotOptions": {
+              "pie": {
+                "innerSize": 100,
+                "depth": 45
+              }
+            },
+            "series": [{
+              "name": "Movie share",
+              "data": [
+                ["Movie 1", 45.0],
+                ["Movie 2", 26.8],
+                ["Movie 3", 12.8],
+                ["Movie 4", 8.5],
+                ["Movie 5", 6.2],
+                ["Others", 0.7]
+              ]
+            }]
+          }
+      },
+      "chartImage": "home-graph-2.png"
+    },
+    {
+      "id": 3,
+      "title": "Report 3 Title goes here.",
+      "summary": "Report 3 summary goes here. Report 3 summary goes here. Report 3 summary goes here. Report 3 summary goes here.",
+      "chart": {
+        "type": "pie",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "backgroundColor": "#151f30",
+              "plotBorderWidth": 0,
+              "plotShadow": false,
+              "height": "70%"
+            },
+            "title": {
+              "text": "Box Office Collections - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "legend": {
+              "itemStyle": {
+                "color": "#FFFFFF"
+              }
+            },
+            "tooltip": {
+              "pointFormat": "{series.name}: <b>{point.percentage:.1f}%</b>"
+            },
+            "plotOptions": {
+              "pie": {
+                "allowPointSelect": true,
+                "cursor": "pointer",
+
+                "dataLabels": {
+                  "enabled": false
+                },
+
+                "showInLegend": true
+              }
+            },
+            "series": [{
+              "type": "pie",
+              "name": "Movie share",
+              "data": [
+                ["Movie 1", 45.0],
+                ["Movie 2", 26.8],
+                {
+                  "name": "Movie 3",
+                  "y": 12.8,
+                  "sliced": true,
+                  "selected": true
+                },
+                ["Movie 4", 8.5],
+                ["Movie 5", 6.2],
+                ["Others", 0.7]
+              ]
+            }]
+          }
+      },
+      "chartImage": "home-graph-1.png"
+    },
+    {
+      "id": 4,
+      "title": "Report 4 Title goes here.",
+      "summary": "Report 4 summary goes here. Report 4 summary goes here. Report 4 summary goes here. Report 4 summary goes here.",
+      "chart": {
+        "type": "pie",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "backgroundColor": "#151f30",
+              "plotBorderWidth": 0,
+              "plotShadow": false,
+              "height": "70%"
+            },
+            "title": {
+              "text": "Box Office Collections - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "legend": {
+              "itemStyle": {
+                "color": "#FFFFFF"
+              }
+            },
+            "tooltip": {
+              "pointFormat": "{series.name}: <b>{point.percentage:.1f}%</b>"
+            },
+            "plotOptions": {
+              "pie": {
+                "allowPointSelect": true,
+                "cursor": "pointer",
+
+                "dataLabels": {
+                  "enabled": false
+                },
+
+                "showInLegend": true
+              }
+            },
+            "series": [{
+              "type": "pie",
+              "name": "Movie share",
+              "data": [
+                ["Movie 1", 45.0],
+                ["Movie 2", 26.8],
+                {
+                  "name": "Movie 3",
+                  "y": 12.8,
+                  "sliced": true,
+                  "selected": true
+                },
+                ["Movie 4", 8.5],
+                ["Movie 5", 6.2],
+                ["Others", 0.7]
+              ]
+            }]
+          }
+      },
+      "chartImage": "home-graph-2.png"
+    },
+    {
+      "id": 5,
+      "title": "Report 5 Title goes here.",
+      "summary": "Report 5 summary goes here. Report 5 summary goes here. Report 5 summary goes here. Report 5 summary goes here.",
+      "chart": {
+        "type": "pie",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "backgroundColor": "#151f30",
+              "plotBorderWidth": 0,
+              "plotShadow": false,
+              "height": "70%"
+            },
+            "title": {
+              "text": "Box Office Collections - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "legend": {
+              "itemStyle": {
+                "color": "#FFFFFF"
+              }
+            },
+            "tooltip": {
+              "pointFormat": "{series.name}: <b>{point.percentage:.1f}%</b>"
+            },
+            "plotOptions": {
+              "pie": {
+                "allowPointSelect": true,
+                "cursor": "pointer",
+
+                "dataLabels": {
+                  "enabled": false
+                },
+
+                "showInLegend": true
+              }
+            },
+            "series": [{
+              "type": "pie",
+              "name": "Movie share",
+              "data": [
+                ["Movie 1", 45.0],
+                ["Movie 2", 26.8],
+                {
+                  "name": "Movie 3",
+                  "y": 12.8,
+                  "sliced": true,
+                  "selected": true
+                },
+                ["Movie 4", 8.5],
+                ["Movie 5", 6.2],
+                ["Others", 0.7]
+              ]
+            }]
+          }
+      },
+      "chartImage": "home-graph-1.png"
+    },
+    {
+      "id": 6,
+      "title": "Report 6 Title goes here.",
+      "summary": "Report 6 summary goes here. Report 6 summary goes here. Report 6 summary goes here. Report 6 summary goes here.",
+      "chart": {
+        "type": "pie",
+        "data": [],
+        "highchartOptions": {
+            "chart": {
+              "backgroundColor": "#151f30",
+              "plotBorderWidth": 0,
+              "plotShadow": false,
+              "height": "70%"
+            },
+            "title": {
+              "text": "Box Office Collections - May 2022",
+              "style": { "color": "#ffffff" }
+            },
+            "legend": {
+              "itemStyle": {
+                "color": "#FFFFFF"
+              }
+            },
+            "tooltip": {
+              "pointFormat": "{series.name}: <b>{point.percentage:.1f}%</b>"
+            },
+            "plotOptions": {
+              "pie": {
+                "allowPointSelect": true,
+                "cursor": "pointer",
+
+                "dataLabels": {
+                  "enabled": false
+                },
+
+                "showInLegend": true
+              }
+            },
+            "series": [{
+              "type": "pie",
+              "name": "Movie share",
+              "data": [
+                ["Movie 1", 45.0],
+                ["Movie 2", 26.8],
+                {
+                  "name": "Movie 3",
+                  "y": 12.8,
+                  "sliced": true,
+                  "selected": true
+                },
+                ["Movie 4", 8.5],
+                ["Movie 5", 6.2],
+                ["Others", 0.7]
+              ]
+            }]
+          }
+      },
+      "chartImage": "home-graph-2.png"
+    }
+  ]
+}

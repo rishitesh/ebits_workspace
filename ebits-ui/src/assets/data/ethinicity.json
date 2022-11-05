@@ -1,0 +1,28 @@
+{
+  "ethinicities": [
+    {
+      "id": "1",
+      "name": "Hollywood"
+    },
+    {
+      "id": "2",
+      "name": "Bollywood"
+    },
+    {
+      "id": "3",
+      "name": "Tollywood"
+    },
+    {
+      "id": "4",
+      "name": "Kollywood"
+    },
+    {
+      "id": "5",
+      "name": "Japanese"
+    },
+    {
+      "id": "6",
+      "name": "Korean"
+    }
+  ]
+}

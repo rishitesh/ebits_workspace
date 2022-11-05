@@ -1,0 +1,25 @@
+
+    Setting Up Ebits UI
+---------------------------
+
+1. Install Node on your system. (More Info: https://nodejs.org/en/download/)
+
+2. Install Angular on your system. (More Info : https://angular.io/guide/setup-local#install-the-angular-cli)
+
+3. Clone the github repository from below URL
+    
+    git clone https://github.com/coder-sachin/ebits-ui.git 
+
+4. Go to Cloned repository directory 
+
+5. Install dependecies using below command
+
+    npm install
+
+6. Start the Ebits UI server using below command 
+
+    ng serve --open
+
+7. Visit URL localhost:4200/ in the browser.
+
+
