@@ -342,7 +342,7 @@ def all_labels(request):
     for d in labels:
         obj = {"name": d.name, "photo": ""}
         records.append(obj)
-    js_val["labels"] = records
+    js_val["categories"] = records
     return JsonResponse(js_val)
 
 
@@ -361,9 +361,10 @@ def all_platforms(request):
     js_val = {}
     records = []
     for d in data:
-        records.append(d.get("name"))
+        datum = {"name": d.get("name")}
+        records.append(datum)
     js_val["platforms"] = records
-    return JsonResponse(data, safe=False)
+    return JsonResponse(js_val, safe=False)
 
 
 def all_awards(request):
@@ -371,9 +372,10 @@ def all_awards(request):
     js_val = {}
     records = []
     for d in data:
-        records.append(d.get("name"))
+        datum = {"name": d.get("name")}
+        records.append(datum)
     js_val["awards"] = records
-    return JsonResponse(data, safe=False)
+    return JsonResponse(js_val, safe=False)
 
 
 def all_languages(request):
@@ -381,9 +383,10 @@ def all_languages(request):
     js_val = {}
     records = []
     for d in data:
-        records.append(d.get("name"))
+        datum = {"name": d.get("name")}
+        records.append(datum)
     js_val["languages"] = records
-    return JsonResponse(data, safe=False)
+    return JsonResponse(js_val, safe=False)
 
 
 def all_certificates(request):
@@ -391,9 +394,10 @@ def all_certificates(request):
     js_val = {}
     records = []
     for d in data:
-        records.append(d.get("name"))
-    js_val["certificates"] = records
-    return JsonResponse(data, safe=False)
+        datum = {"name": d.get("name")}
+        records.append(datum)
+    js_val["certifications"] = records
+    return JsonResponse(js_val, safe=False)
 
 
 def all_reports(request):
@@ -404,17 +408,30 @@ def all_reports(request):
     :return:
     """
     final_query = """Select
-                     review_report.id, \
-                     review_moviecollection.name,\
+                     review_report.id as id, \
+                     review_moviecollection.name as title,\
                      description as summary,\
-                     chart_data_json, \
+                     chart_data_json as chart, \
                      publish_date \
                      from  review_report, review_moviecollection \
                      where review_report.collection_id_id = review_moviecollection.id \
                      order by publish_date desc limit 20       
                      """
     row_dict = raw_sql(final_query)
-    return JsonResponse({'reports': row_dict})
+
+    reports = []
+    for row in row_dict:
+        pprint(type(row.get("chart")))
+        r = {'id': row.get("id"),
+             'title': row.get("title"),
+             'summary': row.get("summary"),
+             'chart': json.loads(row.get("chart")),
+             'chartImage': ''
+             }
+
+        reports.append(r)
+
+    return JsonResponse({'reports': reports})
 
 
 def report_details(request, report_id):

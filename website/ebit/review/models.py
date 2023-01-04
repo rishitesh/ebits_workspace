@@ -240,7 +240,7 @@ class Report(models.Model):
                           default=uuid.uuid4, help_text='Unique ID for this particular item')
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE, default=None, blank=True,
                                              null=True)
-    chart_data_json = models.TextField(default=None, null=True)
+    chart_data_json = models.JSONField(default=None, null=True)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.collection_id)
