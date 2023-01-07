@@ -474,19 +474,30 @@ def all_collections(request):
     final_query = """Select
                          id, \
                          name,\
-                         description as summary,\
+                         description,\
                          bgImage , \
                          publish_date \
                          from  review_moviecollection \
                          where not is_report \
-                         order by publish_date desc limit 20       
+                         order by publish_date desc limit 10       
                          """
 
-    row_dict = raw_sql(final_query)
-    if is_empty(row_dict):
+    all_colls = raw_sql(final_query)
+    pprint(all_colls)
+    if is_empty(all_colls):
         return JsonResponse({})
 
-    return JsonResponse({'collections': row_dict})
+    final_reponse = []
+    count = 0
+    for col in all_colls:
+        col_id = col.get("id")
+        col['type'] = 'movie'
+        collection_entry_data = get_collection_details(col_id, False)
+        col['entries'] = collection_entry_data
+        final_reponse.append(col)
+        count = count + 1
+
+    return JsonResponse({'collections': final_reponse})
 
 
 def collection_details(request, collection_id):
@@ -546,7 +557,16 @@ def get_collection_details(collection_id, is_report):
                                                   """ % (collection_id, report_redicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
-    return row_dict
+
+    entries = []
+    for row in row_dict:
+        entry = {"id": row.get("id"),
+                 "name": row.get("title"),
+                 "ebitsRatings": row.get("rating"),
+                 "image": row.get("bgImage")}
+        entries.append(entry)
+
+    return entries
 
 
 @require_http_methods(["POST"])
