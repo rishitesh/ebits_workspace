@@ -84,8 +84,8 @@ class MovieCollectionDetail(models.Model):
 
 class CastDetail(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
-    cast_name = models.TextField()
-    cast_role = models.TextField(default=None, null=True, blank=True)
+    cast_name = models.CharField(max_length=150)
+    cast_role = models.CharField(default=None, null=True, blank=True, max_length=150)
     director = models.BooleanField(default=False)
     music_director = models.BooleanField(default=False)
     lyricist = models.BooleanField(default=False)
@@ -127,7 +127,7 @@ class UserReviewDetail(models.Model):
 
 
 class Award(models.Model):
-    name = models.TextField(primary_key=True)
+    name = models.CharField(primary_key=True, max_length=100)
 
     def __str__(self):
         return "%s" % self.name
@@ -143,7 +143,7 @@ class MovieToAward(models.Model):
 
 
 class Certificate(models.Model):
-    name = models.TextField(primary_key=True)
+    name = models.CharField(primary_key=True, max_length=100)
 
     def __str__(self):
         return "%s" % self.name
@@ -158,7 +158,7 @@ class MovieToCertificate(models.Model):
 
 
 class Language(models.Model):
-    name = models.TextField(primary_key=True)
+    name = models.CharField(primary_key=True, max_length=100)
 
     def __str__(self):
         return "%s" % self.name
@@ -173,7 +173,7 @@ class MovieToLanguage(models.Model):
 
 
 class Platform(models.Model):
-    name = models.TextField(primary_key=True)
+    name = models.CharField(primary_key=True, max_length=100)
 
     def __str__(self):
         return "%s" % self.name
@@ -188,7 +188,7 @@ class MovieToPlatform(models.Model):
 
 
 class Genre(models.Model):
-    name = models.TextField(primary_key=True)
+    name = models.CharField(primary_key=True, max_length=100)
 
     def __str__(self):
         return "%s" % self.name
@@ -203,8 +203,8 @@ class MovieToGenre(models.Model):
 
 
 class Label(models.Model):
-    name = models.TextField(primary_key=True)
-    type = models.TextField(default='general')
+    name = models.CharField(primary_key=True, max_length=150)
+    type = models.CharField(default='general', max_length=150)
     photo = models.ImageField(default=None, null=True, upload_to='upload/')
 
     def __str__(self):
@@ -221,7 +221,7 @@ class MovieToLabel(models.Model):
 
 class MovieToTrailer(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
-    trailers = models.TextField()
+    trailers = models.CharField(max_length=200)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.trailers)
@@ -244,3 +244,4 @@ class Report(models.Model):
 
     def __str__(self):
         return "%s->%s" % (self.id, self.collection_id)
+
