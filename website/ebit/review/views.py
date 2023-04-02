@@ -231,36 +231,36 @@ def movie_details(request, movie_id):
 
     final_query = """
                                       SELECT \
-                                      id, 
+                                      id,
                                       movie_name, \
                                       duration, \
                                       release_date, \
                                       description, \
                                       directors_display_comma_separated, \
                                       actors_display_comma_separated,\
-                                      
+
                                       ebits_rating,\
                                       ebits_review,\
                                       ebits_reviewer_name,\
                                       ebits_reviewer_image,\
                                       critics_rating,\
-                                      
+
                                       positive, \
                                       negative, \
                                       neutral, \
-                                      
+
                                       aspect_story, \
                                       aspect_direction, \
                                       aspect_music, \
                                       aspect_performance, \
                                       aspect_costume, \
                                       aspect_screenplay, \
-                                      aspect_vxf, \
-                                      
+                                      aspect_vfx, \
+
                                       ebits_rating, \
                                       thumbnail_image \
                                       FROM review_moviepost
-                                      where id = '%s' 
+                                      where id = '%s'
                                       """ % formatted_uuid
 
     row_dict = raw_sql(final_query)
@@ -290,7 +290,7 @@ def movie_details(request, movie_id):
                     "performance": movie_dict.get("aspect_performance"),
                     "costume": movie_dict.get("aspect_costume"),
                     "screenplay": movie_dict.get("aspect_screenplay"),
-                    "vxf": movie_dict.get("aspect_vxf"),
+                    "vfx": movie_dict.get("aspect_vfx"),
                     }
 
     overview_dict = {"realeaseDate": movie_dict.get("release_date"),
@@ -415,7 +415,7 @@ def all_reports(request):
                      publish_date \
                      from  review_report, review_moviecollection \
                      where review_report.collection_id_id = review_moviecollection.id \
-                     order by publish_date desc limit 20       
+                     order by publish_date desc limit 20
                      """
     row_dict = raw_sql(final_query)
 
@@ -444,7 +444,7 @@ def report_details(request, report_id):
                          chart_data_json \
                          from  review_report, review_moviecollection \
                          where review_report.collection_id_id = review_moviecollection.id \
-                         and   review_report.id = '%s'   
+                         and   review_report.id = '%s'
                          """ % formatted_uuid
     row_dict = raw_sql(final_query)
     pprint(row_dict)
@@ -479,7 +479,7 @@ def all_collections(request):
                          publish_date \
                          from  review_moviecollection \
                          where not is_report \
-                         order by publish_date desc limit 10       
+                         order by publish_date desc limit 10
                          """
 
     all_colls = raw_sql(final_query)
@@ -509,7 +509,7 @@ def collection_details(request, collection_id):
                                       description, \
                                       bgImage \
                                       FROM review_moviecollection
-                                      where id = '%s' 
+                                      where id = '%s'
                                       """ % formatted_uuid
                                        )
 
@@ -548,11 +548,11 @@ def get_collection_details(collection_id, is_report):
                                                 aspect_performance as performance, \
                                                 aspect_costume as costume, \
                                                 aspect_screenplay as screenplay, \
-                                                aspect_vxf as vxf, \
+                                                aspect_vfx as vfx, \
                                                 genres  \
                                                 FROM review_moviecollectiondetail, review_moviecollection
-                                                where 
-                                                review_moviecollectiondetail.collection_id_id = review_moviecollection.id 
+                                                where
+                                                review_moviecollectiondetail.collection_id_id = review_moviecollection.id
                                                 and collection_id_id = '%s' and %s
                                                   """ % (collection_id, report_redicate)
     pprint(final_query)
@@ -582,8 +582,10 @@ def movies(request):
     awards_list = data.get('awards', [])
     ebits_rating_range = data.get('ebitsRatingRange', [])
     critics_rating_range = data.get('criticsRatingRange', [])
+    offset_range = data.get('offsetRange', [])
 
     filter_clause = ""
+    join_clause = ""
     # Add all labels together
     if not is_empty(category_list) or not is_empty(mood_list):
         label_list = category_list + mood_list
@@ -594,7 +596,7 @@ def movies(request):
     if not is_empty(certificate_list):
         single_quoted_list = map(lambda s: "'" + s + "'", certificate_list)
         in_clause = ",".join(single_quoted_list)
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_movietocertificate.certificate_id_id in (%s)" % in_clause
         else:
             filter_clause = filter_clause + " and review_movietocertificate.certificate_id_id in (%s)" % in_clause
@@ -602,7 +604,7 @@ def movies(request):
     if not is_empty(genre_list):
         single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
         in_clause = ",".join(single_quoted_list)
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_movietogenre.genre_id in (%s)" % in_clause
         else:
             filter_clause = filter_clause + " and review_movietogenre.genre_id in (%s)" % in_clause
@@ -610,7 +612,7 @@ def movies(request):
     if not is_empty(language_list):
         single_quoted_list = map(lambda s: "'" + s + "'", language_list)
         in_clause = ",".join(single_quoted_list)
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_movietolanguage.language_id_id in (%s)" % in_clause
         else:
             filter_clause = filter_clause + " and review_movietolanguage.language_id_id in (%s)" % in_clause
@@ -618,36 +620,43 @@ def movies(request):
     if not is_empty(platform_list):
         single_quoted_list = map(lambda s: "'" + s + "'", platform_list)
         in_clause = ",".join(single_quoted_list)
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_movietoplatform.platform_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_movietolanguage.platform_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_movietoplatform.platform_id in (%s)" % in_clause
 
     if not is_empty(awards_list):
         single_quoted_list = map(lambda s: "'" + s + "'", awards_list)
         in_clause = ",".join(single_quoted_list)
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_movietoaward.award_name_id in (%s)" % in_clause
         else:
             filter_clause = filter_clause + " and review_movietoaward.award_name_id in (%s)" % in_clause
 
     if not is_empty(ebits_rating_range):
         between_clause = "%s and %s " % (ebits_rating_range[0], ebits_rating_range[1])
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_moviepost.ebits_rating between %s" % between_clause
         else:
             filter_clause = filter_clause + " and review_moviepost.ebits_rating between %s" % between_clause
 
     if not is_empty(critics_rating_range):
         between_clause = "%s and %s " % (critics_rating_range[0], critics_rating_range[1])
-        if len(filter_clause) > 0:
+        if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
         else:
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
 
+    if not is_empty(offset_range):
+        between_clause = "%s and %s " % (offset_range[0], offset_range[1])
+        if is_empty(filter_clause):
+            filter_clause = filter_clause + " and review_moviepost.id between %s" % between_clause
+        else:
+            filter_clause = filter_clause + " and review_moviepost.id between %s" % between_clause
+
     final_query = """
                                   SELECT \
-                                  review_moviepost.id, 
+                                  review_moviepost.id,
                                   movie_name as Title, \
                                   genre_id as Genre, \
                                   label_id as Label, \
@@ -661,22 +670,16 @@ def movies(request):
                                   ebits_rating as ebitsRating, \
                                   critics_rating as criticsRating, \
                                   thumbnail_image as image \
-                                  FROM 
-                                  review_moviepost,\
-                                  review_movietogenre ,\
-                                  review_movietolabel ,\
-                                  review_movietolanguage ,\
-                                  review_movietocertificate, \
-                                  review_movietoaward, \
-                                  review_movietoplatform \
-                                  WHERE review_moviepost.id = review_movietogenre.movie_id_id \
-                                  and review_moviepost.id = review_movietolabel.movie_id_id \
-                                  and review_moviepost.id = review_movietocertificate.movie_id_id \
-                                  and review_moviepost.id = review_movietoaward.movie_id_id \
-                                  and review_moviepost.id = review_movietolanguage.movie_id_id \
-                                  and review_moviepost.id = review_movietoplatform.movie_id_id \
-                                  and  %s
+                                  FROM
+                                  review_moviepost \
+                                  left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id \
+                                  left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id \
+                                  left join review_movietolanguage on review_moviepost.id = review_movietolanguage.movie_id_id \
+                                  left join review_movietocertificate on review_moviepost.id = review_movietocertificate.movie_id_id \
+                                  left join review_movietoaward on review_moviepost.id = review_movietoaward.movie_id_id \
+                                  left join review_movietoplatform on review_moviepost.id = review_movietoplatform.movie_id_id\
+                                  WHERE   %s
                                   """ % filter_clause
-    # print(final_query)
+    print(final_query)
     row_dict = raw_sql(final_query)
     return JsonResponse({'movies': row_dict})

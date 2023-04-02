@@ -5,11 +5,11 @@ from django.db import models
 
 
 class MovieCollection(models.Model):
-    id = models.UUIDField(primary_key=True,
-                          default=uuid.uuid4, help_text='Unique ID for this particular item')
+    id = models.AutoField(primary_key=True)
+
     name = models.TextField()
     description = models.TextField()
-    bgImage = models.ImageField(default=None, null=True, upload_to='upload/')
+    bgImage = models.CharField(null=True, blank=True, max_length=300)
     is_report = models.BooleanField(default=False)
     publish_date = models.DateField(default=datetime.now)
 
@@ -18,10 +18,12 @@ class MovieCollection(models.Model):
 
 
 class MoviePost(models.Model):
-    id = models.UUIDField(primary_key=True,
-                          default=uuid.uuid4, help_text='Unique ID for this particular book across whole library')
+    id = models.AutoField(primary_key=True)
     movie_name = models.CharField(max_length=120)
     description = models.TextField(default=None, null=True, blank=True)
+    isSeries = models.BooleanField(default=False)
+    episodes = models.IntegerField()
+
 
     # Sentimeter
     positive = models.IntegerField()
@@ -38,7 +40,7 @@ class MoviePost(models.Model):
     ebits_rating = models.FloatField()
     ebits_review = models.TextField(default=None, null=True, blank=True)
     ebits_reviewer_name = models.CharField(max_length=100, default=None, null=True, blank=True)
-    ebits_reviewer_image = models.ImageField(default=None, null=True, blank=True, upload_to='upload/')
+    ebits_reviewer_image = models.CharField(null=True, blank=True, max_length=300)
     critics_rating = models.FloatField(default=None, null=True, blank=True)
 
     # Aspects
@@ -48,35 +50,40 @@ class MoviePost(models.Model):
     aspect_performance = models.FloatField(default=None, null=True, blank=True)
     aspect_costume = models.FloatField(default=None, null=True, blank=True)
     aspect_screenplay = models.FloatField(default=None, null=True, blank=True)
-    aspect_vxf = models.FloatField(default=None, null=True, blank=True)
+    aspect_vfx = models.FloatField(default=None, null=True, blank=True)
 
     # Images
-    thumbnail_image = models.ImageField(default=None, null=True, upload_to='upload/')
-    potrait_image = models.ImageField(default=None, null=True,blank=True, upload_to='upload/')
+    thumbnail_image = models.CharField(null=True, blank=True, max_length=300)
+    potrait_image = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.movie_name)
 
 
 class MovieCollectionDetail(models.Model):
-    id = models.UUIDField(primary_key=True,
-                          default=uuid.uuid4, help_text='Unique ID for this particular item')
+    id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE)
 
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE, default=None, blank=True, null=True)
     movie_name = models.CharField(max_length=100)
     description = models.TextField()
     release_date = models.DateField()
+
+    # Sentimeter
+    positive = models.IntegerField(default=None, null=True, blank=True)
+    negative = models.IntegerField(default=None, null=True, blank=True)
+    neutral = models.IntegerField(default=None, null=True, blank=True)
+
     aspect_story = models.FloatField(default=None, null=True, blank=True)
     aspect_direction = models.FloatField(default=None, null=True, blank=True)
     aspect_music = models.FloatField(default=None, null=True, blank=True)
     aspect_performance = models.FloatField(default=None, null=True, blank=True)
     aspect_costume = models.FloatField(default=None, null=True, blank=True)
     aspect_screenplay = models.FloatField(default=None, null=True, blank=True)
-    aspect_vxf = models.FloatField(default=None, null=True, blank=True)
+    aspect_vfx = models.FloatField(default=None, null=True, blank=True)
     genres = models.CharField(max_length=150, default=None, null=True, blank=True)
     ebits_rating = models.FloatField()
-    thumbnail_image = models.ImageField(default=None, null=True, upload_to='upload/')
+    thumbnail_image = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.movie_name)
@@ -93,7 +100,7 @@ class CastDetail(models.Model):
     costume_director = models.BooleanField(default=False)
     producer = models.BooleanField(default=False)
     cinematographer = models.BooleanField(default=False)
-    cast_image = models.ImageField(default=None, null=True, blank=True, upload_to='upload/')
+    cast_image = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.cast_name)
@@ -120,7 +127,7 @@ class UserReviewDetail(models.Model):
     review_date = models.DateField()
     review_text = models.TextField()
     review_approved = models.BooleanField(default=False)
-    reviewer_image = models.ImageField(default=None, null=True, blank=True, upload_to='upload/')
+    reviewer_image = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s->%s->%s" % (self.movie_id, self.review_author, self.review_date, self.review_approved)
@@ -144,6 +151,7 @@ class MovieToAward(models.Model):
 
 class Certificate(models.Model):
     name = models.CharField(primary_key=True, max_length=100)
+    description = models.CharField(max_length=300, default=None, null=True, blank=True)
 
     def __str__(self):
         return "%s" % self.name
@@ -205,7 +213,7 @@ class MovieToGenre(models.Model):
 class Label(models.Model):
     name = models.CharField(primary_key=True, max_length=150)
     type = models.CharField(default='general', max_length=150)
-    photo = models.ImageField(default=None, null=True, upload_to='upload/')
+    photo = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s" % self.name
@@ -229,7 +237,7 @@ class MovieToTrailer(models.Model):
 
 class MovieToPhoto(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
-    photo = models.ImageField(default=None, null=True, upload_to='upload/')
+    photo = models.CharField(null=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.photo)
@@ -244,4 +252,5 @@ class Report(models.Model):
 
     def __str__(self):
         return "%s->%s" % (self.id, self.collection_id)
+
 
