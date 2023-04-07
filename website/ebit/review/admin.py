@@ -6,7 +6,6 @@ from .models import MoviePost, Platform, Genre, Language, Certificate, \
     MovieToPlatform, Report, MovieToTrailer, UserReviewDetail
 
 # Movie Section
-admin.site.register(MoviePost)
 admin.site.register(Platform)
 admin.site.register(Genre)
 admin.site.register(MovieToGenre)
@@ -25,11 +24,31 @@ admin.site.register(MovieToPlatform)
 admin.site.register(MovieToTrailer)
 admin.site.register(UserReviewDetail)
 
-# Collection Section
-admin.site.register(MovieCollection)
-admin.site.register(MovieCollectionDetail)
 
-# Chart Section
-admin.site.register(Report)
+class MoviePostAdmin(admin.ModelAdmin):
+    list_display = ['movie_name', 'release_date', 'actors_display_comma_separated']
+    prepopulated_fields = {'slug': ('movie_name', 'release_date')}
 
+
+admin.site.register(MoviePost, MoviePostAdmin)
+
+
+class ColectionAdmin(admin.ModelAdmin):
+    list_display = ['name', 'publish_date']
+    prepopulated_fields = {'slug': ('name', 'publish_date')}
+
+
+class ColectionDetailsAdmin(admin.ModelAdmin):
+    list_display = ['movie_name', 'release_date', 'genres']
+    prepopulated_fields = {'slug': ('movie_name', 'release_date')}
+
+
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['name', 'publish_date']
+    prepopulated_fields = {'slug': ('name', 'publish_date')}
+
+
+admin.site.register(MovieCollectionDetail, ColectionDetailsAdmin)
+admin.site.register(MovieCollection, ColectionAdmin)
+admin.site.register(Report, ReportAdmin)
 

@@ -2,6 +2,8 @@ import uuid
 from datetime import datetime
 
 from django.db import models
+from django.urls import reverse
+from django.template.defaultfilters import slugify
 
 
 class MovieCollection(models.Model):
@@ -9,17 +11,31 @@ class MovieCollection(models.Model):
 
     name = models.TextField()
     description = models.TextField()
-    bgImage = models.CharField(null=True, blank=True, max_length=300)
+    image_url = models.CharField(null=True, blank=True, max_length=300)
     is_report = models.BooleanField(default=False)
     publish_date = models.DateField(default=datetime.now)
+
+    slug = models.SlugField(null=True, unique=True)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.name)
 
+    def get_absolute_url(self):
+        return reverse("collection_details", kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, self.publish_date)
+        super(MovieCollection, self).save(*args, **kwargs)
+
 
 class MoviePost(models.Model):
     id = models.AutoField(primary_key=True)
+
     movie_name = models.CharField(max_length=120)
+    release_date = models.DateField()
+    slug = models.SlugField(null=True, unique=True)
+
     description = models.TextField(default=None, null=True, blank=True)
     isSeries = models.BooleanField(default=False)
     episodes = models.IntegerField()
@@ -31,7 +47,7 @@ class MoviePost(models.Model):
     neutral = models.IntegerField()
 
     # Overview
-    release_date = models.DateField()
+
     duration = models.FloatField(default=2.0)
     actors_display_comma_separated = models.CharField(max_length=200, default=None, null=True, blank=True)
     directors_display_comma_separated = models.CharField(max_length=200, default=None, null=True, blank=True)
@@ -53,21 +69,32 @@ class MoviePost(models.Model):
     aspect_vfx = models.FloatField(default=None, null=True, blank=True)
 
     # Images
-    thumbnail_image = models.CharField(null=True, blank=True, max_length=300)
-    potrait_image = models.CharField(null=True, blank=True, max_length=300)
+    thumbnail_image_url = models.CharField(null=True, blank=True, max_length=300)
+    potrait_image_url = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.movie_name)
+
+    def get_absolute_url(self):
+        return reverse("movie_details", kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.movie_name, self.release_date)
+        super(MoviePost, self).save(*args, **kwargs)
 
 
 class MovieCollectionDetail(models.Model):
     id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE)
 
-    movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE, default=None, blank=True, null=True)
+    movie_id = models.ForeignKey(MoviePost, on_delete=models.SET_NULL, default=None, null=True, blank=True)
+
     movie_name = models.CharField(max_length=100)
     description = models.TextField()
     release_date = models.DateField()
+
+    slug = models.SlugField(null=True, unique=True)
 
     # Sentimeter
     positive = models.IntegerField(default=None, null=True, blank=True)
@@ -83,10 +110,18 @@ class MovieCollectionDetail(models.Model):
     aspect_vfx = models.FloatField(default=None, null=True, blank=True)
     genres = models.CharField(max_length=150, default=None, null=True, blank=True)
     ebits_rating = models.FloatField()
-    thumbnail_image = models.CharField(null=True, blank=True, max_length=300)
+    thumbnail_image_url = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.movie_name)
+
+    def get_absolute_url(self):
+        return reverse("collection_details", kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, self.release_date)
+        super(MovieCollectionDetail, self).save(*args, **kwargs)
 
 
 class CastDetail(models.Model):
@@ -100,7 +135,7 @@ class CastDetail(models.Model):
     costume_director = models.BooleanField(default=False)
     producer = models.BooleanField(default=False)
     cinematographer = models.BooleanField(default=False)
-    cast_image = models.CharField(null=True, blank=True, max_length=300)
+    cast_image_url = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.cast_name)
@@ -127,7 +162,7 @@ class UserReviewDetail(models.Model):
     review_date = models.DateField()
     review_text = models.TextField()
     review_approved = models.BooleanField(default=False)
-    reviewer_image = models.CharField(null=True, blank=True, max_length=300)
+    reviewer_image_url = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s->%s->%s" % (self.movie_id, self.review_author, self.review_date, self.review_approved)
@@ -213,7 +248,7 @@ class MovieToGenre(models.Model):
 class Label(models.Model):
     name = models.CharField(primary_key=True, max_length=150)
     type = models.CharField(default='general', max_length=150)
-    photo = models.CharField(null=True, blank=True, max_length=300)
+    photo_url = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s" % self.name
@@ -229,7 +264,7 @@ class MovieToLabel(models.Model):
 
 class MovieToTrailer(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
-    trailers = models.CharField(max_length=200)
+    trailers_url = models.CharField(max_length=200)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.trailers)
@@ -237,20 +272,28 @@ class MovieToTrailer(models.Model):
 
 class MovieToPhoto(models.Model):
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
-    photo = models.CharField(null=True, max_length=300)
+    photo_url = models.CharField(null=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.photo)
 
 
 class Report(models.Model):
-    id = models.UUIDField(primary_key=True,
-                          default=uuid.uuid4, help_text='Unique ID for this particular item')
-    collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE, default=None, blank=True,
-                                             null=True)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=150)
+    publish_date = models.DateField(default=datetime.now)
+
+    slug = models.SlugField(null=True, unique=True)
+
+    collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE, default=None, blank=True, null=True)
     chart_data_json = models.JSONField(default=None, null=True)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.collection_id)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, self.publish_date)
+        super(Report, self).save(*args, **kwargs)
 
 

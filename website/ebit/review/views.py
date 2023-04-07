@@ -25,7 +25,7 @@ def get_critics_reviews(movie_id):
                                    review_title, \
                                    review_date, \
                                    critic_review 
-                                   from review_CriticReviewDetail
+                                   from review_criticreviewdetail
                                     where movie_id_id = '%s' """ % movie_id
     critics_review_rows = raw_sql(critics_reviews_query)
     critics_reviews_list = []
@@ -50,8 +50,8 @@ def get_user_reviews(movie_id):
                                    review_title, \
                                    review_date, \
                                    review_text,\
-                                   reviewer_image
-                                   from review_UserReviewDetail
+                                   reviewer_image_url
+                                   from review_userreviewdetail
                                     where movie_id_id = '%s' and review_approved is True""" % movie_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
@@ -61,7 +61,7 @@ def get_user_reviews(movie_id):
                        'title': row.get("review_title"),
                        'review': row.get("critic_review"),
                        'dateTime': row.get("review_date"),
-                       'image': row.get("reviewer_image")
+                       'image': row.get("reviewer_image_url")
                        }
 
         user_reviews_list.append(user_review)
@@ -90,7 +90,7 @@ def get_movie_certificates(movie_id):
 
 
 def get_movie_platforms(movie_id):
-    platform_query = """select platform_id from review_MovieToPlatform where movie_id_id = '%s' """ % movie_id
+    platform_query = """select platform_id from review_movietoplatform where movie_id_id = '%s' """ % movie_id
     platform_rows = raw_sql(platform_query)
     platform_list = []
     for row in platform_rows:
@@ -100,7 +100,7 @@ def get_movie_platforms(movie_id):
 
 
 def get_movie_languages(movie_id):
-    language_query = """select language_id_id from review_MovieToLanguage where movie_id_id = '%s' """ % movie_id
+    language_query = """select language_id_id from review_movietolanguage where movie_id_id = '%s' """ % movie_id
     language_rows = raw_sql(language_query)
     language_list = []
     for row in language_rows:
@@ -110,7 +110,7 @@ def get_movie_languages(movie_id):
 
 
 def get_movie_trailers(movie_id):
-    trailer_query = """select trailers from review_MovieToTrailer where movie_id_id = '%s' """ % movie_id
+    trailer_query = """select trailers_url from review_movietotrailer where movie_id_id = '%s' """ % movie_id
     trailer_rows = raw_sql(trailer_query)
     trailer_list = []
     for row in trailer_rows:
@@ -120,7 +120,7 @@ def get_movie_trailers(movie_id):
 
 
 def get_movie_photos(movie_id):
-    photo_query = """select photo from review_MovieToPhoto where movie_id_id = '%s' """ % movie_id
+    photo_query = """select photo_url from review_movietophoto where movie_id_id = '%s' """ % movie_id
     photo_rows = raw_sql(photo_query)
     photo_list = []
     for row in photo_rows:
@@ -130,7 +130,7 @@ def get_movie_photos(movie_id):
 
 
 def get_movie_awards(movie_id):
-    award_query = """select award_name_id, award_for from review_MovieToAward where movie_id_id = '%s' """ \
+    award_query = """select award_name_id, award_for from review_movietoaward where movie_id_id = '%s' """ \
                   % movie_id
     award_rows = raw_sql(award_query)
     award_list = []
@@ -195,14 +195,14 @@ def similar_by_genres(request, movie_id):
                                       release_date, \
                                       ebits_rating, \
                                       critics_rating , \
-                                      thumbnail_image \
+                                      thumbnail_image_url \
                                       FROM 
                                       review_moviepost,\
                                       review_movietogenre
                                       
                                       WHERE review_moviepost.id = review_movietogenre.movie_id_id \
                                       and review_moviepost.id != '%s' \
-                                      and  %s ORDER BY random()  limit 10
+                                      and  %s ORDER BY rand()  limit 10
                                       """ % (formatted_uuid, filter_clause)
     # print(final_query)
     similar_movies_row = raw_sql(final_query)
@@ -212,7 +212,7 @@ def similar_by_genres(request, movie_id):
         movie = {'id': row.get("id"),
                                'title': row.get("movie_name"),
                                'description': row.get("duration"),
-                               'image': row.get("thumbnail_image"),
+                               'image': row.get("thumbnail_image_url"),
                                'releaseDate': row.get("release_date"),
                                'duration': row.get("review_date"),
                                'ebitsRatings': row.get("ebits_rating"),
@@ -226,29 +226,30 @@ def similar_by_genres(request, movie_id):
     return JsonResponse({"movies": similar_movies_list})
 
 
-def movie_details(request, movie_id):
-    formatted_uuid = format_uuid(movie_id)
+def movie_details(request, slug):
+    formatted_uuid = format_uuid(slug)
 
     final_query = """
                                       SELECT \
-                                      id,
+                                      id, 
+                                      slug,
                                       movie_name, \
                                       duration, \
                                       release_date, \
                                       description, \
                                       directors_display_comma_separated, \
                                       actors_display_comma_separated,\
-
+                                      
                                       ebits_rating,\
                                       ebits_review,\
                                       ebits_reviewer_name,\
                                       ebits_reviewer_image,\
                                       critics_rating,\
-
+                                      
                                       positive, \
                                       negative, \
                                       neutral, \
-
+                                      
                                       aspect_story, \
                                       aspect_direction, \
                                       aspect_music, \
@@ -256,12 +257,12 @@ def movie_details(request, movie_id):
                                       aspect_costume, \
                                       aspect_screenplay, \
                                       aspect_vfx, \
-
+                                      
                                       ebits_rating, \
-                                      thumbnail_image \
+                                      thumbnail_image_url \
                                       FROM review_moviepost
-                                      where id = '%s'
-                                      """ % formatted_uuid
+                                      where slug = '%s' 
+                                      """ % slug
 
     row_dict = raw_sql(final_query)
     if is_empty(row_dict):
@@ -290,7 +291,7 @@ def movie_details(request, movie_id):
                     "performance": movie_dict.get("aspect_performance"),
                     "costume": movie_dict.get("aspect_costume"),
                     "screenplay": movie_dict.get("aspect_screenplay"),
-                    "vfx": movie_dict.get("aspect_vfx"),
+                    "vxf": movie_dict.get("aspect_vxf"),
                     }
 
     overview_dict = {"realeaseDate": movie_dict.get("release_date"),
@@ -310,6 +311,7 @@ def movie_details(request, movie_id):
                      }
 
     movie_detail = {"id": movie_dict.get("id"),
+                    "slug": movie_dict.get("slug"),
                     "title": movie_dict.get("movie_name"),
                     "length": movie_dict.get("duration"),
                     "sentimeter": sentimeter_dict,
@@ -322,6 +324,8 @@ def movie_details(request, movie_id):
                     }
 
     return JsonResponse(movie_detail)
+
+
 
 
 def all_moods(request):
@@ -408,7 +412,7 @@ def all_reports(request):
     :return:
     """
     final_query = """Select
-                     review_report.id as id, \
+                     review_report.slug as slug, \
                      review_moviecollection.name as title,\
                      description as summary,\
                      chart_data_json as chart, \
@@ -422,7 +426,7 @@ def all_reports(request):
     reports = []
     for row in row_dict:
         pprint(type(row.get("chart")))
-        r = {'id': row.get("id"),
+        r = {'slug': row.get("slug"),
              'title': row.get("title"),
              'summary': row.get("summary"),
              'chart': json.loads(row.get("chart")),
@@ -434,8 +438,8 @@ def all_reports(request):
     return JsonResponse({'reports': reports})
 
 
-def report_details(request, report_id):
-    formatted_uuid = format_uuid(report_id)
+def report_details(request, slug):
+
     final_query = """Select
                          review_report.id, \
                          review_report.collection_id_id as collectionId,\
@@ -444,8 +448,8 @@ def report_details(request, report_id):
                          chart_data_json \
                          from  review_report, review_moviecollection \
                          where review_report.collection_id_id = review_moviecollection.id \
-                         and   review_report.id = '%s'
-                         """ % formatted_uuid
+                         and   review_report.slug = '%s'
+                         """ % slug
     row_dict = raw_sql(final_query)
     pprint(row_dict)
     if is_empty(row_dict):
@@ -473,9 +477,10 @@ def all_collections(request):
     """
     final_query = """Select
                          id, \
+                         slug, \
                          name,\
                          description,\
-                         bgImage , \
+                         image_url , \
                          publish_date \
                          from  review_moviecollection \
                          where not is_report \
@@ -491,8 +496,9 @@ def all_collections(request):
     count = 0
     for col in all_colls:
         col_id = col.get("id")
+        slug = col.get("slug")
         col['type'] = 'movie'
-        collection_entry_data = get_collection_details(col_id, False)
+        collection_entry_data = get_collection_details(slug, False)
         col['entries'] = collection_entry_data
         final_reponse.append(col)
         count = count + 1
@@ -500,17 +506,17 @@ def all_collections(request):
     return JsonResponse({'collections': final_reponse})
 
 
-def collection_details(request, collection_id):
-    formatted_uuid = format_uuid(collection_id)
+def collection_details(request, slug):
+
     data = MovieCollection.objects.raw("""
                                       SELECT \
                                       id, \
                                       name, \
                                       description, \
-                                      bgImage \
+                                      image_url \
                                       FROM review_moviecollection
-                                      where id = '%s'
-                                      """ % formatted_uuid
+                                      where slug = '%s'
+                                      """ % slug
                                        )
 
     if is_empty(list(data)):
@@ -524,7 +530,9 @@ def collection_details(request, collection_id):
         return JsonResponse({})
 
     col_data_json_dict = col_data_json[0]
-    collection_entry_data = get_collection_details(formatted_uuid, False)
+    collection_id = col_data_json_dict.get("id")
+    print("collection_id " + str(collection_id))
+    collection_entry_data = get_collection_details(collection_id, False)
 
     col_data_json_dict['entries'] = collection_entry_data
     response = {'collection': col_data_json}
@@ -536,11 +544,11 @@ def get_collection_details(collection_id, is_report):
         if is_report else "not review_moviecollection.is_report"
     final_query = """
                                                 SELECT \
-                                                review_moviecollectiondetail.id ,\
+                                                review_moviecollectiondetail.slug ,\
                                                 movie_name as title, \
                                                 ebits_rating as rating, \
                                                 review_moviecollectiondetail.description,\
-                                                thumbnail_image as bgImage, \
+                                                thumbnail_image_url as bgImage, \
                                                 release_date as releaseDate, \
                                                 aspect_story as story, \
                                                 aspect_direction as direction,\
@@ -553,14 +561,14 @@ def get_collection_details(collection_id, is_report):
                                                 FROM review_moviecollectiondetail, review_moviecollection
                                                 where
                                                 review_moviecollectiondetail.collection_id_id = review_moviecollection.id
-                                                and collection_id_id = '%s' and %s
+                                                and review_moviecollection.id = '%s' and %s
                                                   """ % (collection_id, report_redicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
     entries = []
     for row in row_dict:
-        entry = {"id": row.get("id"),
+        entry = {"slug": row.get("slug"),
                  "name": row.get("title"),
                  "ebitsRatings": row.get("rating"),
                  "image": row.get("bgImage")}
@@ -580,9 +588,9 @@ def movies(request):
     language_list = data.get('languages', [])
     platform_list = data.get('platforms', [])
     awards_list = data.get('awards', [])
-    ebits_rating_range = data.get('ebitsRatingRange', [])
-    critics_rating_range = data.get('criticsRatingRange', [])
-    offset_range = data.get('offsetRange', [])
+    ebits_rating_range = data.get('ebitsRatingRange', {})
+    critics_rating_range = data.get('criticsRatingRange', {})
+    offset_range = data.get('offsetRange', {})
 
     filter_clause = ""
     join_clause = ""
@@ -633,30 +641,39 @@ def movies(request):
         else:
             filter_clause = filter_clause + " and review_movietoaward.award_name_id in (%s)" % in_clause
 
-    if not is_empty(ebits_rating_range):
-        between_clause = "%s and %s " % (ebits_rating_range[0], ebits_rating_range[1])
+    if ebits_rating_range and not is_empty(ebits_rating_range):
+        between_clause = "%s and %s " % (ebits_rating_range.get("low"), ebits_rating_range.get("high"))
         if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_moviepost.ebits_rating between %s" % between_clause
         else:
             filter_clause = filter_clause + " and review_moviepost.ebits_rating between %s" % between_clause
 
-    if not is_empty(critics_rating_range):
-        between_clause = "%s and %s " % (critics_rating_range[0], critics_rating_range[1])
+    if critics_rating_range and not is_empty(critics_rating_range):
+        between_clause = "%s and %s " % (critics_rating_range.get("low"), critics_rating_range.get("high"))
         if is_empty(filter_clause):
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
         else:
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
 
-    if not is_empty(offset_range):
-        between_clause = "%s and %s " % (offset_range[0], offset_range[1])
-        if is_empty(filter_clause):
-            filter_clause = filter_clause + " and review_moviepost.id between %s" % between_clause
-        else:
-            filter_clause = filter_clause + " and review_moviepost.id between %s" % between_clause
+    filter_clause = filter_clause + " ORDER BY release_date desc "
+
+    if offset_range and not is_empty(offset_range):
+        limit = offset_range.get("limit")
+        offset = offset_range.get("offset")
+        if limit and int(limit) > 50:
+            raise Exception('spam', 'Invalid limit clause')
+
+        if offset and int(offset) < 0:
+            raise Exception('spam', 'Invalid offset clause')
+
+        limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
+        filter_clause = filter_clause + limit_clause
+
 
     final_query = """
                                   SELECT \
                                   review_moviepost.id,
+                                  review_moviepost.slug,
                                   movie_name as Title, \
                                   genre_id as Genre, \
                                   label_id as Label, \
@@ -669,7 +686,7 @@ def movies(request):
                                   release_date as ReleaseDate, \
                                   ebits_rating as ebitsRating, \
                                   critics_rating as criticsRating, \
-                                  thumbnail_image as image \
+                                  thumbnail_image_url as image \
                                   FROM
                                   review_moviepost \
                                   left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id \
@@ -683,3 +700,5 @@ def movies(request):
     print(final_query)
     row_dict = raw_sql(final_query)
     return JsonResponse({'movies': row_dict})
+
+
