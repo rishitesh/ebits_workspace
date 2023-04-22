@@ -11,7 +11,7 @@ class CollectionSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'bgImage'
+            'image_url'
         ]
 
 
@@ -28,7 +28,7 @@ class CollectionDetailSerializer(serializers.ModelSerializer):
             'negative',
             'neutral',
             'ebits_rating',
-            'thumbnail_image',
+            'thumbnail_image_url',
             'movie_id'
         ]
 
@@ -46,7 +46,7 @@ class MoviePostSerializer(serializers.ModelSerializer):
             'negative',
             'neutral',
             'ebits_rating',
-            'thumbnail_image'
+            'thumbnail_image_url'
         ]
 
 

@@ -19,7 +19,7 @@ urlpatterns = [
     path('api/v1/languages/', views.all_languages, name='all_languages'),
     path('api/v1/movies/', csrf_exempt(views.movies), name='movies'),
     path('api/v1/movies/<slug:slug>/', csrf_exempt(views.movie_details), name='movie_details'),
-    path('api/v1/similarbygenres/<slug:movie_id>/', csrf_exempt(views.similar_by_genres), name='similar_by_genres'),
+    path('api/v1/similarbygenres/<slug:slug>/', csrf_exempt(views.similar_by_genres), name='similar_by_genres'),
 
     path('api/v1/addusercomment/', csrf_exempt(views.add_user_comment), name='add_user_comment'),
     # Reports Section

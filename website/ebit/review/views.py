@@ -145,15 +145,18 @@ def get_movie_awards(movie_id):
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
     print(data)
-    movie_id = data.get('id', [])
+    slug = data.get('slug', [])
+    movie_query = """select id from review_moviepost where slug='%s' limit 1""" % slug
+    movie_row = raw_sql(movie_query)[0]
+    movie_id = movie_row.get("id")
+
     review_author = data.get('author', [])
     review_rating = data.get('ratings', [])
     review_title = data.get('title', [])
     review_text = data.get('review', [])
     reviewer_image = data.get('image', [])
 
-    formatted_uuid = format_uuid(movie_id)
-    movie = MoviePost.objects.get(id=formatted_uuid)
+    movie = MoviePost.objects.get(id=movie_id)
 
     if not movie:
         message = "Invalid movie reference"
@@ -165,7 +168,7 @@ def add_user_comment(request):
                                    review_title=review_title,
                                    review_date=date.today(),
                                    review_text=review_text,
-                                   reviewer_image=reviewer_image,
+                                   reviewer_image_url=reviewer_image,
                                    review_approved=False)
 
     user_review.save()
@@ -174,9 +177,14 @@ def add_user_comment(request):
     return JsonResponse({"message": message})
 
 
-def similar_by_genres(request, movie_id):
-    formatted_uuid = format_uuid(movie_id)
-    genre_list = get_movie_genres(formatted_uuid)
+
+def similar_by_genres(request, slug):
+    movie_query  = """select id from review_moviepost where slug='%s' limit 1""" % slug
+    movie_row = raw_sql(movie_query)[0]
+    movie_id = movie_row.get("id")
+
+    genre_list = get_movie_genres(movie_id)
+
     if is_empty(genre_list):
         return JsonResponse({})
 
@@ -203,7 +211,7 @@ def similar_by_genres(request, movie_id):
                                       WHERE review_moviepost.id = review_movietogenre.movie_id_id \
                                       and review_moviepost.id != '%s' \
                                       and  %s ORDER BY rand()  limit 10
-                                      """ % (formatted_uuid, filter_clause)
+                                      """ % (movie_id, filter_clause)
     # print(final_query)
     similar_movies_row = raw_sql(final_query)
 
@@ -327,37 +335,48 @@ def movie_details(request, slug):
 
 
 
-
 def all_moods(request):
-    moods = Label.objects.raw("select name, photo from review_label where LOWER(type) = 'mood'")
+    final_query = """ select label_id as name , count(*) as cnt from review_moviepost
+      left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id
+      join  review_label on  review_movietolabel.label_id = review_label.name
+      and LOWER(review_label.type) = 'mood' group by label_id """
+    row_dict = raw_sql(final_query)
     js_val = {}
     records = []
-    for d in moods:
-        obj = {"name": d.name, "photo": ""}
-        records.append(obj)
+    for d in row_dict:
+        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)
 
 
 def all_labels(request):
-    labels = Label.objects.raw("select name from review_label where LOWER(type) != 'mood'")
+    final_query = """ select label_id as name , count(*) as cnt from review_moviepost
+      left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id
+      join  review_label on  review_movietolabel.label_id = review_label.name
+      and LOWER(review_label.type) != 'mood' group by label_id """
+    row_dict = raw_sql(final_query)
     js_val = {}
     records = []
-    for d in labels:
-        obj = {"name": d.name, "photo": ""}
-        records.append(obj)
+    for d in row_dict:
+        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        records.append(datum)
     js_val["categories"] = records
     return JsonResponse(js_val)
 
 
 def all_genres(request):
-    data = list(Genre.objects.values())
+    final_query = """ select genre_id as name , count(*) as cnt from review_moviepost \
+     left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id group by genre_id """
+    row_dict = raw_sql(final_query)
     js_val = {}
     records = []
-    for d in data:
-        records.append(d.get("name"))
+    for d in row_dict:
+        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        records.append(datum)
     js_val["geners"] = records
     return JsonResponse(js_val, safe=False)
+
 
 
 def all_platforms(request):
@@ -416,7 +435,7 @@ def all_reports(request):
                      review_moviecollection.name as title,\
                      description as summary,\
                      chart_data_json as chart, \
-                     publish_date \
+                     review_report.publish_date \
                      from  review_report, review_moviecollection \
                      where review_report.collection_id_id = review_moviecollection.id \
                      order by publish_date desc limit 20
@@ -468,6 +487,8 @@ def report_details(request, slug):
     return JsonResponse(response)
 
 
+
+
 def all_collections(request):
     """
     This method returns all the movie/OTT collection list. See MovieCollection model object
@@ -498,12 +519,13 @@ def all_collections(request):
         col_id = col.get("id")
         slug = col.get("slug")
         col['type'] = 'movie'
-        collection_entry_data = get_collection_details(slug, False)
+        collection_entry_data = get_collection_details(col_id, False)
         col['entries'] = collection_entry_data
         final_reponse.append(col)
         count = count + 1
 
     return JsonResponse({'collections': final_reponse})
+
 
 
 def collection_details(request, slug):
@@ -539,9 +561,14 @@ def collection_details(request, slug):
     return JsonResponse(response)
 
 
+
 def get_collection_details(collection_id, is_report):
-    report_redicate = "review_moviecollection.is_report" \
-        if is_report else "not review_moviecollection.is_report"
+    report_predicate = "review_moviecollection.is_report" 
+    if is_report:
+        report_predicate = "review_moviecollection.is_report"
+    else:
+        report_predicate = "not review_moviecollection.is_report"
+    pprint("is_report " + str(is_report))
     final_query = """
                                                 SELECT \
                                                 review_moviecollectiondetail.slug ,\
@@ -562,7 +589,7 @@ def get_collection_details(collection_id, is_report):
                                                 where
                                                 review_moviecollectiondetail.collection_id_id = review_moviecollection.id
                                                 and review_moviecollection.id = '%s' and %s
-                                                  """ % (collection_id, report_redicate)
+                                                  """ % (collection_id, report_predicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
 

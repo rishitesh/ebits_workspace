@@ -267,7 +267,7 @@ class MovieToTrailer(models.Model):
     trailers_url = models.CharField(max_length=200)
 
     def __str__(self):
-        return "%s->%s" % (self.movie_id, self.trailers)
+        return "%s->%s" % (self.movie_id, self.trailers_url)
 
 
 class MovieToPhoto(models.Model):
