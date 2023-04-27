@@ -217,6 +217,7 @@ class MovieToLanguage(models.Model):
 
 class Platform(models.Model):
     name = models.CharField(primary_key=True, max_length=100)
+    image_url = models.CharField(primary_key=False, max_length=200)
 
     def __str__(self):
         return "%s" % self.name

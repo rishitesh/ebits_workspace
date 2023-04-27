@@ -44,7 +44,7 @@ def get_critics_reviews(movie_id):
 
 
 def get_user_reviews(movie_id):
-    user_reviews_query = """select 
+    user_reviews_query = """select id, \
                                    review_author, \
                                    review_rating, \
                                    review_title, \
@@ -56,10 +56,11 @@ def get_user_reviews(movie_id):
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
-        user_review = {'authorName': row.get("review_author"),
+        user_review = {'id' : row.get("id"),
+                       'authorName': row.get("review_author"),
                        'ratings': row.get("review_rating"),
                        'title': row.get("review_title"),
-                       'review': row.get("critic_review"),
+                       'review': row.get("review_text"),
                        'dateTime': row.get("review_date"),
                        'image': row.get("reviewer_image_url")
                        }
@@ -90,13 +91,16 @@ def get_movie_certificates(movie_id):
 
 
 def get_movie_platforms(movie_id):
-    platform_query = """select platform_id from review_movietoplatform where movie_id_id = '%s' """ % movie_id
+    platform_query = """select platform_id, image_url from review_movietoplatform, review_platform \
+    where review_movietoplatform.platform_id=review_platform.name and  movie_id_id = '%s' """ % movie_id
     platform_rows = raw_sql(platform_query)
     platform_list = []
     for row in platform_rows:
-        platform_list.append(row.get("platform_id"))
+        platform = {"name": row.get("platform_id"), "url": row.get("image_url")}
+        platform_list.append(platform)
 
     return platform_list
+
 
 
 def get_movie_languages(movie_id):
@@ -276,16 +280,18 @@ def movie_details(request, slug):
     if is_empty(row_dict):
         return JsonResponse({})
     movie_dict = row_dict[0]
+    
+    movie_id = movie_dict.get("id")
+    genre_list = get_movie_genres(movie_id)
+    cert_list = get_movie_certificates(movie_id)
+    platform_list = get_movie_platforms(movie_id)
+    language_list = get_movie_languages(movie_id)
+    trailer_list = get_movie_trailers(movie_id)
+    photo_list = get_movie_photos(movie_id)
+    critics_reviews_list = get_critics_reviews(movie_id)
+    user_reviews_list = get_user_reviews(movie_id)
+    award_list = get_movie_awards(movie_id)
 
-    genre_list = get_movie_genres(formatted_uuid)
-    cert_list = get_movie_certificates(formatted_uuid)
-    platform_list = get_movie_platforms(formatted_uuid)
-    language_list = get_movie_languages(formatted_uuid)
-    trailer_list = get_movie_trailers(formatted_uuid)
-    photo_list = get_movie_photos(formatted_uuid)
-    critics_reviews_list = get_critics_reviews(formatted_uuid)
-    user_reviews_list = get_user_reviews(formatted_uuid)
-    award_list = get_movie_awards(formatted_uuid)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -713,7 +719,9 @@ def movies(request):
                                   release_date as ReleaseDate, \
                                   ebits_rating as ebitsRating, \
                                   critics_rating as criticsRating, \
-                                  thumbnail_image_url as image \
+                                  thumbnail_image_url as image, \
+                                  review_moviepost.description, \
+                                  review_moviepost.duration
                                   FROM
                                   review_moviepost \
                                   left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id \
