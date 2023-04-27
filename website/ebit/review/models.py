@@ -142,6 +142,7 @@ class CastDetail(models.Model):
 
 
 class CriticReviewDetail(models.Model):
+    id = models.AutoField(primary_key=True)
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
     publication_name = models.TextField()
     review_author = models.TextField()
@@ -149,12 +150,20 @@ class CriticReviewDetail(models.Model):
     review_title = models.TextField()
     review_date = models.DateField()
     critic_review = models.TextField()
+    review_likes = models.IntegerField(default=None, null=True, blank=True)
+    review_dislikes = models.IntegerField(default=None, null=True, blank=True)
+
+    slug = models.SlugField(null=True, unique=True)
+
+    def get_absolute_url(self):
+        return reverse("CriticReviewDetail", kwargs={'slug': self.slug})
 
     def __str__(self):
-        return "%s->%s" % (self.movie_id, self.publication_name)
+        return "%s->%s->%s->%s" % (self.movie_id, self.publication_name, self.review_author, self.review_title)
 
 
 class UserReviewDetail(models.Model):
+    id = models.AutoField(primary_key=True)
     movie_id = models.ForeignKey(MoviePost, on_delete=models.CASCADE)
     review_author = models.TextField()
     review_rating = models.FloatField()
@@ -162,7 +171,14 @@ class UserReviewDetail(models.Model):
     review_date = models.DateField()
     review_text = models.TextField()
     review_approved = models.BooleanField(default=False)
+    review_likes = models.IntegerField(default=None, null=True, blank=True)
+    review_dislikes = models.IntegerField(default=None, null=True, blank=True)
     reviewer_image_url = models.CharField(null=True, blank=True, max_length=300)
+
+    slug = models.SlugField(null=True, unique=True)
+
+    def get_absolute_url(self):
+        return reverse("UserReviewDetail", kwargs={'slug': self.slug})
 
     def __str__(self):
         return "%s->%s->%s->%s" % (self.movie_id, self.review_author, self.review_date, self.review_approved)

@@ -13,7 +13,6 @@ admin.site.register(Language)
 admin.site.register(Certificate)
 admin.site.register(MovieToPhoto)
 admin.site.register(CastDetail)
-admin.site.register(CriticReviewDetail)
 admin.site.register(Award)
 admin.site.register(MovieToAward)
 admin.site.register(MovieToCertificate)
@@ -22,7 +21,22 @@ admin.site.register(MovieToLabel)
 admin.site.register(Label)
 admin.site.register(MovieToPlatform)
 admin.site.register(MovieToTrailer)
-admin.site.register(UserReviewDetail)
+
+
+class UserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'movie_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('movie_id', 'review_author', 'review_title')}
+
+
+admin.site.register(UserReviewDetail, UserReviewDetailAdmin)
+
+
+class CriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
 
 
 class MoviePostAdmin(admin.ModelAdmin):

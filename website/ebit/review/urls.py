@@ -22,6 +22,8 @@ urlpatterns = [
     path('api/v1/similarbygenres/<slug:slug>/', csrf_exempt(views.similar_by_genres), name='similar_by_genres'),
 
     path('api/v1/addusercomment/', csrf_exempt(views.add_user_comment), name='add_user_comment'),
+    path('api/v1/addusercommentlikes/', csrf_exempt(views.add_likes), name='add_user_comment_likes'),
+    path('api/v1/addusercommentdislikes/', csrf_exempt(views.add_dislikes), name='add_user_comment_dislikes'),
     # Reports Section
     path('api/v1/reports/', views.all_reports, name='all_reports'),
     path('api/v1/reports/<slug:slug>/', views.report_details, name='report_details'),

@@ -50,19 +50,25 @@ def get_user_reviews(movie_id):
                                    review_title, \
                                    review_date, \
                                    review_text,\
-                                   reviewer_image_url
+                                   reviewer_image_url,\
+                                   review_likes,\
+                                   review_dislikes, \
+                                   slug \
                                    from review_userreviewdetail
                                     where movie_id_id = '%s' and review_approved is True""" % movie_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
-        user_review = {'id' : row.get("id"),
+        user_review = {'id': row.get("id"),
                        'authorName': row.get("review_author"),
                        'ratings': row.get("review_rating"),
                        'title': row.get("review_title"),
                        'review': row.get("review_text"),
                        'dateTime': row.get("review_date"),
-                       'image': row.get("reviewer_image_url")
+                       'image': row.get("reviewer_image_url"),
+                       'likes': row.get("review_likes"),
+                       'dislikes': row.get("review_dislikes"),
+                       'slug': row.get("slug")
                        }
 
         user_reviews_list.append(user_review)
@@ -100,7 +106,6 @@ def get_movie_platforms(movie_id):
         platform_list.append(platform)
 
     return platform_list
-
 
 
 def get_movie_languages(movie_id):
@@ -146,6 +151,44 @@ def get_movie_awards(movie_id):
 
 
 @require_http_methods(["POST"])
+def add_likes(request):
+    data = json.loads(request.body.decode("utf-8"))
+    slug = data.get('slug', [])
+    user_review = UserReviewDetail.objects.get(slug=slug)
+    if not user_review:
+        return JsonResponse({"message": "User review with slug %s not found " % slug})
+
+    total_likes = user_review.review_likes
+    if total_likes:
+        total_likes = total_likes + 1
+    else:
+        total_likes = 1
+    user_review.review_likes = total_likes
+    user_review.save()
+    message = "Successfully added user comment likes"
+    return JsonResponse({"message": message})
+
+
+@require_http_methods(["POST"])
+def add_dislikes(request):
+    data = json.loads(request.body.decode("utf-8"))
+    slug = data.get('slug', [])
+    user_review = UserReviewDetail.objects.get(slug=slug)
+    if not user_review:
+        return JsonResponse({"message": "User review with slug %s not found " % slug})
+
+    total_dislikes = user_review.review_dislikes
+    if total_dislikes:
+        total_dislikes = total_dislikes + 1
+    else:
+        total_dislikes = 1
+    user_review.review_dislikes = total_dislikes
+    user_review.save()
+    message = "Successfully added user comment dislikes"
+    return JsonResponse({"message": message})
+
+
+@require_http_methods(["POST"])
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
     print(data)
@@ -179,7 +222,6 @@ def add_user_comment(request):
 
     message = "Successfully added user review"
     return JsonResponse({"message": message})
-
 
 
 def similar_by_genres(request, slug):
@@ -382,7 +424,6 @@ def all_genres(request):
         records.append(datum)
     js_val["geners"] = records
     return JsonResponse(js_val, safe=False)
-
 
 
 def all_platforms(request):
