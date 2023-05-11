@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import MoviePost, Platform, Genre, Language, Certificate, \
     MovieToPhoto, CastDetail, CriticReviewDetail, Award, MovieToAward, MovieToCertificate, \
     MovieToLanguage, MovieToLabel, MovieToGenre, Label, MovieCollection, MovieCollectionDetail, \
-    MovieToPlatform, Report, MovieToTrailer, UserReviewDetail
+    MovieToPlatform, Report, MovieToTrailer, UserReviewDetail, PhotoType
 
 from .podcastsModels import PodcastPost, PodcastLabel, PodcastToLabel, PodcasterDetail, PCriticReviewDetail, \
     PUserReviewDetail, PodcastAward, PodcastToAward, PCertificate, PodcastToCertificate, PLanguage, \
@@ -18,7 +18,6 @@ admin.site.register(Language)
 admin.site.register(Certificate)
 admin.site.register(MovieToPhoto)
 admin.site.register(CastDetail)
-admin.site.register(CriticReviewDetail)
 admin.site.register(Award)
 admin.site.register(MovieToAward)
 admin.site.register(MovieToCertificate)
@@ -27,7 +26,22 @@ admin.site.register(MovieToLabel)
 admin.site.register(Label)
 admin.site.register(MovieToPlatform)
 admin.site.register(MovieToTrailer)
-admin.site.register(UserReviewDetail)
+admin.site.register(PhotoType)
+
+class UserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'movie_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('movie_id', 'review_author', 'review_title')}
+
+
+admin.site.register(UserReviewDetail, UserReviewDetailAdmin)
+
+
+class CriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
 
 #Podcasts Section
 admin.site.register(PodcastLabel)
