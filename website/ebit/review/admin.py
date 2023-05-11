@@ -8,7 +8,7 @@ from .models import MoviePost, Platform, Genre, Language, Certificate, \
 from .podcastsModels import PodcastPost, PodcastLabel, PodcastToLabel, PodcasterDetail, PCriticReviewDetail, \
     PUserReviewDetail, PodcastAward, PodcastToAward, PCertificate, PodcastToCertificate, PLanguage, \
     PodcastToLanguage, PPlatform, PodcastToPlatform, PGenre, PodcastToGenre, PodcastToTrailer, \
-    PodcastToPhoto, PodcastCollectionDetail, PodcastCollection, PReport
+    PodcastToPhoto, PodcastCollectionDetail, PodcastCollection, PReport, PPhotoType
 
 # Movie Section
 admin.site.register(Platform)
@@ -28,12 +28,21 @@ admin.site.register(MovieToPlatform)
 admin.site.register(MovieToTrailer)
 admin.site.register(PhotoType)
 
+
 class UserReviewDetailAdmin(admin.ModelAdmin):
     list_display = ['id', 'movie_id', 'review_author', 'review_title']
     prepopulated_fields = {'slug': ('movie_id', 'review_author', 'review_title')}
 
 
 admin.site.register(UserReviewDetail, UserReviewDetailAdmin)
+
+
+class PUserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'podcast_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('podcast_id', 'review_author', 'review_title')}
+
+
+admin.site.register(PUserReviewDetail, PUserReviewDetailAdmin)
 
 
 class CriticReviewDetailAdmin(admin.ModelAdmin):
@@ -48,7 +57,6 @@ admin.site.register(PodcastLabel)
 admin.site.register(PodcastToLabel)
 admin.site.register(PodcasterDetail)
 admin.site.register(PCriticReviewDetail)
-admin.site.register(PUserReviewDetail)
 admin.site.register(PodcastAward)
 admin.site.register(PodcastToAward)
 admin.site.register(PCertificate)
@@ -61,6 +69,7 @@ admin.site.register(PGenre)
 admin.site.register(PodcastToGenre)
 admin.site.register(PodcastToTrailer)
 admin.site.register(PodcastToPhoto)
+admin.site.register(PPhotoType)
 
 
 class MoviePostAdmin(admin.ModelAdmin):

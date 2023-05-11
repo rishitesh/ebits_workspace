@@ -782,10 +782,6 @@ def movies(request):
     print(final_query)
     row_dict = raw_sql(final_query)
 
-    photos_sql = """select name, photo_url from review_movietophoto,\
-                    review_phototype \
-                    where review_movietophoto.movie_id_id=%s \
-                    and review_movietophoto.photo_type_id=review_phototype.id"""
     entries = []
     for row in row_dict:
         photo_dict = get_movie_photos(row.get("id"))

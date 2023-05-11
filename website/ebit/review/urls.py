@@ -39,6 +39,8 @@ urlpatterns = [
     path('api/v1/podcasts/similarbygenres/<slug:slug>/', csrf_exempt(PodcastsViews.similar_by_genres), name='podcasts-similar_by_genres'),
 
     path('api/v1/podcasts/addusercomment/', csrf_exempt(PodcastsViews.add_user_comment), name='podcasts-add_user_comment'),
+    path('api/v1/podcasts/addusercommentlikes/', csrf_exempt(PodcastsViews.add_likes), name='add_user_comment_likes'),
+    path('api/v1/podcasts/addusercommentdislikes/', csrf_exempt(PodcastsViews.add_dislikes), name='add_user_comment_dislikes'),
     # Podcasts report section
     path('api/v1/podcasts/reports/', PodcastsViews.all_reports, name='podcasts-all_reports'),
     path('api/v1/podcasts/reports/<slug:slug>/', PodcastsViews.report_details, name='podcasts-report_details'),

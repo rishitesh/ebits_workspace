@@ -51,7 +51,10 @@ def get_user_reviews(podcast_id):
                                    review_title, \
                                    review_date, \
                                    review_text,\
-                                   reviewer_image_url
+                                   reviewer_image_url,\
+                                   review_likes,\
+                                   review_dislikes, \
+                                   slug 
                                    from review_puserreviewdetail
                                     where podcast_id_id = '%s' and review_approved is True""" % podcast_id
     user_review_rows = raw_sql(user_reviews_query)
@@ -62,7 +65,10 @@ def get_user_reviews(podcast_id):
                        'title': row.get("review_title"),
                        'review': row.get("critic_review"),
                        'dateTime': row.get("review_date"),
-                       'image': row.get("reviewer_image_url")
+                       'image': row.get("reviewer_image_url"),
+                       'likes': row.get("review_likes"),
+                       'dislikes': row.get("review_dislikes"),
+                       'slug': row.get("slug")
                        }
 
         user_reviews_list.append(user_review)
@@ -121,11 +127,16 @@ def get_podcast_trailers(podcast_id):
 
 
 def get_podcast_photos(podcast_id):
-    photo_query = """select photo_url from review_podcasttophoto where podcast_id_id = '%s' """ % podcast_id
+    photo_query = """select name, photo_url from review_podcasttophoto,\
+                       review_pphototype \
+                       where review_podcasttophoto.podcast_id_id=%s \
+                       and review_podcasttophoto.photo_type_id=review_pphototype.id """ % podcast_id
+
     photo_rows = raw_sql(photo_query)
     photo_list = []
     for row in photo_rows:
-        photo_list.append(row.get("photo"))
+        photo = {"name": row.get("name"), "photo_url": row.get("photo_url")}
+        photo_list.append(photo)
 
     return photo_list
 
@@ -140,6 +151,44 @@ def get_podcast_awards(podcast_id):
         award_list.append(award)
 
     return award_list
+
+
+@require_http_methods(["POST"])
+def add_likes(request):
+    data = json.loads(request.body.decode("utf-8"))
+    slug = data.get('slug', [])
+    user_review = PUserReviewDetail.objects.get(slug=slug)
+    if not user_review:
+        return JsonResponse({"message": "User review with slug %s not found " % slug})
+
+    total_likes = user_review.review_likes
+    if total_likes:
+        total_likes = total_likes + 1
+    else:
+        total_likes = 1
+    user_review.review_likes = total_likes
+    user_review.save()
+    message = "Successfully added user comment likes"
+    return JsonResponse({"message": message})
+
+
+@require_http_methods(["POST"])
+def add_dislikes(request):
+    data = json.loads(request.body.decode("utf-8"))
+    slug = data.get('slug', [])
+    user_review = PUserReviewDetail.objects.get(slug=slug)
+    if not user_review:
+        return JsonResponse({"message": "User review with slug %s not found " % slug})
+
+    total_dislikes = user_review.review_dislikes
+    if total_dislikes:
+        total_dislikes = total_dislikes + 1
+    else:
+        total_dislikes = 1
+    user_review.review_dislikes = total_dislikes
+    user_review.save()
+    message = "Successfully added user comment dislikes"
+    return JsonResponse({"message": message})
 
 
 @require_http_methods(["POST"])
@@ -267,20 +316,22 @@ def podcast_details(request, slug):
                                       where slug = '%s' 
                                       """ % slug
 
+    pprint(final_query)
     row_dict = raw_sql(final_query)
     if is_empty(row_dict):
         return JsonResponse({})
     podcast_dict = row_dict[0]
+    podcast_id = podcast_dict.get("id")
 
-    genre_list = get_podcast_genres(formatted_uuid)
-    cert_list = get_podcast_certificates(formatted_uuid)
-    platform_list = get_podcast_platforms(formatted_uuid)
-    language_list = get_podcast_languages(formatted_uuid)
-    trailer_list = get_podcast_trailers(formatted_uuid)
-    photo_list = get_podcast_photos(formatted_uuid)
-    critics_reviews_list = get_critics_reviews(formatted_uuid)
-    user_reviews_list = get_user_reviews(formatted_uuid)
-    award_list = get_podcast_awards(formatted_uuid)
+    genre_list = get_podcast_genres(podcast_id)
+    cert_list = get_podcast_certificates(podcast_id)
+    platform_list = get_podcast_platforms(podcast_id)
+    language_list = get_podcast_languages(podcast_id)
+    trailer_list = get_podcast_trailers(podcast_id)
+    photo_list = get_podcast_photos(podcast_id)
+    critics_reviews_list = get_critics_reviews(podcast_id)
+    user_reviews_list = get_user_reviews(podcast_id)
+    award_list = get_podcast_awards(podcast_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -704,7 +755,14 @@ def podcasts(request):
                                   """ % filter_clause
     print(final_query)
     row_dict = raw_sql(final_query)
-    return JsonResponse({'podcasts': row_dict})
+
+    entries = []
+    for row in row_dict:
+        photo_dict = get_podcast_photos(row.get("id"))
+        row["photos"] = photo_dict
+        entries.append(row)
+
+    return JsonResponse({'podcasts': entries})
 
 
 

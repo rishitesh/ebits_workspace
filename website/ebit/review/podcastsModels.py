@@ -152,7 +152,14 @@ class PUserReviewDetail(models.Model):
     review_date = models.DateField()
     review_text = models.TextField()
     review_approved = models.BooleanField(default=False)
+    review_likes = models.IntegerField(default=None, null=True, blank=True)
+    review_dislikes = models.IntegerField(default=None, null=True, blank=True)
     reviewer_image_url = models.CharField(null=True, blank=True, max_length=300)
+
+    slug = models.SlugField(null=True, unique=True)
+
+    def get_absolute_url(self):
+        return reverse("UserReviewDetail", kwargs={'slug': self.slug})
 
     def __str__(self):
         return "%s->%s->%s->%s" % (self.podcast_id, self.review_author, self.review_date, self.review_approved)
@@ -260,8 +267,17 @@ class PodcastToTrailer(models.Model):
         return "%s->%s" % (self.podcast_id, self.trailers_url)
 
 
+class PPhotoType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return "%s->%s" % (self.id, self.name)
+
+
 class PodcastToPhoto(models.Model):
     podcast_id = models.ForeignKey(PodcastPost, on_delete=models.CASCADE)
+    photo_type = models.ForeignKey(PPhotoType, on_delete=models.CASCADE)
     photo_url = models.CharField(null=True, max_length=300)
 
     def __str__(self):
