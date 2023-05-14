@@ -86,7 +86,7 @@ class ColectionAdmin(admin.ModelAdmin):
 
 
 class ColectionDetailsAdmin(admin.ModelAdmin):
-    list_display = ['movie_name', 'release_date', 'genres']
+    list_display = ['collection_id', 'movie_name', 'release_date', 'genres']
     prepopulated_fields = {'slug': ('movie_name', 'release_date')}
 
 
