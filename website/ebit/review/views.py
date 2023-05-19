@@ -123,7 +123,7 @@ def get_movie_trailers(movie_id):
     trailer_rows = raw_sql(trailer_query)
     trailer_list = []
     for row in trailer_rows:
-        trailer_list.append(row.get("trailers"))
+        trailer_list.append(row.get("trailers_url"))
 
     return trailer_list
 
@@ -808,10 +808,31 @@ def movies(request):
     entries = []
     for row in row_dict:
         photo_dict = get_movie_photos(row.get("id"))
+        trailer_dict = get_movie_trailers(row.get("id"))
         row["photos"] = photo_dict
+        row["trailers"] = trailer_dict
+        row["genres"] = get_movie_genres(row.get("id"))
         entries.append(row)
 
     return JsonResponse({'movies': entries})
 
 
 
+def search(request):
+    keywords = request.GET["keywords"]
+    if is_empty(keywords):
+        return JsonResponse({'movies': ""})
+
+    serach_query = """SELECT id, slug,\
+     duration, \
+     release_date, \
+     thumbnail_image_url from review_moviepost where MATCH (movie_name, description, ebits_review) \
+                      AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
+
+    row_dict = raw_sql(serach_query % keywords)
+    entries = []
+    for row in row_dict:
+        row["genres"] = get_movie_genres(row.get("id"))
+        entries.append(row)
+
+    return JsonResponse({'movies': entries})
