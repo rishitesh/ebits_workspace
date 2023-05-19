@@ -15,7 +15,6 @@ from .podcastsModels import PodcastPost, PodcastLabel, PodcastToLabel, Podcaster
     PodcastToLanguage, PPlatform, PodcastToPlatform, PGenre, PodcastToGenre, PodcastToTrailer, \
     PodcastToPhoto, PodcastCollectionDetail, PodcastCollection, PReport, PPhotoType
 
-
 # Movie Section
 admin.site.register(Platform)
 admin.site.register(Genre)
@@ -65,6 +64,25 @@ class CriticReviewDetailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
+
+#Podcasts Section
+admin.site.register(PodcastLabel)
+admin.site.register(PodcastToLabel)
+admin.site.register(PodcasterDetail)
+admin.site.register(PCriticReviewDetail)
+admin.site.register(PodcastAward)
+admin.site.register(PodcastToAward)
+admin.site.register(PCertificate)
+admin.site.register(PodcastToCertificate)
+admin.site.register(PLanguage)
+admin.site.register(PodcastToLanguage)
+admin.site.register(PPlatform)
+admin.site.register(PodcastToPlatform)
+admin.site.register(PGenre)
+admin.site.register(PodcastToGenre)
+admin.site.register(PodcastToTrailer)
+admin.site.register(PodcastToPhoto)
+admin.site.register(PPhotoType)
 
 
 class PCriticReviewDetailAdmin(admin.ModelAdmin):
@@ -136,7 +154,7 @@ class ColectionAdmin(admin.ModelAdmin):
 
 
 class ColectionDetailsAdmin(admin.ModelAdmin):
-    list_display = ['movie_name', 'release_date', 'genres']
+    list_display = ['collection_id', 'movie_name', 'release_date', 'genres']
     prepopulated_fields = {'slug': ('movie_name', 'release_date')}
 
 

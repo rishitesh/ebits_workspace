@@ -84,11 +84,22 @@ class MoviePost(models.Model):
         super(MoviePost, self).save(*args, **kwargs)
 
 
+
+class Platform(models.Model):
+    name = models.CharField(primary_key=True, max_length=100)
+    image_url = models.CharField(primary_key=False, max_length=200)
+    platform_url = models.CharField(primary_key=False, max_length=200)
+
+    def __str__(self):
+        return "%s" % self.name
+
+
 class MovieCollectionDetail(models.Model):
     id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(MovieCollection, on_delete=models.CASCADE)
 
     movie_id = models.ForeignKey(MoviePost, on_delete=models.SET_NULL, default=None, null=True, blank=True)
+    platform = models.ForeignKey(Platform, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     movie_name = models.CharField(max_length=100)
     description = models.TextField()
@@ -229,14 +240,6 @@ class MovieToLanguage(models.Model):
 
     def __str__(self):
         return "%s->%s" % (self.movie_id, self.language_id)
-
-
-class Platform(models.Model):
-    name = models.CharField(primary_key=True, max_length=100)
-    image_url = models.CharField(primary_key=False, max_length=200)
-
-    def __str__(self):
-        return "%s" % self.name
 
 
 class MovieToPlatform(models.Model):
