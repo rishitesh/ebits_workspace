@@ -1,5 +1,10 @@
 from django.contrib import admin
 
+from .booksModels import BookLabel, BookToLabel, AuthorDetail, BCriticReviewDetail, BookAward, BookToAward, \
+    BCertificate, BookToCertificate, BLanguage, BookToLanguage, BPlatform, BookToPlatform, BGenre, BookToGenre, \
+    BookToTrailer, BookToPhoto, BPhotoType, BUserReviewDetail, BookPost, BookCollectionDetail, BookCollection, BReport, \
+    PublisherDetail
+
 from .models import MoviePost, Platform, Genre, Language, Certificate, \
     MovieToPhoto, CastDetail, CriticReviewDetail, Award, MovieToAward, MovieToCertificate, \
     MovieToLanguage, MovieToLabel, MovieToGenre, Label, MovieCollection, MovieCollectionDetail, \
@@ -9,6 +14,7 @@ from .podcastsModels import PodcastPost, PodcastLabel, PodcastToLabel, Podcaster
     PUserReviewDetail, PodcastAward, PodcastToAward, PCertificate, PodcastToCertificate, PLanguage, \
     PodcastToLanguage, PPlatform, PodcastToPlatform, PGenre, PodcastToGenre, PodcastToTrailer, \
     PodcastToPhoto, PodcastCollectionDetail, PodcastCollection, PReport, PPhotoType
+
 
 # Movie Section
 admin.site.register(Platform)
@@ -45,6 +51,14 @@ class PUserReviewDetailAdmin(admin.ModelAdmin):
 admin.site.register(PUserReviewDetail, PUserReviewDetailAdmin)
 
 
+class BUserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'book_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('book_id', 'review_author', 'review_title')}
+
+
+admin.site.register(BUserReviewDetail, BUserReviewDetailAdmin)
+
+
 class CriticReviewDetailAdmin(admin.ModelAdmin):
     list_display = ['id', 'publication_name', 'review_author', 'review_title']
     prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
@@ -52,11 +66,27 @@ class CriticReviewDetailAdmin(admin.ModelAdmin):
 
 admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
 
+
+class PCriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(PCriticReviewDetail, PCriticReviewDetailAdmin)
+
+
+class BCriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(BCriticReviewDetail, BCriticReviewDetailAdmin)
+
+
 #Podcasts Section
 admin.site.register(PodcastLabel)
 admin.site.register(PodcastToLabel)
 admin.site.register(PodcasterDetail)
-admin.site.register(PCriticReviewDetail)
 admin.site.register(PodcastAward)
 admin.site.register(PodcastToAward)
 admin.site.register(PCertificate)
@@ -70,6 +100,26 @@ admin.site.register(PodcastToGenre)
 admin.site.register(PodcastToTrailer)
 admin.site.register(PodcastToPhoto)
 admin.site.register(PPhotoType)
+
+
+#Books Section
+admin.site.register(BookLabel)
+admin.site.register(BookToLabel)
+admin.site.register(AuthorDetail)
+admin.site.register(PublisherDetail)
+admin.site.register(BookAward)
+admin.site.register(BookToAward)
+admin.site.register(BCertificate)
+admin.site.register(BookToCertificate)
+admin.site.register(BLanguage)
+admin.site.register(BookToLanguage)
+admin.site.register(BPlatform)
+admin.site.register(BookToPlatform)
+admin.site.register(BGenre)
+admin.site.register(BookToGenre)
+admin.site.register(BookToTrailer)
+admin.site.register(BookToPhoto)
+admin.site.register(BPhotoType)
 
 
 class MoviePostAdmin(admin.ModelAdmin):
@@ -126,3 +176,31 @@ class PReportAdmin(admin.ModelAdmin):
 admin.site.register(PodcastCollectionDetail, PCollectionDetailsAdmin)
 admin.site.register(PodcastCollection, PCollectionAdmin)
 admin.site.register(PReport, PReportAdmin)
+
+
+class BookPostAdmin(admin.ModelAdmin):
+    list_display = ['book_title', 'publish_date', 'author']
+    prepopulated_fields = {'slug': ('book_title', 'publish_date')}
+
+
+admin.site.register(BookPost, BookPostAdmin)
+
+
+class BCollectionAdmin(admin.ModelAdmin):
+    list_display = ['title', 'publish_date']
+    prepopulated_fields = {'slug': ('title', 'publish_date')}
+
+
+class BCollectionDetailsAdmin(admin.ModelAdmin):
+    list_display = ['book_name', 'publish_date', 'genres']
+    prepopulated_fields = {'slug': ('book_name', 'publish_date')}
+
+
+class BReportAdmin(admin.ModelAdmin):
+    list_display = ['name', 'publish_date']
+    prepopulated_fields = {'slug': ('name', 'publish_date')}
+
+
+admin.site.register(BookCollectionDetail, BCollectionDetailsAdmin)
+admin.site.register(BookCollection, BCollectionAdmin)
+admin.site.register(BReport, BReportAdmin)
