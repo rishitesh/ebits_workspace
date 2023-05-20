@@ -764,6 +764,7 @@ def movies(request):
         else:
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
 
+    count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
 
     if offset_range and not is_empty(offset_range):
@@ -779,6 +780,14 @@ def movies(request):
         filter_clause = filter_clause + limit_clause
 
 
+    join_clause = """
+                                  left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id \
+                                  left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id \
+                                  left join review_movietolanguage on review_moviepost.id = review_movietolanguage.movie_id_id \
+                                  left join review_movietocertificate on review_moviepost.id = review_movietocertificate.movie_id_id \
+                                  left join review_movietoaward on review_moviepost.id = review_movietoaward.movie_id_id \
+                                  left join review_movietoplatform on review_moviepost.id = review_movietoplatform.movie_id_id\
+    """
     final_query = """
                                   SELECT DISTINCT  \
                                   review_moviepost.id,
@@ -794,18 +803,26 @@ def movies(request):
                                   review_moviepost.duration
                                   FROM
                                   review_moviepost \
-                                  left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id \
-                                  left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id \
-                                  left join review_movietolanguage on review_moviepost.id = review_movietolanguage.movie_id_id \
-                                  left join review_movietocertificate on review_moviepost.id = review_movietocertificate.movie_id_id \
-                                  left join review_movietoaward on review_moviepost.id = review_movietoaward.movie_id_id \
-                                  left join review_movietoplatform on review_moviepost.id = review_movietoplatform.movie_id_id\
+                                  %s 
                                   WHERE   %s
-                                  """ % filter_clause
+                                  """ % (join_clause, filter_clause)
+
+    count_query = """
+                                      SELECT count(DISTINCT review_moviepost.id) as totalEntries  \
+                                      FROM
+                                      review_moviepost \
+                                      %s 
+                                      WHERE   %s
+                                      """ % (join_clause, count_clause)
+
     print(final_query)
+    print(count_query)
+
+    count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
 
     entries = []
+
     for row in row_dict:
         photo_dict = get_movie_photos(row.get("id"))
         trailer_dict = get_movie_trailers(row.get("id"))
@@ -814,9 +831,9 @@ def movies(request):
         row["genres"] = get_movie_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'movies': entries})
-
-
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) >0 else 0
+    final_output = {'totalEntries': total_count, 'movies': entries}
+    return JsonResponse(final_output)
 
 def search(request):
     keywords = request.GET["keywords"]

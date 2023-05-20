@@ -735,6 +735,7 @@ def podcasts(request):
         else:
             filter_clause = filter_clause + " and review_podcastpost.critics_rating between %s" % between_clause
 
+    count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
 
     if offset_range and not is_empty(offset_range):
@@ -749,6 +750,15 @@ def podcasts(request):
         limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
         filter_clause = filter_clause + limit_clause
 
+    join_clause = """
+                                  left join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id \
+                                  left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id \
+                                  left join review_podcasttolanguage on review_podcastpost.id = review_podcasttolanguage.podcast_id_id \
+                                  left join review_podcasttocertificate on review_podcastpost.id = review_podcasttocertificate.podcast_id_id \
+                                  left join review_podcasttoaward on review_podcastpost.id = review_podcasttoaward.podcast_id_id \
+                                  left join review_podcasttoplatform on review_podcastpost.id = review_podcasttoplatform.podcast_id_id\
+    """
+
     final_query = """
                                   SELECT \
                                   distinct
@@ -762,15 +772,23 @@ def podcasts(request):
                                   thumbnail_image_url as image \
                                   FROM
                                   review_podcastpost \
-                                  left join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id \
-                                  left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id \
-                                  left join review_podcasttolanguage on review_podcastpost.id = review_podcasttolanguage.podcast_id_id \
-                                  left join review_podcasttocertificate on review_podcastpost.id = review_podcasttocertificate.podcast_id_id \
-                                  left join review_podcasttoaward on review_podcastpost.id = review_podcasttoaward.podcast_id_id \
-                                  left join review_podcasttoplatform on review_podcastpost.id = review_podcasttoplatform.podcast_id_id\
+                                  %s 
                                   WHERE   %s
-                                  """ % filter_clause
+                                  """ % (join_clause, filter_clause)
+
+    count_query = """
+                                  SELECT \
+                                  count(DISTINCT review_podcastpost.id) as totalEntries
+                                  FROM
+                                  review_podcastpost \
+                                  %s 
+                                  WHERE   %s
+                                  """ % (join_clause, count_clause)
+
     print(final_query)
+    print(count_query)
+
+    count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
 
     entries = []
@@ -782,7 +800,9 @@ def podcasts(request):
         row["genres"] = get_podcast_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'podcasts': entries})
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+    final_output = {'totalEntries': total_count, 'podcasts': entries}
+    return JsonResponse(final_output)
 
 
 def search(request):
