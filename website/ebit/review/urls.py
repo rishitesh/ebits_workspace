@@ -1,11 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
-from . import views, PodcastsViews
+from . import views, PodcastsViews, account_views
 
 urlpatterns = [
+    path('api/v1/auth/', include('dj_rest_auth.urls')),
+    path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/v1/send_otp', account_views.send_otp, name='send otp'),
     path('api/v1/collections/', views.all_collections, name='collections'),
     path('api/v1/collections/<slug:slug>/', views.collection_details, name='collection_details'),
     path('api/v1/moods/', views.all_moods, name='movie-moods'),
@@ -23,6 +26,7 @@ urlpatterns = [
     path('api/v1/addusercommentdislikes/', csrf_exempt(views.add_dislikes), name='add_user_comment_dislikes'),
     path('api/v1/reports/', views.all_reports, name='all_reports'),
     path('api/v1/reports/<slug:slug>/', views.report_details, name='report_details'),
+    path('api/v1/search/', views.search, name='search'),
 
 
     # Podcasts Section
@@ -44,6 +48,7 @@ urlpatterns = [
     # Podcasts report section
     path('api/v1/podcasts/reports/', PodcastsViews.all_reports, name='podcasts-all_reports'),
     path('api/v1/podcasts/reports/<slug:slug>/', PodcastsViews.report_details, name='podcasts-report_details'),
+    path('api/v1/podcasts/search/', csrf_exempt(PodcastsViews.search), name='search'),
     # Below two should always be at the end of the podcast list of urls
     path('api/v1/podcasts/', csrf_exempt(PodcastsViews.podcasts), name='podcasts'),
     path('api/v1/podcasts/<slug:slug>/', csrf_exempt(PodcastsViews.podcast_details), name='podcasts_details'),
