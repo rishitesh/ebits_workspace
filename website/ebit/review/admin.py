@@ -69,7 +69,6 @@ admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
 admin.site.register(PodcastLabel)
 admin.site.register(PodcastToLabel)
 admin.site.register(PodcasterDetail)
-admin.site.register(PCriticReviewDetail)
 admin.site.register(PodcastAward)
 admin.site.register(PodcastToAward)
 admin.site.register(PCertificate)
@@ -99,25 +98,6 @@ class BCriticReviewDetailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BCriticReviewDetail, BCriticReviewDetailAdmin)
-
-
-#Podcasts Section
-admin.site.register(PodcastLabel)
-admin.site.register(PodcastToLabel)
-admin.site.register(PodcasterDetail)
-admin.site.register(PodcastAward)
-admin.site.register(PodcastToAward)
-admin.site.register(PCertificate)
-admin.site.register(PodcastToCertificate)
-admin.site.register(PLanguage)
-admin.site.register(PodcastToLanguage)
-admin.site.register(PPlatform)
-admin.site.register(PodcastToPlatform)
-admin.site.register(PGenre)
-admin.site.register(PodcastToGenre)
-admin.site.register(PodcastToTrailer)
-admin.site.register(PodcastToPhoto)
-admin.site.register(PPhotoType)
 
 
 #Books Section

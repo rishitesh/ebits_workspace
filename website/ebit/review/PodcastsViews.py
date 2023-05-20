@@ -97,13 +97,17 @@ def get_podcast_certificates(podcast_id):
 
 
 def get_podcast_platforms(podcast_id):
-    platform_query = """select platform_id from review_podcasttoplatform where podcast_id_id = '%s' """ % podcast_id
-    platform_rows = raw_sql(platform_query)
-    platform_list = []
-    for row in platform_rows:
-        platform_list.append(row.get("platform_id"))
+     platform_query = """select platform_id, image_url, platform_url from review_podcasttoplatform, review_pplatform where \
+      review_podcasttoplatform.platform_id=review_pplatform.name and \
+      podcast_id_id = '%s' """ % podcast_id
+     platform_rows = raw_sql(platform_query)
+     platform_list = []
+     for row in platform_rows:
+         platform = {"name": row.get("platform_id"), "url": row.get("image_url"),
+                     "platform_url": row.get("platform_url")}
+         platform_list.append(platform)
 
-    return platform_list
+     return platform_list
 
 
 def get_podcast_languages(podcast_id):
@@ -121,7 +125,7 @@ def get_podcast_trailers(podcast_id):
     trailer_rows = raw_sql(trailer_query)
     trailer_list = []
     for row in trailer_rows:
-        trailer_list.append(row.get("trailers"))
+        trailer_list.append(row.get("trailers_url"))
 
     return trailer_list
 
@@ -243,7 +247,7 @@ def similar_by_genres(request, slug):
 
     final_query = """
                                       SELECT \
-                                      review_podcastpost.id as id, 
+                                      review_podcastpost.slug as slug, 
                                       podcast_name, \
                                       duration, \
                                       description, \
@@ -265,7 +269,7 @@ def similar_by_genres(request, slug):
 
     similar_podcast_list = []
     for row in similar_podcast_row:
-        movie = {'id': row.get("id"),
+        movie = {'slug': row.get("slug"),
                  'title': row.get("podcast_name"),
                  'description': row.get("duration"),
                  'image': row.get("thumbnail_image_url"),
@@ -615,26 +619,39 @@ def get_collection_details(collection_id, is_report):
                                                 review_podcastcollectiondetail.description,\
                                                 thumbnail_image_url as bgImage, \
                                                 release_date as releaseDate, \
-                                                aspect_introduction as introduction, \
-                                                aspect_content as content, \
-                                                aspect_audioQuality as audioQuality, \
-                                                aspect_voices as voices, \
-                                                aspect_outro as outro, \
+                                                aspect_introduction, \
+                                                aspect_content, \
+                                                aspect_audioQuality, \
+                                                aspect_voices, \
+                                                aspect_outro, \
                                                 genres  \
                                                 FROM review_podcastcollectiondetail, review_podcastcollection
-                                                where
-                                                review_podcastcollectiondetail.collection_id_id = review_podcastcollection.id
+                                                where review_podcastcollectiondetail.collection_id_id = review_podcastcollection.id
                                                 and review_podcastcollection.id = '%s' and %s
                                                   """ % (collection_id, report_predicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
+
+    platform_query = """select platform_id as platform, image_url, platform_url from review_podcastcollectiondetail, review_pplatform where \
+      review_podcastcollectiondetail.platform_id=review_pplatform.name  \
+     and review_podcastcollectiondetail.id = '%s' """
 
     entries = []
     for row in row_dict:
         entry = {"slug": row.get("slug"),
                  "name": row.get("title"),
                  "ebitsRatings": row.get("rating"),
+                 "description": row.get("description"),
+                 "release_date": row.get("releaseDate"),
+                 "aspect_introduction": row.get("aspect_introduction"),
+                 "aspect_content": row.get("aspect_content"),
+                 "aspect_audioQuality": row.get("aspect_audioQuality"),
+                 "aspect_voices": row.get("aspect_voices"),
+                 "aspect_outro": row.get("aspect_outro"),
+                 "genres": row.get("genres"),
                  "image": row.get("bgImage")}
+        platform_dict = raw_sql(platform_query % collection_id)
+        entry["platform_details"] = platform_dict
         entries.append(entry)
 
     return entries
@@ -760,6 +777,30 @@ def podcasts(request):
     for row in row_dict:
         photo_dict = get_podcast_photos(row.get("id"))
         row["photos"] = photo_dict
+        trailer_dict = get_podcast_trailers(row.get("id"))
+        row["trailers"] = trailer_dict
+        row["genres"] = get_podcast_genres(row.get("id"))
+        entries.append(row)
+
+    return JsonResponse({'podcasts': entries})
+
+
+def search(request):
+    keywords = request.GET["keywords"]
+    if is_empty(keywords):
+        return JsonResponse({'podcasts': ""})
+
+    serach_query = """SELECT id, slug,\
+     duration, \
+     release_date, \
+     thumbnail_image_url from review_podcastpost where MATCH (podcast_name, description, ebits_review) \
+                      AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
+
+    row_dict = raw_sql(serach_query % keywords)
+
+    entries = []
+    for row in row_dict:
+        row["genres"] = get_podcast_genres(row.get("id"))
         entries.append(row)
 
     return JsonResponse({'podcasts': entries})

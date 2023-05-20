@@ -3,6 +3,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
+from . import views, PodcastsViews, BooksViews
+
 urlpatterns = [
     path('api/v1/collections/', views.all_collections, name='collections'),
     path('api/v1/collections/<slug:slug>/', views.collection_details, name='collection_details'),
