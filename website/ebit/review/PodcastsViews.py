@@ -76,6 +76,15 @@ def get_user_reviews(podcast_id):
     return user_reviews_list
 
 
+def get_avg_user_rating(podcast_id):
+    user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
+                                   from review_puserreviewdetail
+                                    where podcast_id_id = '%s' and review_approved is True""" % podcast_id
+    avg_user_ratings = raw_sql(user_reviews_query)
+
+    return avg_user_ratings
+
+
 def get_podcast_genres(podcast_id):
     genre_query = """select genre_id from review_podcasttogenre where podcast_id_id = '%s' """ % podcast_id
     genre_rows = raw_sql(genre_query)
@@ -336,6 +345,7 @@ def podcast_details(request, slug):
     critics_reviews_list = get_critics_reviews(podcast_id)
     user_reviews_list = get_user_reviews(podcast_id)
     award_list = get_podcast_awards(podcast_id)
+    avg_usr_rating_details = get_avg_user_rating(podcast_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -375,7 +385,8 @@ def podcast_details(request, slug):
                     "genres": genre_list,
                     "certifications": cert_list,
                     "criticReviews": critics_reviews_list,
-                    "userReviews": user_reviews_list
+                    "userReviews": user_reviews_list,
+                    "avgUserReviews": avg_usr_rating_details
                     }
 
     return JsonResponse(podcast_detail)
@@ -615,6 +626,7 @@ def get_collection_details(collection_id, is_report):
                                                 SELECT \
                                                 review_podcastcollectiondetail.slug ,\
                                                 podcast_name as title, \
+                                                podcast_id_id as podcast_id, \
                                                 ebits_rating as rating, \
                                                 review_podcastcollectiondetail.description,\
                                                 thumbnail_image_url as bgImage, \
@@ -624,7 +636,8 @@ def get_collection_details(collection_id, is_report):
                                                 aspect_audioQuality, \
                                                 aspect_voices, \
                                                 aspect_outro, \
-                                                genres  \
+                                                genres,  \
+                                                platform_id
                                                 FROM review_podcastcollectiondetail, review_podcastcollection
                                                 where review_podcastcollectiondetail.collection_id_id = review_podcastcollection.id
                                                 and review_podcastcollection.id = '%s' and %s
@@ -632,14 +645,23 @@ def get_collection_details(collection_id, is_report):
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
-    platform_query = """select platform_id as platform, image_url, platform_url from review_podcastcollectiondetail, review_pplatform where \
-      review_podcastcollectiondetail.platform_id=review_pplatform.name  \
-     and review_podcastcollectiondetail.id = '%s' """
+    platform_query = """select name  as platform, image_url, platform_url from review_pplatform where \
+      review_pplatform.name = '%s' """
+
+    movie_slug_query = """select review_podcastpost.slug as \
+     podcast_slug from review_podcastpost where review_podcastpost.id = %s """
 
     entries = []
     for row in row_dict:
+        podcast_slug = ""
+        if row.get("podcast_id", None):
+            all_podcasts = raw_sql(movie_slug_query % row.get("podcast_id"))
+            if len(all_podcasts) > 0:
+                podcast_slug = all_podcasts[0].get("podcast_slug")
+
         entry = {"slug": row.get("slug"),
                  "name": row.get("title"),
+                 "podcast_slug": podcast_slug,
                  "ebitsRatings": row.get("rating"),
                  "description": row.get("description"),
                  "release_date": row.get("releaseDate"),
@@ -650,11 +672,14 @@ def get_collection_details(collection_id, is_report):
                  "aspect_outro": row.get("aspect_outro"),
                  "genres": row.get("genres"),
                  "image": row.get("bgImage")}
-        platform_dict = raw_sql(platform_query % collection_id)
-        entry["platform_details"] = platform_dict
+        if row.get("platform_id", None):
+           platform_dict = raw_sql(platform_query % row.get("platform_id"))
+           entry["platform_details"] = platform_dict
+
         entries.append(entry)
 
     return entries
+
 
 
 @require_http_methods(["POST"])
@@ -805,7 +830,7 @@ def podcasts(request):
     return JsonResponse(final_output)
 
 
-def search(request):
+def podcast_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):
         return JsonResponse({'podcasts': ""})
@@ -823,7 +848,7 @@ def search(request):
         row["genres"] = get_podcast_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'podcasts': entries})
+    return {'podcasts': entries}
 
 
 

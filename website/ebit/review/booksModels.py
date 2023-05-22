@@ -88,9 +88,19 @@ class BookCollection(models.Model):
         super(BookCollection, self).save(*args, **kwargs)
 
 
+class BPlatform(models.Model):
+    name = models.CharField(primary_key=True, max_length=100)
+    platform_url = models.CharField(primary_key=False, max_length=200)
+    image_url = models.CharField(primary_key=False, max_length=200)
+    
+    def __str__(self):
+        return "%s" % self.name
+
+
 class BookCollectionDetail(models.Model):
     id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(BookCollection, on_delete=models.CASCADE)
+    platform = models.ForeignKey(BPlatform, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     book_id = models.ForeignKey(BookPost, on_delete=models.SET_NULL, default=None, null=True, blank=True)
 
@@ -237,13 +247,6 @@ class BookToLanguage(models.Model):
 
     def __str__(self):
         return "%s->%s" % (self.book_id, self.language_id)
-
-
-class BPlatform(models.Model):
-    name = models.CharField(primary_key=True, max_length=100)
-
-    def __str__(self):
-        return "%s" % self.name
 
 
 class BookToPlatform(models.Model):

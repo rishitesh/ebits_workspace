@@ -76,6 +76,15 @@ def get_user_reviews(movie_id):
     return user_reviews_list
 
 
+def get_avg_user_rating(movie_id):
+    user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
+                                   from review_userreviewdetail
+                                    where movie_id_id = '%s' and review_approved is True""" % movie_id
+    avg_user_ratings = raw_sql(user_reviews_query)
+
+    return avg_user_ratings
+
+
 def get_movie_genres(movie_id):
     genre_query = """select genre_id from review_movietogenre where movie_id_id = '%s' """ % movie_id
     genre_rows = raw_sql(genre_query)
@@ -340,6 +349,7 @@ def movie_details(request, slug):
     critics_reviews_list = get_critics_reviews(movie_id)
     user_reviews_list = get_user_reviews(movie_id)
     award_list = get_movie_awards(movie_id)
+    avg_usr_rating_details = get_avg_user_rating(movie_id)
 
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
@@ -385,7 +395,8 @@ def movie_details(request, slug):
                     "genres": genre_list,
                     "certifications": cert_list,
                     "criticReviews": critics_reviews_list,
-                    "userReviews": user_reviews_list
+                    "userReviews": user_reviews_list,
+                     "avgUserReviews": avg_usr_rating_details
                     }
 
     return JsonResponse(movie_detail)
@@ -638,6 +649,7 @@ def get_collection_details(collection_id, is_report):
                                                 SELECT \
                                                 review_moviecollectiondetail.slug ,\
                                                 movie_name as title, \
+                                                movie_id_id as movie_id, \
                                                 ebits_rating as rating, \
                                                 review_moviecollectiondetail.description,\
                                                 thumbnail_image_url as bgImage, \
@@ -650,22 +662,35 @@ def get_collection_details(collection_id, is_report):
                                                 aspect_screenplay, \
                                                 aspect_vfx, \
                                                 genres,  \
-                                                review_platform.name as platform, \
-                                                review_platform.platform_url, \
-                                                review_platform.image_url as platform_image_url \
- 
-                                                FROM review_moviecollectiondetail, review_moviecollection, review_platform
+                                                platform_id
+                                                FROM review_moviecollectiondetail, review_moviecollection
                                                 where
                                                 review_moviecollectiondetail.collection_id_id = review_moviecollection.id
                                                 and review_moviecollection.id = '%s' and %s
                                                   """ % (collection_id, report_predicate)
+
+    platform_query = """select review_platform.name as platform, \
+        review_platform.platform_url, \
+        review_platform.image_url as platform_image_url from review_platform where name = '%s'
+        """
+
+    movie_slug_query = """select review_moviepost.slug as \
+     movie_slug from review_moviepost where review_moviepost.id = %s """
+
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
     entries = []
     for row in row_dict:
+        movie_slug = ""
+        if row.get("movie_id", None):
+            all_movies = raw_sql(movie_slug_query % row.get("movie_id"))
+            if len(all_movies) > 0:
+                movie_slug = all_movies[0].get("movie_slug")
+
         entry = {"slug": row.get("slug"),
                  "name": row.get("title"),
+                 "movie_slug": movie_slug,
                  "ebitsRatings": row.get("rating"),
                  "description": row.get("description"),
                  "release_date": row.get("releaseDate"),
@@ -677,10 +702,12 @@ def get_collection_details(collection_id, is_report):
                  "aspect_screenplay": row.get("aspect_screenplay"),
                  "aspect_vfx": row.get("aspect_vfx"),
                  "genres": row.get("genres"),
-                 "platform": row.get("platform"),
-                 "platform_url": row.get("platform_url"),
-                 "platform_image_url": row.get("platform_image_url"),
                  "image": row.get("bgImage")}
+
+        if row.get("platform_id", None):
+            platform_dict = raw_sql(platform_query % row.get("platform_id"))
+            entry["platform_details"] = platform_dict
+
         entries.append(entry)
 
     return entries
@@ -835,7 +862,7 @@ def movies(request):
     final_output = {'totalEntries': total_count, 'movies': entries}
     return JsonResponse(final_output)
 
-def search(request):
+def movie_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):
         return JsonResponse({'movies': ""})
@@ -852,4 +879,4 @@ def search(request):
         row["genres"] = get_movie_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'movies': entries})
+    return {'movies': entries}

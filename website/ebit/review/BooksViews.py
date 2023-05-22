@@ -76,6 +76,15 @@ def get_user_reviews(book_id):
     return user_reviews_list
 
 
+def get_avg_user_rating(book_id):
+    user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
+                                   from review_buserreviewdetail
+                                    where book_id_id = '%s' and review_approved is True""" % book_id
+    avg_user_ratings = raw_sql(user_reviews_query)
+
+    return avg_user_ratings
+
+
 def get_book_genres(book_id):
     genre_query = """select genre_id from review_booktogenre where book_id_id = '%s' """ % book_id
     genre_rows = raw_sql(genre_query)
@@ -340,6 +349,7 @@ def book_details(request, slug):
     critics_reviews_list = get_critics_reviews(book_id)
     user_reviews_list = get_user_reviews(book_id)
     award_list = get_book_awards(book_id)
+    avg_usr_rating_details = get_avg_user_rating(book_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -386,7 +396,8 @@ def book_details(request, slug):
                     "genres": genre_list,
                     "certifications": cert_list,
                     "criticReviews": critics_reviews_list,
-                    "userReviews": user_reviews_list
+                    "userReviews": user_reviews_list,
+                    "avgUserReviews": avg_usr_rating_details
                     }
 
     return JsonResponse(book_detail)
@@ -626,8 +637,9 @@ def get_collection_details(collection_id, is_report):
                                                 SELECT \
                                                 review_bookcollectiondetail.slug ,\
                                                 book_name, \
+                                                book_id_id as podcast_id, \
                                                 ebits_rating as rating, \
-                                                review_bookcollectiondetail.synopsis,\
+                                                review_bookcollectiondetail.synopsis as synopsis,\
                                                 thumbnail_image_url as bgImage, \
                                                 review_bookcollectiondetail.publish_date as publishDate, \
                                                 # #aspects - plot, setting, characters, point of view, and conflict
@@ -641,7 +653,8 @@ def get_collection_details(collection_id, is_report):
                                                 aspect_styleOfWriting as styleOfWriting, \
                                                 aspect_visuals as visuals, \
                                                 aspect_takeaway as takeaway, \
-                                                genres  \
+                                                genres,  \
+                                                platform_id \
                                                 FROM review_bookcollectiondetail, review_bookcollection
                                                 where
                                                 review_bookcollectiondetail.collection_id_id = review_bookcollection.id
@@ -650,12 +663,37 @@ def get_collection_details(collection_id, is_report):
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
+    platform_query = """select name as platform, image_url, platform_url from review_bplatform where \
+          review_bplatform.name = '%s' """
+
+    book_slug_query = """select review_bookpost.slug as \
+         book_slug from review_bookpost where review_bookpost.id = %s """
+
     entries = []
     for row in row_dict:
+        book_slug = ""
+        if row.get("book_id", None):
+            all_books = raw_sql(book_slug_query % row.get("book_id"))
+            if len(all_books) > 0:
+                book_slug = all_books[0].get("book_slug")
+
         entry = {"slug": row.get("slug"),
                  "name": row.get("book_name"),
+                 "book_slug": book_slug,
                  "ebitsRatings": row.get("rating"),
+                 "synopsis": row.get("synopsis"),
+                 "publishDate": row.get("publishDate"),
+                 "aspect_plot": row.get("plot"),
+                 "aspect_setting": row.get("setting"),
+                 "aspect_characters": row.get("characters"),
+                 "aspect_styleOfWriting": row.get("styleOfWriting"),
+                 "aspect_takeaway": row.get("takeaway"),
+                 "genres": row.get("genres"),
                  "image": row.get("bgImage")}
+        if row.get("platform_id", None):
+            platform_dict = raw_sql(platform_query % row.get("platform_id"))
+            entry["platform_details"] = platform_dict
+
         entries.append(entry)
 
     return entries
@@ -739,6 +777,7 @@ def books(request):
         else:
             filter_clause = filter_clause + " and review_bookpost.critics_rating between %s" % between_clause
 
+    count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY publish_date desc "
 
     if offset_range and not is_empty(offset_range):
@@ -752,6 +791,15 @@ def books(request):
 
         limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
         filter_clause = filter_clause + limit_clause
+
+    join_clause = """
+                                  left join review_booktogenre on review_bookpost.id = review_booktogenre.book_id_id \
+                                  left join review_booktolabel on review_bookpost.id = review_booktolabel.book_id_id \
+                                  left join review_booktolanguage on review_bookpost.id = review_booktolanguage.book_id_id \
+                                  left join review_booktocertificate on review_bookpost.id = review_booktocertificate.book_id_id \
+                                  left join review_booktoaward on review_bookpost.id = review_booktoaward.book_id_id \
+                                  left join review_booktoplatform on review_bookpost.id = review_booktoplatform.book_id_id\
+    """
 
     final_query = """
                                   SELECT \
@@ -767,21 +815,53 @@ def books(request):
                                   thumbnail_image_url as image \
                                   FROM
                                   review_bookpost \
-                                  left join review_booktogenre on review_bookpost.id = review_booktogenre.book_id_id \
-                                  left join review_booktolabel on review_bookpost.id = review_booktolabel.book_id_id \
-                                  left join review_booktolanguage on review_bookpost.id = review_booktolanguage.book_id_id \
-                                  left join review_booktocertificate on review_bookpost.id = review_booktocertificate.book_id_id \
-                                  left join review_booktoaward on review_bookpost.id = review_booktoaward.book_id_id \
-                                  left join review_booktoplatform on review_bookpost.id = review_booktoplatform.book_id_id\
+                                  %s 
+                                  WHERE  %s
+                                  """ %  (join_clause, filter_clause)
+
+    count_query = """
+                                  SELECT \
+                                  count(DISTINCT review_bookpost.id) as totalEntries
+                                  FROM
+                                  review_bookpost \
+                                  %s 
                                   WHERE   %s
-                                  """ % filter_clause
+                                  """ % (join_clause, count_clause)
+
     print(final_query)
+    print(count_query)
+
+    count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
 
     entries = []
     for row in row_dict:
         photo_dict = get_book_photos(row.get("id"))
         row["photos"] = photo_dict
+        row["genres"] = get_book_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'books': entries})
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+    final_output = {'totalEntries': total_count, 'books': entries}
+    return JsonResponse(final_output)
+
+
+def book_search(request):
+    keywords = request.GET["keywords"]
+    if is_empty(keywords):
+        return JsonResponse({'books': ""})
+
+    serach_query = """SELECT id, slug,\
+     pages, \
+     publish_date, \
+     thumbnail_image_url from review_bookpost where MATCH (book_title, synopsis, ebits_review) \
+                      AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
+
+    row_dict = raw_sql(serach_query % keywords)
+
+    entries = []
+    for row in row_dict:
+        row["genres"] = get_book_genres(row.get("id"))
+        entries.append(row)
+
+    return {'books': entries}
