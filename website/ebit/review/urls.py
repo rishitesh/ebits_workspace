@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
-from . import views, PodcastsViews, BooksViews, search_view, gamesViews
+from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews
 
 urlpatterns = [
     path('api/v1/collections/', views.all_collections, name='collections'),
@@ -23,7 +23,7 @@ urlpatterns = [
     path('api/v1/addusercommentdislikes/', csrf_exempt(views.add_dislikes), name='add_user_comment_dislikes'),
     path('api/v1/reports/', views.all_reports, name='all_reports'),
     path('api/v1/reports/<slug:slug>/', views.report_details, name='report_details'),
-    path('api/v1/search/', search_view.search, name='search'),
+    path('api/v1/search/', aggrgate_view.search, name='search'),
 
 
     # Podcasts Section

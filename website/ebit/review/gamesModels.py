@@ -14,8 +14,6 @@ class GamePost(models.Model):
     slug = models.SlugField(null=True, unique=True)
 
     description = models.TextField(default=None, null=True, blank=True)
-    #isSeries = models.BooleanField(default=False)
-    #episodes = models.IntegerField()
 
     # Sentimeter
     positive = models.IntegerField()
@@ -84,6 +82,8 @@ class GameCollection(models.Model):
 
 class GPlatform(models.Model):
     name = models.CharField(primary_key=True, max_length=100)
+    platform_url = models.CharField(primary_key=False, max_length=200)
+    image_url = models.CharField(primary_key=False, max_length=200)
 
     def __str__(self):
         return "%s" % self.name

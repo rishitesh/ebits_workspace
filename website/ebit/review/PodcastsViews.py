@@ -82,7 +82,11 @@ def get_avg_user_rating(podcast_id):
                                     where podcast_id_id = '%s' and review_approved is True""" % podcast_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
-    return avg_user_ratings
+    if avg_user_ratings and len(avg_user_ratings) > 0:
+        return avg_user_ratings[0]
+    else:
+        return {}
+
 
 
 def get_podcast_genres(podcast_id):
@@ -848,7 +852,7 @@ def podcast_search(request):
         row["genres"] = get_podcast_genres(row.get("id"))
         entries.append(row)
 
-    return {'podcasts': entries}
+    return entries
 
 
 

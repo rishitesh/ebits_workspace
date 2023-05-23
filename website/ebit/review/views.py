@@ -82,7 +82,10 @@ def get_avg_user_rating(movie_id):
                                     where movie_id_id = '%s' and review_approved is True""" % movie_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
-    return avg_user_ratings
+    if avg_user_ratings and len(avg_user_ratings) > 0:
+        return avg_user_ratings[0]
+    else:
+        return {}
 
 
 def get_movie_genres(movie_id):
@@ -396,11 +399,10 @@ def movie_details(request, slug):
                     "certifications": cert_list,
                     "criticReviews": critics_reviews_list,
                     "userReviews": user_reviews_list,
-                     "avgUserReviews": avg_usr_rating_details
+                    "avgUserReviews": avg_usr_rating_details
                     }
 
     return JsonResponse(movie_detail)
-
 
 
 def all_moods(request):
@@ -418,7 +420,6 @@ def all_moods(request):
         records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)
-
 
 
 def all_labels(request):
@@ -527,7 +528,6 @@ def all_reports(request):
     return JsonResponse({'reports': reports})
 
 
-
 def report_details(request, slug):
 
     final_query = """Select
@@ -601,7 +601,6 @@ def all_collections(request):
         count = count + 1
 
     return JsonResponse({'collections': final_reponse})
-
 
 
 def collection_details(request, slug):
@@ -843,7 +842,7 @@ def movies(request):
                                       """ % (join_clause, count_clause)
 
     print(final_query)
-    print(count_query)
+
 
     count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
@@ -862,6 +861,7 @@ def movies(request):
     final_output = {'totalEntries': total_count, 'movies': entries}
     return JsonResponse(final_output)
 
+
 def movie_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):
@@ -879,4 +879,4 @@ def movie_search(request):
         row["genres"] = get_movie_genres(row.get("id"))
         entries.append(row)
 
-    return {'movies': entries}
+    return entries

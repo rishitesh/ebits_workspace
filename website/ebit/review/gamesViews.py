@@ -77,6 +77,18 @@ def get_user_reviews(game_id):
     return user_reviews_list
 
 
+def get_avg_user_rating(book_id):
+    user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
+                                   from review_guserreviewdetail
+                                    where book_id_id = '%s' and review_approved is True""" % book_id
+    avg_user_ratings = raw_sql(user_reviews_query)
+
+    if avg_user_ratings and len(avg_user_ratings) > 0:
+        return avg_user_ratings[0]
+    else:
+        return {}
+
+
 def get_game_genres(game_id):
     genre_query = """select genre_id from review_gametogenre where game_id_id = '%s' """ % game_id
     genre_rows = raw_sql(genre_query)
@@ -332,6 +344,7 @@ def game_details(request, slug):
     critics_reviews_list = get_critics_reviews(game_id)
     user_reviews_list = get_user_reviews(game_id)
     award_list = get_game_awards(game_id)
+    avg_usr_rating_details = get_avg_user_rating(book_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -369,7 +382,8 @@ def game_details(request, slug):
                    "genres": genre_list,
                    "certifications": cert_list,
                    "criticReviews": critics_reviews_list,
-                   "userReviews": user_reviews_list
+                   "userReviews": user_reviews_list,
+                   "avgUserReviews": avg_usr_rating_details
                    }
 
     return JsonResponse(game_detail)
@@ -609,30 +623,57 @@ def get_collection_details(collection_id, is_report):
                                                 SELECT \
                                                 review_gamecollectiondetail.slug ,\
                                                 game_name, \
+                                                game_id_id as game_id, \
                                                 ebits_rating as rating, \
                                                 review_gamecollectiondetail.description,\
                                                 thumbnail_image_url as bgImage, \
                                                 review_gamecollectiondetail.release_date as releaseDate, \
-                                                # #aspects - graphics, performance, animation, ease of use
-                                                aspect_graphics as graphics, \
-                                                aspect_performance as performance, \
-                                                aspect_animation as animation, \
-                                                aspect_easeOfUse as easeOfUse, \
+                                                aspect_graphics, \
+                                                aspect_performance, \
+                                                aspect_animation, \
+                                                aspect_easeOfUse, \
                                                 genres  \
                                                 FROM review_gamecollectiondetail, review_gamecollection
                                                 where
                                                 review_gamecollectiondetail.collection_id_id = review_gamecollection.id
                                                 and review_gamecollection.id = '%s' and %s
                                                   """ % (collection_id, report_predicate)
+
+    platform_query = """select review_gplatform.name as platform, \
+           review_gplatform.platform_url, \
+           review_gplatform.image_url as platform_image_url from review_gplatform where name = '%s'
+           """
+
+    game_slug_query = """select review_gamepost.slug as \
+        game_slug from review_gamepost where review_gamepost.id = %s """
+
+    pprint(final_query)
+
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
     entries = []
     for row in row_dict:
+        games_slug = ""
+        if row.get("game_id", None):
+            all_games = raw_sql(game_slug_query % row.get("game_id"))
+            if len(all_games) > 0:
+                games_slug = all_games[0].get("game_slug")
+
         entry = {"slug": row.get("slug"),
                  "name": row.get("game_name"),
+                 "games_slug": games_slug,
                  "ebitsRatings": row.get("rating"),
+                 "aspect_graphics": row.get("aspect_graphics"),
+                 "aspect_performance": row.get("aspect_performance"),
+                 "aspect_animation": row.get("aspect_animation"),
+                 "aspect_easeOfUse": row.get("aspect_easeOfUse"),
                  "image": row.get("bgImage")}
+
+        if row.get("platform_id", None):
+            platform_dict = raw_sql(platform_query % row.get("platform_id"))
+            entry["platform_details"] = platform_dict
+
         entries.append(entry)
 
     return entries
@@ -716,6 +757,7 @@ def games(request):
         else:
             filter_clause = filter_clause + " and review_gamepost.critics_rating between %s" % between_clause
 
+    count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
 
     if offset_range and not is_empty(offset_range):
@@ -729,6 +771,15 @@ def games(request):
 
         limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
         filter_clause = filter_clause + limit_clause
+
+    join_clause = """
+              left join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id \
+              left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id \
+              left join review_gametolanguage on review_gamepost.id = review_gametolanguage.game_id_id \
+              left join review_gametocertificate on review_gamepost.id = review_gametocertificate.game_id_id \
+              left join review_gametoaward on review_gamepost.id = review_gametoaward.game_id_id \
+              left join review_gametoplatform on review_gamepost.id = review_gametoplatform.game_id_id\
+    """
 
     final_query = """
                                   SELECT \
@@ -744,21 +795,52 @@ def games(request):
                                   thumbnail_image_url as image \
                                   FROM
                                   review_gamepost \
-                                  left join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id \
-                                  left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id \
-                                  left join review_gametolanguage on review_gamepost.id = review_gametolanguage.game_id_id \
-                                  left join review_gametocertificate on review_gamepost.id = review_gametocertificate.game_id_id \
-                                  left join review_gametoaward on review_gamepost.id = review_gametoaward.game_id_id \
-                                  left join review_gametoplatform on review_gamepost.id = review_gametoplatform.game_id_id\
+                                  %s 
                                   WHERE   %s
-                                  """ % filter_clause
+                                  """ % (join_clause, filter_clause)
+
+
+    count_query = """
+                                      SELECT count(DISTINCT review_gamepost.id) as totalEntries  \
+                                      FROM
+                                      review_gamepost \
+                                      %s 
+                                      WHERE   %s
+                                      """ % (join_clause, count_clause)
+
     print(final_query)
     row_dict = raw_sql(final_query)
+    count_dict = raw_sql(count_query)
 
     entries = []
     for row in row_dict:
         photo_dict = get_game_photos(row.get("id"))
+        trailer_dict = get_game_trailers(row.get("id"))
         row["photos"] = photo_dict
+        row["trailers"] = trailer_dict
+        row["genres"] = get_game_genres(row.get("id"))
         entries.append(row)
 
-    return JsonResponse({'games': entries})
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+    final_output = {'totalEntries': total_count, 'games': entries}
+    return JsonResponse(final_output)
+
+
+def games_search(request):
+    keywords = request.GET["keywords"]
+    if is_empty(keywords):
+        return JsonResponse({'movies': ""})
+
+    serach_query = """SELECT id, slug,\
+     duration, \
+     release_date, \
+     thumbnail_image_url from review_gamepost where MATCH (game_name, description, ebits_review) \
+                      AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
+
+    row_dict = raw_sql(serach_query % keywords)
+    entries = []
+    for row in row_dict:
+        row["genres"] = get_game_genres(row.get("id"))
+        entries.append(row)
+
+    return entries
