@@ -82,7 +82,10 @@ def get_avg_user_rating(movie_id):
                                     where movie_id_id = '%s' and review_approved is True""" % movie_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
-    return avg_user_ratings
+    if avg_user_ratings and len(avg_user_ratings) > 0:
+        return avg_user_ratings[0]
+    else:
+        return {}
 
 
 def get_movie_genres(movie_id):
@@ -396,7 +399,7 @@ def movie_details(request, slug):
                     "certifications": cert_list,
                     "criticReviews": critics_reviews_list,
                     "userReviews": user_reviews_list,
-                     "avgUserReviews": avg_usr_rating_details
+                    "avgUserReviews": avg_usr_rating_details
                     }
 
     return JsonResponse(movie_detail)
@@ -879,4 +882,4 @@ def movie_search(request):
         row["genres"] = get_movie_genres(row.get("id"))
         entries.append(row)
 
-    return {'movies': entries}
+    return entries

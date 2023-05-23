@@ -82,7 +82,11 @@ def get_avg_user_rating(book_id):
                                     where book_id_id = '%s' and review_approved is True""" % book_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
-    return avg_user_ratings
+    if avg_user_ratings and len(avg_user_ratings) > 0:
+        return avg_user_ratings[0]
+    else:
+        return {}
+
 
 
 def get_book_genres(book_id):
@@ -864,4 +868,4 @@ def book_search(request):
         row["genres"] = get_book_genres(row.get("id"))
         entries.append(row)
 
-    return {'books': entries}
+    return entries
