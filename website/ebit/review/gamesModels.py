@@ -82,9 +82,17 @@ class GameCollection(models.Model):
         super(GameCollection, self).save(*args, **kwargs)
 
 
+class GPlatform(models.Model):
+    name = models.CharField(primary_key=True, max_length=100)
+
+    def __str__(self):
+        return "%s" % self.name
+
+
 class GameCollectionDetail(models.Model):
     id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(GameCollection, on_delete=models.CASCADE)
+    platform = models.ForeignKey(GPlatform, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     game_id = models.ForeignKey(GamePost, on_delete=models.SET_NULL, default=None, null=True, blank=True)
 
@@ -224,13 +232,6 @@ class GameToLanguage(models.Model):
 
     def __str__(self):
         return "%s->%s" % (self.game_id, self.language_id)
-
-
-class GPlatform(models.Model):
-    name = models.CharField(primary_key=True, max_length=100)
-
-    def __str__(self):
-        return "%s" % self.name
 
 
 class GameToPlatform(models.Model):
