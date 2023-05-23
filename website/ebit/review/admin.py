@@ -15,6 +15,11 @@ from .podcastsModels import PodcastPost, PodcastLabel, PodcastToLabel, Podcaster
     PodcastToLanguage, PPlatform, PodcastToPlatform, PGenre, PodcastToGenre, PodcastToTrailer, \
     PodcastToPhoto, PodcastCollectionDetail, PodcastCollection, PReport, PPhotoType
 
+from .gamesModels import GameLabel, GameToLabel, DeveloperDetail, GameAward, GameToAward, GCertificate, \
+    GameToCertificate, GLanguage, GameToLanguage, GPlatform, ProviderDetail, GameToPlatform, GGenre, GameToGenre, \
+    GameToTrailer, GameToPhoto, GPhotoType, GUserReviewDetail, GCriticReviewDetail, GamePost, GameCollectionDetail, \
+    GameCollection, GReport
+
 # Movie Section
 admin.site.register(Platform)
 admin.site.register(Genre)
@@ -32,92 +37,6 @@ admin.site.register(Label)
 admin.site.register(MovieToPlatform)
 admin.site.register(MovieToTrailer)
 admin.site.register(PhotoType)
-
-
-class UserReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'movie_id', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('movie_id', 'review_author', 'review_title')}
-
-
-admin.site.register(UserReviewDetail, UserReviewDetailAdmin)
-
-
-class PUserReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'podcast_id', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('podcast_id', 'review_author', 'review_title')}
-
-
-admin.site.register(PUserReviewDetail, PUserReviewDetailAdmin)
-
-
-class BUserReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'book_id', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('book_id', 'review_author', 'review_title')}
-
-
-admin.site.register(BUserReviewDetail, BUserReviewDetailAdmin)
-
-
-class CriticReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'publication_name', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
-
-
-admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
-
-#Podcasts Section
-admin.site.register(PodcastLabel)
-admin.site.register(PodcastToLabel)
-admin.site.register(PodcasterDetail)
-admin.site.register(PodcastAward)
-admin.site.register(PodcastToAward)
-admin.site.register(PCertificate)
-admin.site.register(PodcastToCertificate)
-admin.site.register(PLanguage)
-admin.site.register(PodcastToLanguage)
-admin.site.register(PPlatform)
-admin.site.register(PodcastToPlatform)
-admin.site.register(PGenre)
-admin.site.register(PodcastToGenre)
-admin.site.register(PodcastToTrailer)
-admin.site.register(PodcastToPhoto)
-admin.site.register(PPhotoType)
-
-
-class PCriticReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'publication_name', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
-
-
-admin.site.register(PCriticReviewDetail, PCriticReviewDetailAdmin)
-
-
-class BCriticReviewDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'publication_name', 'review_author', 'review_title']
-    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
-
-
-admin.site.register(BCriticReviewDetail, BCriticReviewDetailAdmin)
-
-
-#Books Section
-admin.site.register(BookLabel)
-admin.site.register(BookToLabel)
-admin.site.register(AuthorDetail)
-admin.site.register(PublisherDetail)
-admin.site.register(BookAward)
-admin.site.register(BookToAward)
-admin.site.register(BCertificate)
-admin.site.register(BookToCertificate)
-admin.site.register(BLanguage)
-admin.site.register(BookToLanguage)
-admin.site.register(BPlatform)
-admin.site.register(BookToPlatform)
-admin.site.register(BGenre)
-admin.site.register(BookToGenre)
-admin.site.register(BookToTrailer)
-admin.site.register(BookToPhoto)
-admin.site.register(BPhotoType)
 
 
 class MoviePostAdmin(admin.ModelAdmin):
@@ -148,12 +67,56 @@ admin.site.register(MovieCollection, ColectionAdmin)
 admin.site.register(Report, ReportAdmin)
 
 
-class PodcastPostAdmin(admin.ModelAdmin):
-    list_display = ['podcast_name', 'release_date', 'podcaster_display_comma_separated']
-    prepopulated_fields = {'slug': ('podcast_name', 'release_date')}
+class UserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'movie_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('movie_id', 'review_author', 'review_title')}
 
 
-admin.site.register(PodcastPost, PodcastPostAdmin)
+admin.site.register(UserReviewDetail, UserReviewDetailAdmin)
+
+
+
+
+class CriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(CriticReviewDetail, CriticReviewDetailAdmin)
+
+#Podcasts Section
+admin.site.register(PodcastLabel)
+admin.site.register(PodcastToLabel)
+admin.site.register(PodcasterDetail)
+admin.site.register(PodcastAward)
+admin.site.register(PodcastToAward)
+admin.site.register(PCertificate)
+admin.site.register(PodcastToCertificate)
+admin.site.register(PLanguage)
+admin.site.register(PodcastToLanguage)
+admin.site.register(PPlatform)
+admin.site.register(PodcastToPlatform)
+admin.site.register(PGenre)
+admin.site.register(PodcastToGenre)
+admin.site.register(PodcastToTrailer)
+admin.site.register(PodcastToPhoto)
+admin.site.register(PPhotoType)
+
+
+class PUserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'podcast_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('podcast_id', 'review_author', 'review_title')}
+
+
+admin.site.register(PUserReviewDetail, PUserReviewDetailAdmin)
+
+
+class PCriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(PCriticReviewDetail, PCriticReviewDetailAdmin)
 
 
 class PCollectionAdmin(admin.ModelAdmin):
@@ -174,6 +137,50 @@ class PReportAdmin(admin.ModelAdmin):
 admin.site.register(PodcastCollectionDetail, PCollectionDetailsAdmin)
 admin.site.register(PodcastCollection, PCollectionAdmin)
 admin.site.register(PReport, PReportAdmin)
+
+
+class PodcastPostAdmin(admin.ModelAdmin):
+    list_display = ['podcast_name', 'release_date', 'podcaster_display_comma_separated']
+    prepopulated_fields = {'slug': ('podcast_name', 'release_date')}
+
+
+admin.site.register(PodcastPost, PodcastPostAdmin)
+
+
+#Books Section
+admin.site.register(BookLabel)
+admin.site.register(BookToLabel)
+admin.site.register(AuthorDetail)
+admin.site.register(PublisherDetail)
+admin.site.register(BookAward)
+admin.site.register(BookToAward)
+admin.site.register(BCertificate)
+admin.site.register(BookToCertificate)
+admin.site.register(BLanguage)
+admin.site.register(BookToLanguage)
+admin.site.register(BPlatform)
+admin.site.register(BookToPlatform)
+admin.site.register(BGenre)
+admin.site.register(BookToGenre)
+admin.site.register(BookToTrailer)
+admin.site.register(BookToPhoto)
+admin.site.register(BPhotoType)
+
+
+class BCriticReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'publication_name', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('publication_name', 'review_author', 'review_title')}
+
+
+admin.site.register(BCriticReviewDetail, BCriticReviewDetailAdmin)
+
+
+class BUserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'book_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('book_id', 'review_author', 'review_title')}
+
+
+admin.site.register(BUserReviewDetail, BUserReviewDetailAdmin)
 
 
 class BookPostAdmin(admin.ModelAdmin):
@@ -202,3 +209,59 @@ class BReportAdmin(admin.ModelAdmin):
 admin.site.register(BookCollectionDetail, BCollectionDetailsAdmin)
 admin.site.register(BookCollection, BCollectionAdmin)
 admin.site.register(BReport, BReportAdmin)
+
+
+#Games Section
+admin.site.register(GameLabel)
+admin.site.register(GameToLabel)
+admin.site.register(DeveloperDetail)
+admin.site.register(ProviderDetail)
+admin.site.register(GameAward)
+admin.site.register(GameToAward)
+admin.site.register(GCertificate)
+admin.site.register(GameToCertificate)
+admin.site.register(GLanguage)
+admin.site.register(GameToLanguage)
+admin.site.register(GPlatform)
+admin.site.register(GameToPlatform)
+admin.site.register(GGenre)
+admin.site.register(GameToGenre)
+admin.site.register(GameToTrailer)
+admin.site.register(GameToPhoto)
+admin.site.register(GPhotoType)
+
+
+class GUserReviewDetailAdmin(admin.ModelAdmin):
+    list_display = ['id', 'game_id', 'review_author', 'review_title']
+    prepopulated_fields = {'slug': ('game_id', 'review_author', 'review_title')}
+
+
+admin.site.register(GUserReviewDetail, GUserReviewDetailAdmin)
+
+
+class GamePostAdmin(admin.ModelAdmin):
+    list_display = ['game_name', 'release_date', 'developer']
+    prepopulated_fields = {'slug': ('game_name', 'release_date')}
+
+
+admin.site.register(GamePost, GamePostAdmin)
+
+
+class GCollectionAdmin(admin.ModelAdmin):
+    list_display = ['name', 'release_date']
+    prepopulated_fields = {'slug': ('name', 'release_date')}
+
+
+class GCollectionDetailsAdmin(admin.ModelAdmin):
+    list_display = ['game_name', 'release_date', 'genres']
+    prepopulated_fields = {'slug': ('game_name', 'release_date')}
+
+
+class GReportAdmin(admin.ModelAdmin):
+    list_display = ['name', 'publish_date']
+    prepopulated_fields = {'slug': ('name', 'publish_date')}
+
+
+admin.site.register(GameCollectionDetail, GCollectionDetailsAdmin)
+admin.site.register(GameCollection, GCollectionAdmin)
+admin.site.register(GReport, GReportAdmin)

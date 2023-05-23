@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
-from . import views, PodcastsViews, BooksViews, search_view
+from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews
 
 urlpatterns = [
     path('api/v1/collections/', views.all_collections, name='collections'),
@@ -23,7 +23,7 @@ urlpatterns = [
     path('api/v1/addusercommentdislikes/', csrf_exempt(views.add_dislikes), name='add_user_comment_dislikes'),
     path('api/v1/reports/', views.all_reports, name='all_reports'),
     path('api/v1/reports/<slug:slug>/', views.report_details, name='report_details'),
-    path('api/v1/search/', search_view.search, name='search'),
+    path('api/v1/search/', aggrgate_view.search, name='search'),
 
 
     # Podcasts Section
@@ -72,6 +72,34 @@ urlpatterns = [
     # Below two should always be at the end of the book list of urls
     path('api/v1/books/', csrf_exempt(BooksViews.books), name='books'),
     path('api/v1/books/<slug:slug>/', csrf_exempt(BooksViews.book_details), name='books_details'),
+
+    # Games Section
+    path('api/v1/games/collections/', gamesViews.all_collections, name='g-collections'),
+    path('api/v1/games/collections/<slug:slug>/', gamesViews.collection_details,
+           name='g-collection_details'),
+    path('api/v1/games/moods/', gamesViews.all_moods, name='games-moods'),
+    path('api/v1/games/genres/', gamesViews.all_genres, name='games-genres'),
+    path('api/v1/games/platforms/', gamesViews.all_platforms, name='games-platforms'),
+    path('api/v1/games/awards/', gamesViews.all_awards, name='games-awards'),
+    path('api/v1/games/labels/', gamesViews.all_labels, name='games-labels'),
+    path('api/v1/games/certificates/', gamesViews.all_certificates, name='games-all_certificates'),
+    path('api/v1/games/languages/', gamesViews.all_languages, name='games-all_languages'),
+
+    path('api/v1/games/similarbygenres/<slug:slug>/', csrf_exempt(gamesViews.similar_by_genres),
+           name='games-similar_by_genres'),
+
+    path('api/v1/games/addusercomment/', csrf_exempt(gamesViews.add_user_comment),
+           name='games-add_user_comment'),
+    path('api/v1/games/addusercommentlikes/', csrf_exempt(gamesViews.add_likes),
+           name='add_user_comment_likes'),
+    path('api/v1/games/addusercommentdislikes/', csrf_exempt(gamesViews.add_dislikes),
+           name='add_user_comment_dislikes'),
+      # games report section
+    path('api/v1/games/reports/', gamesViews.all_reports, name='games-all_reports'),
+    path('api/v1/games/reports/<slug:slug>/', gamesViews.report_details, name='games-report_details'),
+      # Below two should always be at the end of the game list of urls
+    path('api/v1/games/', csrf_exempt(gamesViews.games), name='games'),
+    path('api/v1/games/<slug:slug>/', csrf_exempt(gamesViews.game_details), name='games_details'),
 
     path('', views.index, name='index'),
 

@@ -405,7 +405,6 @@ def movie_details(request, slug):
     return JsonResponse(movie_detail)
 
 
-
 def all_moods(request):
     final_query = """ select label_id as name ,photo_url as url,  count(*) as cnt from review_moviepost
       left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id
@@ -421,7 +420,6 @@ def all_moods(request):
         records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)
-
 
 
 def all_labels(request):
@@ -530,7 +528,6 @@ def all_reports(request):
     return JsonResponse({'reports': reports})
 
 
-
 def report_details(request, slug):
 
     final_query = """Select
@@ -604,7 +601,6 @@ def all_collections(request):
         count = count + 1
 
     return JsonResponse({'collections': final_reponse})
-
 
 
 def collection_details(request, slug):
@@ -846,7 +842,7 @@ def movies(request):
                                       """ % (join_clause, count_clause)
 
     print(final_query)
-    print(count_query)
+
 
     count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
@@ -864,6 +860,7 @@ def movies(request):
     total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) >0 else 0
     final_output = {'totalEntries': total_count, 'movies': entries}
     return JsonResponse(final_output)
+
 
 def movie_search(request):
     keywords = request.GET["keywords"]
