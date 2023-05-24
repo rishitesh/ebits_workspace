@@ -80,7 +80,7 @@ def get_user_reviews(game_id):
 def get_avg_user_rating(book_id):
     user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
                                    from review_guserreviewdetail
-                                    where book_id_id = '%s' and review_approved is True""" % book_id
+                                    where game_id_id = '%s' and review_approved is True""" % book_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
     if avg_user_ratings and len(avg_user_ratings) > 0:
@@ -344,7 +344,7 @@ def game_details(request, slug):
     critics_reviews_list = get_critics_reviews(game_id)
     user_reviews_list = get_user_reviews(game_id)
     award_list = get_game_awards(game_id)
-    avg_usr_rating_details = get_avg_user_rating(book_id)
+    avg_usr_rating_details = get_avg_user_rating(game_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
@@ -375,7 +375,7 @@ def game_details(request, slug):
 
     game_detail = {"id": game_dict.get("id"),
                    "slug": game_dict.get("slug"),
-                   "name": game_dict.get("game_name"),
+                   "title": game_dict.get("game_name"),
                    "sentimeter": sentimeter_dict,
                    "aspects": aspects_dict,
                    "overview": overview_dict,
@@ -786,7 +786,7 @@ def games(request):
                                   distinct
                                   review_gamepost.id,
                                   review_gamepost.slug,
-                                  game_name as Name, \
+                                  game_name as Title, \
                                   developer as Developer, \
                                   provider as Provider, \
                                   release_date as ReleaseDate, \
@@ -832,7 +832,6 @@ def games_search(request):
         return JsonResponse({'movies': ""})
 
     serach_query = """SELECT id, slug,\
-     duration, \
      release_date, \
      thumbnail_image_url from review_gamepost where MATCH (game_name, description, ebits_review) \
                       AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
