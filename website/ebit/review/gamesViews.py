@@ -826,6 +826,30 @@ def games(request):
     return JsonResponse(final_output)
 
 
+def homepage_games(request):
+    label = request.GET.get("label", "")
+    if is_empty(label):
+        return []
+    final_query = """
+                                      SELECT DISTINCT  \
+                                      review_gamepost.id,
+                                      review_gamepost.slug,
+                                      game_name as Title, \
+                                      release_date as RelaseDate, \
+                                      ebits_rating as ebitsRating, \
+                                      thumbnail_image_url as image \
+                              
+                                      FROM
+                                      review_gamepost \
+                                      left join review_gametolabel \
+                                      on review_gametolabel.id = review_gametolabel.game_id_id \
+                                      WHERE   review_gametolabel.label_id = '%s' \
+                                       ORDER BY release_date desc limit 10 """ % label
+
+    row_dict = raw_sql(final_query)
+    return row_dict
+
+
 def games_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):

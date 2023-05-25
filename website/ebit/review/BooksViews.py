@@ -850,6 +850,30 @@ def books(request):
     return JsonResponse(final_output)
 
 
+def homepage_books(request):
+    label = request.GET.get("label", "")
+    if is_empty(label):
+        return []
+    final_query = """
+                                      SELECT DISTINCT  \
+                                      review_bookpost.id,
+                                      review_bookpost.slug,
+                                      book_title as Title, \
+                                      publish_date as PublishDate, \
+                                      ebits_rating as ebitsRating, \
+                                      thumbnail_image_url as image, \
+                                      review_bookpost.pages
+                                      FROM
+                                      review_bookpost \
+                                      left join review_booktolabel \
+                                      on review_bookpost.id = review_booktolabel.book_id_id \
+                                      WHERE   review_booktolabel.label_id = '%s' \
+                                       ORDER BY publish_date desc limit 10 """ % label
+
+    row_dict = raw_sql(final_query)
+    return row_dict
+
+
 def book_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):

@@ -24,6 +24,9 @@ urlpatterns = [
     path('api/v1/reports/', views.all_reports, name='all_reports'),
     path('api/v1/reports/<slug:slug>/', views.report_details, name='report_details'),
     path('api/v1/search/', aggrgate_view.search, name='search'),
+    path('api/v1/home/posts/', aggrgate_view.post_entries, name='home-posts'),
+    path('api/v1/home/reports/', aggrgate_view.reports, name='home-reports'),
+    path('api/v1/home/collections/', aggrgate_view.reports, name='home-reports'),
 
 
     # Podcasts Section

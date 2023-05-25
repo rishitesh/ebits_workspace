@@ -834,6 +834,30 @@ def podcasts(request):
     return JsonResponse(final_output)
 
 
+def homepage_podcasts(request):
+    label = request.GET.get("label", "")
+    if is_empty(label):
+        return []
+    final_query = """
+                                      SELECT DISTINCT  \
+                                      review_podcastpost.id,
+                                      review_podcastpost.slug,
+                                      podcast_name as Title, \
+                                      release_date as ReleaseDate, \
+                                      ebits_rating as ebitsRating, \
+                                      thumbnail_image_url as image, \
+                                      review_podcastpost.duration
+                                      FROM
+                                      review_podcastpost \
+                                      left join review_podcasttolabel \
+                                      on review_podcastpost.id = review_podcasttolabel.podcast_id_id \
+                                      WHERE   review_podcasttolabel.label_id = '%s' \
+                                       ORDER BY release_date desc limit 10 """ % label
+
+    row_dict = raw_sql(final_query)
+    return row_dict
+
+
 def podcast_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):

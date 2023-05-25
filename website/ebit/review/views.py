@@ -862,6 +862,30 @@ def movies(request):
     return JsonResponse(final_output)
 
 
+def homepage_movies(request):
+    label = request.GET.get("label", "")
+    if is_empty(label):
+        return []
+    final_query = """
+                                      SELECT DISTINCT  \
+                                      review_moviepost.id,
+                                      review_moviepost.slug,
+                                      movie_name as Title, \
+                                      release_date as ReleaseDate, \
+                                      ebits_rating as ebitsRating, \
+                                      thumbnail_image_url as image, \
+                                      review_moviepost.duration
+                                      FROM
+                                      review_moviepost \
+                                      left join review_movietolabel \
+                                      on review_moviepost.id = review_movietolabel.movie_id_id \
+                                      WHERE   review_movietolabel.label_id = '%s' \
+                                       ORDER BY release_date desc limit 10 """ % label
+
+    row_dict = raw_sql(final_query)
+    return row_dict
+                                      
+
 def movie_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):
