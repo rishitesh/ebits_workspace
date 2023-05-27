@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from .blog_models import BlogArticlePost, BlogInterviewPost, BlogEventPost
+
 from .booksModels import BookLabel, BookToLabel, AuthorDetail, BCriticReviewDetail, BookAward, BookToAward, \
     BCertificate, BookToCertificate, BLanguage, BookToLanguage, BPlatform, BookToPlatform, BGenre, BookToGenre, \
     BookToTrailer, BookToPhoto, BPhotoType, BUserReviewDetail, BookPost, BookCollectionDetail, BookCollection, BReport, \
@@ -19,6 +21,8 @@ from .gamesModels import GameLabel, GameToLabel, DeveloperDetail, GameAward, Gam
     GameToCertificate, GLanguage, GameToLanguage, GPlatform, ProviderDetail, GameToPlatform, GGenre, GameToGenre, \
     GameToTrailer, GameToPhoto, GPhotoType, GUserReviewDetail, GCriticReviewDetail, GamePost, GameCollectionDetail, \
     GameCollection, GReport
+
+from .common_model import PostText, CommonImage
 
 # Movie Section
 admin.site.register(Platform)
@@ -265,3 +269,32 @@ class GReportAdmin(admin.ModelAdmin):
 admin.site.register(GameCollectionDetail, GCollectionDetailsAdmin)
 admin.site.register(GameCollection, GCollectionAdmin)
 admin.site.register(GReport, GReportAdmin)
+
+
+# Homepage Section
+admin.site.register(PostText)
+admin.site.register(CommonImage)
+
+class BlogArticleAdmin(admin.ModelAdmin):
+    list_display = ['title', 'publish_date']
+    prepopulated_fields = {'slug': ('title', 'publish_date')}
+
+
+admin.site.register(BlogArticlePost, BlogArticleAdmin)
+
+
+class BlogInterviewAdmin(admin.ModelAdmin):
+    list_display = ['title', 'publish_date']
+    prepopulated_fields = {'slug': ('title', 'publish_date')}
+
+
+admin.site.register(BlogInterviewPost, BlogInterviewAdmin)
+
+
+class BlogEventAdmin(admin.ModelAdmin):
+    list_display = ['title', 'publish_date']
+    prepopulated_fields = {'slug': ('title', 'publish_date')}
+
+
+admin.site.register(BlogEventPost, BlogEventAdmin)
+

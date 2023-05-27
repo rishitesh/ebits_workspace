@@ -874,17 +874,32 @@ def homepage_movies(request):
                                       release_date as ReleaseDate, \
                                       ebits_rating as ebitsRating, \
                                       thumbnail_image_url as image, \
-                                      review_moviepost.duration
+                                      review_moviepost.duration, \
+                                      aspect_story, \
+                                      aspect_direction, \
+                                      aspect_music, \
+                                      aspect_performance, \
+                                      aspect_costume, \
+                                      aspect_screenplay, \
+                                      aspect_vfx \
                                       FROM
                                       review_moviepost \
                                       left join review_movietolabel \
                                       on review_moviepost.id = review_movietolabel.movie_id_id \
                                       WHERE   review_movietolabel.label_id = '%s' \
-                                       ORDER BY release_date desc limit 10 """ % label
+                                      ORDER BY release_date desc limit 10 """ % label
 
     row_dict = raw_sql(final_query)
-    return row_dict
-                                      
+    entries = []
+    for row in row_dict:
+        photo_dict = get_movie_photos(row.get("id"))
+        row["photos"] = photo_dict
+        row["genres"] = get_movie_genres(row.get("id"))
+        row["platforms"] = get_movie_platforms(row.get("id"))
+        entries.append(row)
+
+    return entries
+
 
 def movie_search(request):
     keywords = request.GET["keywords"]

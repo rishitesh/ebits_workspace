@@ -110,11 +110,15 @@ def get_game_certificates(game_id):
 
 
 def get_game_platforms(game_id):
-    platform_query = """select platform_id from review_gametoplatform where game_id_id = '%s' """ % game_id
+    platform_query = """select platform_id, image_url, platform_url from review_gametoplatform, review_gplatform where \
+     review_gametoplatform.platform_id=review_gplatform.name and \
+     game_id_id = '%s' """ % game_id
     platform_rows = raw_sql(platform_query)
     platform_list = []
     for row in platform_rows:
-        platform_list.append(row.get("game_id"))
+        platform = {"name": row.get("platform_id"), "url": row.get("image_url"),
+                    "platform_url": row.get("platform_url")}
+        platform_list.append(platform)
 
     return platform_list
 
@@ -838,18 +842,30 @@ def homepage_games(request):
                                       game_name as Title, \
                                       release_date as RelaseDate, \
                                       ebits_rating as ebitsRating, \
-                                      thumbnail_image_url as image \
-                              
+                                      thumbnail_image_url as image, \
+                                      aspect_graphics, \
+                                      aspect_performance, \
+                                      aspect_animation, \
+                                      aspect_easeOfUse \
                                       FROM
                                       review_gamepost \
                                       left join review_gametolabel \
-                                      on review_gametolabel.id = review_gametolabel.game_id_id \
+                                      on review_gamepost.id = review_gametolabel.game_id_id \
                                       WHERE   review_gametolabel.label_id = '%s' \
                                        ORDER BY release_date desc limit 10 """ % label
     print(final_query)                                   
 
     row_dict = raw_sql(final_query)
-    return row_dict
+    
+    entries = []
+    for row in row_dict:
+        photo_dict = get_game_photos(row.get("id"))
+        row["photos"] = photo_dict
+        row["genres"] = get_game_genres(row.get("id"))
+        row["platforms"] = get_game_platforms(row.get("id"))
+        entries.append(row)
+        
+    return entries
 
 
 def games_search(request):

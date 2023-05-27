@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
-from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews
+from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews, blog_views
 
 urlpatterns = [
     path('api/v1/collections/', views.all_collections, name='collections'),
@@ -27,7 +27,8 @@ urlpatterns = [
     path('api/v1/home/posts/', aggrgate_view.post_entries, name='home-posts'),
     path('api/v1/home/reports/', aggrgate_view.reports, name='home-reports'),
     path('api/v1/home/collections/', aggrgate_view.collections, name='home-collections'),
-
+    path('api/v1/home/postcontents/', aggrgate_view.post_contents, name='post-contents'),
+    path('api/v1/home/commonimages/', aggrgate_view.common_images, name='common-images'),
 
     # Podcasts Section
     path('api/v1/podcasts/collections/', PodcastsViews.all_collections, name='p-collections'),
@@ -103,6 +104,20 @@ urlpatterns = [
       # Below two should always be at the end of the game list of urls
     path('api/v1/games/', csrf_exempt(gamesViews.games), name='games'),
     path('api/v1/games/<slug:slug>/', csrf_exempt(gamesViews.game_details), name='games_details'),
+
+    # blogs section
+    path('api/v1/blogs/articles/', blog_views.all_articles, name='blog-articles'),
+    path('api/v1/blogs/interviews/', blog_views.all_interviews, name='blog-interviews'),
+    path('api/v1/blogs/events/', blog_views.all_events, name='blog-events'),
+
+    path('api/v1/blogs/articles/addlikes/', csrf_exempt(blog_views.add_article_likes), name='articles-addlikes'),
+    path('api/v1/blogs/events/addlikes/', csrf_exempt(blog_views.add_event_likes), name='events-addlikes'),
+    path('api/v1/blogs/interviews/addlikes/', csrf_exempt(blog_views.add_interview_likes), name='interviews-addlikes'),
+
+    path('api/v1/blogs/articles/<slug:slug>/', csrf_exempt(blog_views.article_details), name='article-detail'),
+    path('api/v1/blogs/events/<slug:slug>/', csrf_exempt(blog_views.event_details), name='event-detail'),
+    path('api/v1/blogs/interviews/<slug:slug>/', csrf_exempt(blog_views.interview_details), name='interview-detail'),
+
 
     path('', views.index, name='index'),
 

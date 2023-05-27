@@ -5,7 +5,7 @@ from review.PodcastsViews import podcast_search, homepage_podcasts
 from review.views import movie_search, homepage_movies
 from review.gamesViews import games_search, homepage_games
 from . import views, PodcastsViews, BooksViews, gamesViews
-
+from .utils import raw_sql
 
 def search(request):
     entries = {}
@@ -66,3 +66,20 @@ def collections(request):
     games_data = json.loads(games.content)
     entries["game_collections"] = games_data.get("collections")
     return JsonResponse({'result': entries})
+
+
+def post_contents(request):
+    final_query = """
+      select type_name, description from review_posttext
+    """
+    row_dict = raw_sql(final_query)
+    return JsonResponse({'result': row_dict})
+
+
+def common_images(request):
+    query = """
+             select type_name, image_url  from review_commonimage
+           """
+    common_images = raw_sql(query)
+
+    return JsonResponse({'result': common_images})

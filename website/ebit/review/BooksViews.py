@@ -110,11 +110,15 @@ def get_book_certificates(book_id):
 
 
 def get_book_platforms(book_id):
-    platform_query = """select platform_id from review_booktoplatform where book_id_id = '%s' """ % book_id
+    platform_query = """select platform_id, image_url, platform_url from review_booktoplatform, review_bplatform where \
+         review_booktoplatform.platform_id=review_bplatform.name and \
+         book_id_id = '%s' """ % book_id
     platform_rows = raw_sql(platform_query)
     platform_list = []
     for row in platform_rows:
-        platform_list.append(row.get("book_id"))
+        platform = {"name": row.get("platform_id"), "url": row.get("image_url"),
+                    "platform_url": row.get("platform_url")}
+        platform_list.append(platform)
 
     return platform_list
 
@@ -862,7 +866,12 @@ def homepage_books(request):
                                       publish_date as PublishDate, \
                                       ebits_rating as ebitsRating, \
                                       thumbnail_image_url as image, \
-                                      review_bookpost.pages
+                                      review_bookpost.pages, \
+                                      aspect_plot, \
+                                      aspect_setting, \
+                                      aspect_characters, \
+                                      aspect_structure, \
+                                      aspect_styleOfWriting \
                                       FROM
                                       review_bookpost \
                                       left join review_booktolabel \
@@ -871,7 +880,16 @@ def homepage_books(request):
                                        ORDER BY publish_date desc limit 10 """ % label
 
     row_dict = raw_sql(final_query)
-    return row_dict
+
+    entries = []
+    for row in row_dict:
+        photo_dict = get_book_photos(row.get("id"))
+        row["photos"] = photo_dict
+        row["genres"] = get_book_genres(row.get("id"))
+        row["platforms"] = get_book_platforms(row.get("id"))
+        entries.append(row)
+
+    return entries
 
 
 def book_search(request):

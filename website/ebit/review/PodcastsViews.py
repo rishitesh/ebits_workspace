@@ -846,7 +846,12 @@ def homepage_podcasts(request):
                                       release_date as ReleaseDate, \
                                       ebits_rating as ebitsRating, \
                                       thumbnail_image_url as image, \
-                                      review_podcastpost.duration
+                                      review_podcastpost.duration, \
+                                      aspect_introduction, \
+                                      aspect_content, \
+                                      aspect_audioQuality, \
+                                      aspect_voices, \
+                                      aspect_outro \
                                       FROM
                                       review_podcastpost \
                                       left join review_podcasttolabel \
@@ -855,7 +860,16 @@ def homepage_podcasts(request):
                                        ORDER BY release_date desc limit 10 """ % label
 
     row_dict = raw_sql(final_query)
-    return row_dict
+
+    entries = []
+    for row in row_dict:
+        photo_dict = get_podcast_photos(row.get("id"))
+        row["photos"] = photo_dict
+        row["genres"] = get_podcast_genres(row.get("id"))
+        row["platforms"] = get_podcast_platforms(row.get("id"))
+        entries.append(row)
+
+    return entries
 
 
 def podcast_search(request):
