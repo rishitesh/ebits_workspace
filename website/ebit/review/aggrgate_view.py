@@ -1,4 +1,4 @@
-
+import json
 from django.http import HttpResponse, JsonResponse
 from review.BooksViews import book_search, homepage_books
 from review.PodcastsViews import podcast_search, homepage_podcasts
@@ -33,27 +33,36 @@ def post_entries(request):
     return JsonResponse({'result': entries})
 
 
+
 def reports(request):
     entries = {}
     movies = views.all_reports(request)
-    entries["movie_reports"] = movies.get("reports")
+    movies_data = json.loads(movies.content)
+    entries["movie_reports"] = movies_data.get("reports")
     podcasts = PodcastsViews.all_reports(request)
-    entries["podcast_reports"] = podcasts.get("reports")
+    podcasts_data = json.loads(podcasts.content)
+    entries["podcast_reports"] = podcasts_data.get("reports")
     books = BooksViews.all_reports(request)
-    entries["book_reports"] = books.get("reports")
+    books_data = json.loads(books.content)
+    entries["book_reports"] = books_data.get("reports")
     games = gamesViews.all_reports(request)
-    entries["game_reports"] = games.get("reports")
+    games_data = json.loads(games.content)
+    entries["game_reports"] = games_data.get("reports")
     return JsonResponse({'result': entries})
 
 
 def collections(request):
     entries = {}
     movies = views.all_collections(request)
-    entries["movie_collections"] = movies.get("collections")
+    movies_data = json.loads(movies.content)
+    entries["movie_collections"] = movies_data.get("collections")
     podcasts = PodcastsViews.all_collections(request)
-    entries["podcast_collections"] = podcasts.get("collections")
+    podcasts_data = json.loads(podcasts.content)
+    entries["podcast_collections"] = podcasts_data.get("collections")
     books = BooksViews.all_collections(request)
-    entries["book_collections"] = books.get("collections")
+    books_data = json.loads(books.content)
+    entries["book_collections"] = books_data.get("collections")
     games = gamesViews.all_collections(request)
-    entries["game_collections"] = games.get("collections")
+    games_data = json.loads(games.content)
+    entries["game_collections"] = games_data.get("collections")
     return JsonResponse({'result': entries})

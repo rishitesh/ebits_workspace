@@ -829,6 +829,7 @@ def games(request):
 def homepage_games(request):
     label = request.GET.get("label", "")
     if is_empty(label):
+        print("retrn from empty")
         return []
     final_query = """
                                       SELECT DISTINCT  \
@@ -845,6 +846,7 @@ def homepage_games(request):
                                       on review_gametolabel.id = review_gametolabel.game_id_id \
                                       WHERE   review_gametolabel.label_id = '%s' \
                                        ORDER BY release_date desc limit 10 """ % label
+    print(final_query)                                   
 
     row_dict = raw_sql(final_query)
     return row_dict
