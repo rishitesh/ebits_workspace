@@ -150,13 +150,11 @@ def get_book_photos(book_id):
                        and review_booktophoto.photo_type_id=review_bphototype.id """ % book_id
 
     photo_rows = raw_sql(photo_query)
-    photo_list = []
+    photo_json = {}
     for row in photo_rows:
-        photo = {"name": row.get("name"), "photo_url": row.get("photo_url")}
-        photo_list.append(photo)
+        photo_json[row.get("name")] = row.get("photo_url")
 
-    return photo_list
-
+    return photo_json
 
 def get_book_awards(book_id):
     award_query = """select award_name_id, award_for from review_booktoaward where book_id_id = '%s' """ \

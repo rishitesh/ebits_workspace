@@ -142,7 +142,6 @@ def get_podcast_trailers(podcast_id):
 
     return trailer_list
 
-
 def get_podcast_photos(podcast_id):
     photo_query = """select name, photo_url from review_podcasttophoto,\
                        review_pphototype \
@@ -150,12 +149,11 @@ def get_podcast_photos(podcast_id):
                        and review_podcasttophoto.photo_type_id=review_pphototype.id """ % podcast_id
 
     photo_rows = raw_sql(photo_query)
-    photo_list = []
+    photo_json = {}
     for row in photo_rows:
-        photo = {"name": row.get("name"), "photo_url": row.get("photo_url")}
-        photo_list.append(photo)
+        photo_json[row.get("name")] = row.get("photo_url")
 
-    return photo_list
+    return photo_json
 
 
 def get_podcast_awards(podcast_id):

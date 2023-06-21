@@ -146,13 +146,11 @@ def get_movie_photos(movie_id):
                     where review_movietophoto.movie_id_id=%s \
                     and review_movietophoto.photo_type_id=review_phototype.id """ % movie_id
     photo_rows = raw_sql(photo_query)
-    photo_list = []
+    photo_json = {}
     for row in photo_rows:
-        photo = {"name": row.get("name"), "photo_url": row.get("photo_url")}
-        photo_list.append(photo)
+        photo_json[row.get("name")] = row.get("photo_url")
 
-    return photo_list
-
+    return photo_json
 
 
 def get_movie_awards(movie_id):

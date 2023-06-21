@@ -150,13 +150,11 @@ def get_game_photos(game_id):
                        and review_gametophoto.photo_type_id=review_gphototype.id """ % game_id
 
     photo_rows = raw_sql(photo_query)
-    photo_list = []
+    photo_json = {}
     for row in photo_rows:
-        photo = {"name": row.get("name"), "photo_url": row.get("photo_url")}
-        photo_list.append(photo)
+        photo_json[row.get("name")] = row.get("photo_url")
 
-    return photo_list
-
+    return photo_json
 
 def get_game_awards(game_id):
     award_query = """select award_name_id, award_for from review_gametoaward where game_id_id = '%s' """ \
@@ -365,6 +363,7 @@ def game_details(request, slug):
     overview_dict = {"releaseDate": game_dict.get("release_date"),
                      "game": game_dict.get("game"),
                      "developer": game_dict.get("developer"),
+                     "description": game_dict.get("description"),
                      "provider": game_dict.get("provider"),
                      "ebitsRating": game_dict.get("ebits_rating"),
                      "ebitsReview": game_dict.get("ebits_review"),

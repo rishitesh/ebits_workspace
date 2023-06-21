@@ -18,12 +18,26 @@ def all_articles(request):
         raise Exception('spam', 'Invalid offset clause')
     limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
 
-    articles_query = """
-      select *  from review_blogarticlepost ORDER BY publish_date desc %s 
-    """
-    articles = raw_sql(articles_query % limit_clause)
+    count_query = """
+       select count(*) as totalEntries from review_blogarticlepost 
+     """
 
-    return JsonResponse({'result': articles})
+    count_dict = raw_sql(count_query)
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+
+    articles_query = """
+            select title,
+            subTitle,
+            publish_date,
+            slug,
+            description1 as description,
+            thumbnail_image_url as image,
+             likes
+            from review_blogarticlepost ORDER BY publish_date desc %s 
+    """ 
+    articles = raw_sql(articles_query % limit_clause)
+    final_output = {'totalEntries': total_count, 'result': articles}
+    return JsonResponse(final_output)
 
 
 def all_events(request):
@@ -37,12 +51,21 @@ def all_events(request):
         raise Exception('spam', 'Invalid offset clause')
     limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
 
+    count_query = """
+       select count(*) as totalEntries from review_blogeventpost 
+     """
+
+    count_dict = raw_sql(count_query)
+
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+
     events_query = """
-      select *  from review_blogeventpost ORDER BY publish_date desc %s 
+      select title, subTitle, event_time_start, event_time_end, suitableFor, fees, organiser_name, organiser_profile as organiser_tag, thumbnailImage_url as organiser_image,  publish_date, slug, description1 as description, desc_image_url1 as image, likes
+         from review_blogeventpost ORDER BY publish_date desc %s 
     """
     events = raw_sql(events_query % limit_clause)
-
-    return JsonResponse({'result': events})
+    final_output = {'totalEntries': total_count, 'result': events}
+    return JsonResponse(final_output)
 
 
 def all_interviews(request):
@@ -56,12 +79,20 @@ def all_interviews(request):
         raise Exception('spam', 'Invalid offset clause')
     limit_clause = " LIMIT %s OFFSET %s " % (limit, offset)
 
+    count_query = """
+           select count(*) as totalEntries from review_bloginterviewpost 
+         """
+
+    count_dict = raw_sql(count_query)
+
+    total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
+
     events_query = """
       select *  from review_bloginterviewpost ORDER BY publish_date desc %s 
     """
-    events = raw_sql(events_query % limit_clause)
-
-    return JsonResponse({'result': events})
+    interviews = raw_sql(events_query % limit_clause)
+    final_output = {'totalEntries': total_count, 'result': interviews}
+    return JsonResponse(final_output)
 
 
 def article_details(request, slug):
@@ -69,8 +100,8 @@ def article_details(request, slug):
           select *  from review_blogarticlepost where slug = '%s' 
         """
     article = raw_sql(articles_query % slug)
-
-    return JsonResponse({'result': article})
+    ret = article[0] if article and len(article) > 0 else {}
+    return JsonResponse({'result': ret})
 
 
 def event_details(request, slug):
@@ -78,8 +109,8 @@ def event_details(request, slug):
           select *  from review_blogeventpost where slug = '%s' 
         """
     event = raw_sql(event_query % slug)
-
-    return JsonResponse({'result': event})
+    ret = event[0] if event and len(event) > 0 else {}
+    return JsonResponse({'result': ret})
 
 
 def interview_details(request, slug):
@@ -87,8 +118,9 @@ def interview_details(request, slug):
           select *  from review_bloginterviewpost where slug = '%s' 
         """
     interview = raw_sql(interview_query % slug)
+    ret = interview[0] if interview and len(interview) > 0 else {}
 
-    return JsonResponse({'result': interview})
+    return JsonResponse({'result': ret})
 
 
 @require_http_methods(["POST"])

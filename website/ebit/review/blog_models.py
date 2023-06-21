@@ -10,6 +10,7 @@ class BlogArticlePost(models.Model):
     id = models.AutoField(primary_key=True)
 
     title = models.CharField(max_length=120)
+    subTitle = models.CharField(max_length=120, default=None, null=True, blank=True)
     publish_date = models.DateField()
     slug = models.SlugField(null=True, unique=True)
 
@@ -51,10 +52,14 @@ class BlogEventPost(models.Model):
     id = models.AutoField(primary_key=True)
 
     title = models.CharField(max_length=120)
+    subTitle = models.CharField(max_length=120, default=None, null=True, blank=True)
     publish_date = models.DateField()
     venue = models.CharField(max_length=500)
 
     slug = models.SlugField(null=True, unique=True)
+
+    event_time_start = models.TimeField(default=None, null=True, blank=True)
+    event_time_end = models.TimeField(default=None, null=True, blank=True)
 
     description1 = models.TextField(default=None, null=True, blank=True)
     desc_image_url1 = models.CharField(null=True, blank=True, max_length=300)
@@ -99,6 +104,7 @@ class BlogInterviewPost(models.Model):
     id = models.AutoField(primary_key=True)
 
     title = models.CharField(max_length=120)
+    subTitle = models.CharField(max_length=120, default=None, null=True, blank=True)
     publish_date = models.DateField()
     venue = models.CharField(max_length=500)
 
