@@ -68,6 +68,8 @@ class PodcastCollection(models.Model):
     name = models.TextField()
     description = models.TextField()
     image_url = models.CharField(null=True, blank=True, max_length=300)
+    home_collection_banner_image = models.CharField(null=True, blank=True, max_length=300)
+
     is_report = models.BooleanField(default=False)
     publish_date = models.DateField(default=datetime.now)
 
@@ -85,9 +87,21 @@ class PodcastCollection(models.Model):
         super(PodcastCollection, self).save(*args, **kwargs)
 
 
+
+class PPlatform(models.Model):
+    name = models.CharField(primary_key=True, max_length=100)
+    platform_url = models.CharField(primary_key=False, max_length=200)
+    image_url = models.CharField(primary_key=False, max_length=200)
+
+    def __str__(self):
+        return "%s" % self.name
+
+
+
 class PodcastCollectionDetail(models.Model):
     id = models.AutoField(primary_key=True)
     collection_id = models.ForeignKey(PodcastCollection, on_delete=models.CASCADE)
+    platform = models.ForeignKey(PPlatform, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     podcast_id = models.ForeignKey(PodcastPost, on_delete=models.SET_NULL, default=None, null=True, blank=True)
 
@@ -140,8 +154,15 @@ class PCriticReviewDetail(models.Model):
     review_date = models.DateField()
     critic_review = models.TextField()
 
+
+    slug = models.SlugField(null=True, unique=True)
+
+    def get_absolute_url(self):
+        return reverse("CriticReviewDetail", kwargs={'slug': self.slug})
+
     def __str__(self):
-        return "%s->%s" % (self.podcast_id, self.publication_name)
+        return "%s->%s->%s->%s" % (self.podcast_id, self.publication_name, self.review_author, self.review_title)
+
 
 
 class PUserReviewDetail(models.Model):
@@ -212,12 +233,6 @@ class PodcastToLanguage(models.Model):
         return "%s->%s" % (self.podcast_id, self.language_id)
 
 
-class PPlatform(models.Model):
-    name = models.CharField(primary_key=True, max_length=100)
-
-    def __str__(self):
-        return "%s" % self.name
-
 
 class PodcastToPlatform(models.Model):
     podcast_id = models.ForeignKey(PodcastPost, on_delete=models.CASCADE)
@@ -281,7 +296,7 @@ class PodcastToPhoto(models.Model):
     photo_url = models.CharField(null=True, max_length=300)
 
     def __str__(self):
-        return "%s->%s" % (self.podcast_id, self.photo)
+        return "%s->%s" % (self.podcast_id, self.photo_url)
 
 
 class PReport(models.Model):

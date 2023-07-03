@@ -6,9 +6,10 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.http import require_http_methods
 
-from review.podcastsModels import PodcastPost, PUserReviewDetail, PPlatform, PodcastAward, PCertificate, \
-    PodcastCollection, PLanguage
-from review.podcastSerializers import *
+from review.gamesModels import GUserReviewDetail, GamePost, GLanguage, GPlatform, GameAward, GCertificate, \
+    GameCollection
+
+from review.gameSerializers import *
 from review.utils import format_uuid, is_empty, raw_sql
 
 
@@ -19,15 +20,15 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-def get_critics_reviews(podcast_id):
+def get_critics_reviews(game_id):
     critics_reviews_query = """select publication_name,\
                                    review_author, \
                                    review_rating, \
                                    review_title, \
                                    review_date, \
                                    critic_review 
-                                   from review_pcriticreviewdetail
-                                    where podcast_id_id = '%s' """ % podcast_id
+                                   from review_gcriticreviewdetail
+                                    where game_id_id = '%s' """ % game_id
     critics_review_rows = raw_sql(critics_reviews_query)
     critics_reviews_list = []
     for row in critics_review_rows:
@@ -44,7 +45,7 @@ def get_critics_reviews(podcast_id):
     return critics_reviews_list
 
 
-def get_user_reviews(podcast_id):
+def get_user_reviews(game_id):
     user_reviews_query = """select 
                                    review_author, \
                                    review_rating, \
@@ -55,8 +56,8 @@ def get_user_reviews(podcast_id):
                                    review_likes,\
                                    review_dislikes, \
                                    slug 
-                                   from review_puserreviewdetail
-                                    where podcast_id_id = '%s' and review_approved is True""" % podcast_id
+                                   from review_guserreviewdetail
+                                    where game_id_id = '%s' and review_approved is True""" % game_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -76,10 +77,10 @@ def get_user_reviews(podcast_id):
     return user_reviews_list
 
 
-def get_avg_user_rating(podcast_id):
+def get_avg_user_rating(book_id):
     user_reviews_query = """select avg(review_rating) as avgUserRating, count(*) as totalReviews
-                                   from review_puserreviewdetail
-                                    where podcast_id_id = '%s' and review_approved is True""" % podcast_id
+                                   from review_guserreviewdetail
+                                    where game_id_id = '%s' and review_approved is True""" % book_id
     avg_user_ratings = raw_sql(user_reviews_query)
 
     if avg_user_ratings and len(avg_user_ratings) > 0:
@@ -88,9 +89,8 @@ def get_avg_user_rating(podcast_id):
         return {}
 
 
-
-def get_podcast_genres(podcast_id):
-    genre_query = """select genre_id from review_podcasttogenre where podcast_id_id = '%s' """ % podcast_id
+def get_game_genres(game_id):
+    genre_query = """select genre_id from review_gametogenre where game_id_id = '%s' """ % game_id
     genre_rows = raw_sql(genre_query)
     genre_list = []
     for row in genre_rows:
@@ -99,8 +99,8 @@ def get_podcast_genres(podcast_id):
     return genre_list
 
 
-def get_podcast_certificates(podcast_id):
-    certificate_query = """select certificate_id_id from review_podcasttocertificate where podcast_id_id = '%s' """ % podcast_id
+def get_game_certificates(game_id):
+    certificate_query = """select certificate_id_id from review_gametocertificate where game_id_id = '%s' """ % game_id
     cert_rows = raw_sql(certificate_query)
     cert_list = []
     for row in cert_rows:
@@ -109,22 +109,22 @@ def get_podcast_certificates(podcast_id):
     return cert_list
 
 
-def get_podcast_platforms(podcast_id):
-     platform_query = """select platform_id, image_url, platform_url from review_podcasttoplatform, review_pplatform where \
-      review_podcasttoplatform.platform_id=review_pplatform.name and \
-      podcast_id_id = '%s' """ % podcast_id
-     platform_rows = raw_sql(platform_query)
-     platform_list = []
-     for row in platform_rows:
-         platform = {"name": row.get("platform_id"), "url": row.get("image_url"),
-                     "platform_url": row.get("platform_url")}
-         platform_list.append(platform)
+def get_game_platforms(game_id):
+    platform_query = """select platform_id, image_url, platform_url from review_gametoplatform, review_gplatform where \
+     review_gametoplatform.platform_id=review_gplatform.name and \
+     game_id_id = '%s' """ % game_id
+    platform_rows = raw_sql(platform_query)
+    platform_list = []
+    for row in platform_rows:
+        platform = {"name": row.get("platform_id"), "url": row.get("image_url"),
+                    "platform_url": row.get("platform_url")}
+        platform_list.append(platform)
 
-     return platform_list
+    return platform_list
 
 
-def get_podcast_languages(podcast_id):
-    language_query = """select language_id_id from review_podcasttolanguage where podcast_id_id = '%s' """ % podcast_id
+def get_game_languages(game_id):
+    language_query = """select language_id_id from review_gametolanguage where game_id_id = '%s' """ % game_id
     language_rows = raw_sql(language_query)
     language_list = []
     for row in language_rows:
@@ -133,20 +133,21 @@ def get_podcast_languages(podcast_id):
     return language_list
 
 
-def get_podcast_trailers(podcast_id):
-    trailer_query = """select trailers_url from review_podcasttotrailer where podcast_id_id = '%s' """ % podcast_id
+def get_game_trailers(game_id):
+    trailer_query = """select trailers_url from review_gametotrailer where game_id_id = '%s' """ % game_id
     trailer_rows = raw_sql(trailer_query)
     trailer_list = []
     for row in trailer_rows:
-        trailer_list.append(row.get("trailers_url"))
+        trailer_list.append(row.get("trailers"))
 
     return trailer_list
 
-def get_podcast_photos(podcast_id):
-    photo_query = """select name, photo_url from review_podcasttophoto,\
-                       review_pphototype \
-                       where review_podcasttophoto.podcast_id_id=%s \
-                       and review_podcasttophoto.photo_type_id=review_pphototype.id """ % podcast_id
+
+def get_game_photos(game_id):
+    photo_query = """select name, photo_url from review_gametophoto,\
+                       review_gphototype \
+                       where review_gametophoto.game_id_id=%s \
+                       and review_gametophoto.photo_type_id=review_gphototype.id """ % game_id
 
     photo_rows = raw_sql(photo_query)
     photo_json = {}
@@ -155,10 +156,9 @@ def get_podcast_photos(podcast_id):
 
     return photo_json
 
-
-def get_podcast_awards(podcast_id):
-    award_query = """select award_name_id, award_for from review_podcasttoaward where podcast_id_id = '%s' """ \
-                  % podcast_id
+def get_game_awards(game_id):
+    award_query = """select award_name_id, award_for from review_gametoaward where game_id_id = '%s' """ \
+                  % game_id
     award_rows = raw_sql(award_query)
     award_list = []
     for row in award_rows:
@@ -172,7 +172,7 @@ def get_podcast_awards(podcast_id):
 def add_likes(request):
     data = json.loads(request.body.decode("utf-8"))
     slug = data.get('slug', [])
-    user_review = PUserReviewDetail.objects.get(slug=slug)
+    user_review = GUserReviewDetail.objects.get(slug=slug)
     if not user_review:
         return JsonResponse({"message": "User review with slug %s not found " % slug})
 
@@ -191,7 +191,7 @@ def add_likes(request):
 def add_dislikes(request):
     data = json.loads(request.body.decode("utf-8"))
     slug = data.get('slug', [])
-    user_review = PUserReviewDetail.objects.get(slug=slug)
+    user_review = GUserReviewDetail.objects.get(slug=slug)
     if not user_review:
         return JsonResponse({"message": "User review with slug %s not found " % slug})
 
@@ -211,9 +211,9 @@ def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
     print(data)
     slug = data.get('slug', [])
-    podcast_query = """select id from review_podcastpost where slug='%s' limit 1""" % slug
-    podcast_row = raw_sql(podcast_query)[0]
-    podcast_id = podcast_row.get("id")
+    game_query = """select id from review_gamepost where slug='%s' limit 1""" % slug
+    game_row = raw_sql(game_query)[0]
+    game_id = game_row.get("id")
 
     review_author = data.get('author', [])
     review_rating = data.get('ratings', [])
@@ -221,13 +221,13 @@ def add_user_comment(request):
     review_text = data.get('review', [])
     reviewer_image = data.get('image', [])
 
-    podcast = PodcastPost.objects.get(id=podcast_id)
+    game = GamePost.objects.get(id=game_id)
 
-    if not podcast:
+    if not game:
         message = "Invalid podcast reference"
         return JsonResponse({"message": message})
 
-    user_review = PUserReviewDetail(podcast_id=podcast,
+    user_review = GUserReviewDetail(game_id=game,
                                    review_author=review_author,
                                    review_rating=review_rating,
                                    review_title=review_title,
@@ -243,71 +243,71 @@ def add_user_comment(request):
 
 
 def similar_by_genres(request, slug):
-    podcast_query = """select id from review_podcastpost where slug='%s' limit 1""" % slug
-    podcast_row = raw_sql(podcast_query)[0]
-    podcast_id = podcast_row.get("id")
+    game_query = """select id from review_gamepost where slug='%s' limit 1""" % slug
+    game_row = raw_sql(game_query)[0]
+    game_id = game_row.get("id")
 
-    genre_list = get_podcast_genres(podcast_id)
+    genre_list = get_game_genres(game_id)
 
     if is_empty(genre_list):
         return JsonResponse({})
 
     single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
     in_clause = ",".join(single_quoted_list)
-    filter_clause = " review_podcasttogenre.genre_id in (%s)" % in_clause
+    filter_clause = " review_gametogenre.genre_id in (%s)" % in_clause
 
     final_query = """
                                       SELECT \
-                                      review_podcastpost.slug as slug, 
-                                      podcast_name, \
-                                      duration, \
+                                      review_gamepost.id as id, 
+                                      game_name, \
                                       description, \
-                                      podcaster_display_comma_separated, \
+                                      developer, \
+                                      provider, \
                                       release_date, \
                                       ebits_rating, \
                                       critics_rating , \
                                       thumbnail_image_url \
                                       FROM 
-                                      review_podcastpost,\
-                                      review_podcasttogenre
+                                      review_gamepost,\
+                                      review_gametogenre
 
-                                      WHERE review_podcastpost.id = review_podcasttogenre.podcast_id_id \
-                                      and review_podcastpost.id != '%s' \
+                                      WHERE review_gamepost.id = review_gametogenre.game_id_id \
+                                      and review_gamepost.id != '%s' \
                                       and  %s ORDER BY rand()  limit 10
-                                      """ % (podcast_id, filter_clause)
+                                      """ % (game_id, filter_clause)
     # print(final_query)
-    similar_podcast_row = raw_sql(final_query)
+    similar_game_row = raw_sql(final_query)
 
-    similar_podcast_list = []
-    for row in similar_podcast_row:
-        movie = {'slug': row.get("slug"),
-                 'title': row.get("podcast_name"),
-                 'description': row.get("duration"),
+    similar_game_list = []
+    for row in similar_game_row:
+        game = {'id': row.get("id"),
+                 'name': row.get("game_name"),
+                 'description': row.get("description"),
                  'image': row.get("thumbnail_image_url"),
                  'releaseDate': row.get("release_date"),
-                 'duration': row.get("review_date"),
                  'ebitsRatings': row.get("ebits_rating"),
                  'criticRatings': row.get("critics_rating"),
-                 'podcaster': row.get("podcaster_display_comma_separated"),
+                 'developer': row.get("developer"),
+                 'provider': row.get("provider"),
                  }
 
-        similar_podcast_list.append(movie)
+        similar_game_list.append(game)
 
-    return JsonResponse({"podcasts": similar_podcast_list})
+    return JsonResponse({"games": similar_game_list})
 
 
-def podcast_details(request, slug):
+def game_details(request, slug):
     formatted_uuid = format_uuid(slug)
 
     final_query = """
                                       SELECT \
                                       id, 
                                       slug,
-                                      podcast_name, \
-                                      duration, \
+                                      game_name, \
                                       release_date, \
                                       description, \
-                                      podcaster_display_comma_separated,\
+                                      developer,\
+                                      provider,\
 
                                       ebits_rating,\
                                       ebits_review,\
@@ -319,15 +319,14 @@ def podcast_details(request, slug):
                                       negative, \
                                       neutral, \
 
-                                      aspect_introduction, \
-                                      aspect_content, \
-                                      aspect_audioQuality, \
-                                      aspect_voices, \
-                                      aspect_outro, \
+                                      aspect_graphics, \
+                                      aspect_performance, \
+                                      aspect_animation, \
+                                      aspect_easeOfUse, \
 
                                       ebits_rating, \
                                       thumbnail_image_url \
-                                      FROM review_podcastpost
+                                      FROM review_gamepost
                                       where slug = '%s' 
                                       """ % slug
 
@@ -335,70 +334,69 @@ def podcast_details(request, slug):
     row_dict = raw_sql(final_query)
     if is_empty(row_dict):
         return JsonResponse({})
-    podcast_dict = row_dict[0]
-    podcast_id = podcast_dict.get("id")
+    game_dict = row_dict[0]
+    game_id = game_dict.get("id")
 
-    genre_list = get_podcast_genres(podcast_id)
-    cert_list = get_podcast_certificates(podcast_id)
-    platform_list = get_podcast_platforms(podcast_id)
-    language_list = get_podcast_languages(podcast_id)
-    trailer_list = get_podcast_trailers(podcast_id)
-    photo_list = get_podcast_photos(podcast_id)
-    critics_reviews_list = get_critics_reviews(podcast_id)
-    user_reviews_list = get_user_reviews(podcast_id)
-    award_list = get_podcast_awards(podcast_id)
-    avg_usr_rating_details = get_avg_user_rating(podcast_id)
+    genre_list = get_game_genres(game_id)
+    cert_list = get_game_certificates(game_id)
+    platform_list = get_game_platforms(game_id)
+    language_list = get_game_languages(game_id)
+    trailer_list = get_game_trailers(game_id)
+    photo_list = get_game_photos(game_id)
+    critics_reviews_list = get_critics_reviews(game_id)
+    user_reviews_list = get_user_reviews(game_id)
+    award_list = get_game_awards(game_id)
+    avg_usr_rating_details = get_avg_user_rating(game_id)
 
     gallery_dict = {"trailers": trailer_list, "photos": photo_list}
 
-    sentimeter_dict = {"positive": podcast_dict.get("positive"),
-                       "negative": podcast_dict.get("negative"),
-                       "neutral": podcast_dict.get("neutral")}
-
-    aspects_dict = {"introduction": podcast_dict.get("aspect_introduction"),
-                    "content": podcast_dict.get("aspect_content"),
-                    "audioQuality": podcast_dict.get("aspect_audioQuality"),
-                    "voices": podcast_dict.get("aspect_voices"),
-                    "outro": podcast_dict.get("aspect_outro"),
+    sentimeter_dict = {"positive": game_dict.get("positive"),
+                       "negative": game_dict.get("negative"),
+                       "neutral": game_dict.get("neutral")}
+    # graphics, performance, animation, easeOfUse
+    aspects_dict = {"graphics": game_dict.get("aspect_graphics"),
+                    "performance": game_dict.get("aspect_performance"),
+                    "animation": game_dict.get("aspect_animation"),
+                    "easeOfUse": game_dict.get("aspect_easeOfUse"),
                     }
 
-    overview_dict = {"releaseDate": podcast_dict.get("release_date"),
-                     "storyline": podcast_dict.get("description"),
-                     "podcaster": podcast_dict.get("podcaster_display_comma_separated"),
-
-                     "ebitsRating": podcast_dict.get("ebits_rating"),
-                     "ebitsReview": podcast_dict.get("ebits_review"),
-                     "ebitsReviewer": podcast_dict.get("ebits_reviewer_name"),
-                     "ebitsReviewerImage": podcast_dict.get("ebits_reviewer_image"),
-                     "averageCriticsRating": podcast_dict.get("critics_rating"),
+    overview_dict = {"releaseDate": game_dict.get("release_date"),
+                     "game": game_dict.get("game"),
+                     "developer": game_dict.get("developer"),
+                     "description": game_dict.get("description"),
+                     "provider": game_dict.get("provider"),
+                     "ebitsRating": game_dict.get("ebits_rating"),
+                     "ebitsReview": game_dict.get("ebits_review"),
+                     "ebitsReviewer": game_dict.get("ebits_reviewer_name"),
+                     "ebitsReviewerImage": game_dict.get("ebits_reviewer_image"),
+                     "averageCriticsRating": game_dict.get("critics_rating"),
                      "platforms": platform_list,
                      "language": language_list,
                      "awards": award_list,
                      "gallery": gallery_dict
                      }
 
-    podcast_detail = {"id": podcast_dict.get("id"),
-                    "slug": podcast_dict.get("slug"),
-                    "title": podcast_dict.get("podcast_name"),
-                    "length": podcast_dict.get("duration"),
-                    "sentimeter": sentimeter_dict,
-                    "aspects": aspects_dict,
-                    "overview": overview_dict,
-                    "genres": genre_list,
-                    "certifications": cert_list,
-                    "criticReviews": critics_reviews_list,
-                    "userReviews": user_reviews_list,
-                    "avgUserReviews": avg_usr_rating_details
-                    }
+    game_detail = {"id": game_dict.get("id"),
+                   "slug": game_dict.get("slug"),
+                   "title": game_dict.get("game_name"),
+                   "sentimeter": sentimeter_dict,
+                   "aspects": aspects_dict,
+                   "overview": overview_dict,
+                   "genres": genre_list,
+                   "certifications": cert_list,
+                   "criticReviews": critics_reviews_list,
+                   "userReviews": user_reviews_list,
+                   "avgUserReviews": avg_usr_rating_details
+                   }
 
-    return JsonResponse(podcast_detail)
+    return JsonResponse(game_detail)
 
 
 def all_moods(request):
-    final_query = """ select label_id as name , count(*) as cnt from review_podcastpost
-      left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id
-      join  review_podcastlabel on  review_podcasttolabel.label_id = review_podcastlabel.name
-      and LOWER(review_podcastlabel.type) = 'mood' group by label_id """
+    final_query = """ select label_id as name , count(*) as cnt from review_gamepost
+      left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id
+      join  review_gamelabel on  review_gametolabel.label_id = review_gamelabel.name
+      and LOWER(review_gamelabel.type) = 'mood' group by label_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -410,7 +408,7 @@ def all_moods(request):
 
 
 def all_languages(request):
-    data = list(PLanguage.objects.values())
+    data = list(GLanguage.objects.values())
     js_val = {}
     records = []
     for d in data:
@@ -421,10 +419,10 @@ def all_languages(request):
 
 
 def all_labels(request):
-    final_query = """ select label_id as name , count(*) as cnt from review_podcastpost
-      left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id
-      join  review_podcastlabel on  review_podcasttolabel.label_id = review_podcastlabel.name
-      and LOWER(review_podcastlabel.type) != 'mood' group by label_id """
+    final_query = """ select label_id as name , count(*) as cnt from review_gamepost
+      left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id
+      join  review_gamelabel on  review_gametolabel.label_id = review_gamelabel.name
+      and LOWER(review_gamelabel.type) != 'mood' group by label_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -436,8 +434,8 @@ def all_labels(request):
 
 
 def all_genres(request):
-    final_query = """ select genre_id as name , count(*) as cnt from review_podcastpost \
-     left join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id group by genre_id """
+    final_query = """ select genre_id as name , count(*) as cnt from review_gamepost \
+     left join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id group by genre_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -449,7 +447,7 @@ def all_genres(request):
 
 
 def all_platforms(request):
-    data = list(PPlatform.objects.values())
+    data = list(GPlatform.objects.values())
     js_val = {}
     records = []
     for d in data:
@@ -460,7 +458,7 @@ def all_platforms(request):
 
 
 def all_awards(request):
-    data = list(PodcastAward.objects.values())
+    data = list(GameAward.objects.values())
     js_val = {}
     records = []
     for d in data:
@@ -471,7 +469,7 @@ def all_awards(request):
 
 
 def all_certificates(request):
-    data = list(PCertificate.objects.values())
+    data = list(GCertificate.objects.values())
     js_val = {}
     records = []
     for d in data:
@@ -490,13 +488,13 @@ def all_reports(request):
     """
     pprint("inside all_reports")
     final_query = """Select
-                     review_preport.slug as slug, \
-                     review_podcastcollection.name as title,\
+                     review_greport.slug as slug, \
+                     review_gamecollection.name as name,\
                      description as summary,\
                      chart_data_json as chart, \
-                     review_preport.publish_date \
-                     from  review_preport, review_podcastcollection \
-                     where review_preport.collection_id_id = review_podcastcollection.id \
+                     review_greport.publish_date \
+                     from  review_greport, review_gamecollection \
+                     where review_greport.collection_id_id = review_gamecollection.id \
                      order by publish_date desc limit 20
                      """
     row_dict = raw_sql(final_query)
@@ -505,7 +503,7 @@ def all_reports(request):
     for row in row_dict:
         pprint(type(row.get("chart")))
         r = {'slug': row.get("slug"),
-             'title': row.get("title"),
+             'name': row.get("name"),
              'summary': row.get("summary"),
              'chart': json.loads(row.get("chart")),
              'chartImage': ''
@@ -519,14 +517,14 @@ def all_reports(request):
 def report_details(request, slug):
 
     final_query = """Select
-                         review_preport.id, \
-                         review_preport.collection_id_id as collectionId,\
-                         review_podcastcollection.name as title,\
+                         review_greport.id, \
+                         review_greport.collection_id_id as collectionId,\
+                         review_gamecollection.name as name,\
                          description as summary,\
                          chart_data_json \
-                         from  review_preport, review_podcastcollection \
-                         where review_preport.collection_id_id = review_podcastcollection.id \
-                         and   review_preport.slug = '%s'
+                         from  review_greport, review_gamecollection \
+                         where review_greport.collection_id_id = review_gamecollection.id \
+                         and   review_greport.slug = '%s'
                          """ % slug
     row_dict = raw_sql(final_query)
     pprint(row_dict)
@@ -548,7 +546,7 @@ def report_details(request, slug):
 
 def all_collections(request):
     """
-    This method returns all the movie/OTT collection list. See MovieCollection model object
+    This method returns all the book collection list. See BookCollection model object
     for the detailed fields.
     :param request:
     :return:
@@ -559,10 +557,10 @@ def all_collections(request):
                          name,\
                          description,\
                          image_url , \
-                         publish_date \
-                         from  review_podcastcollection \
+                         release_date \
+                         from  review_gamecollection \
                          where not is_report \
-                         order by publish_date desc limit 10
+                         order by release_date desc limit 10
                          """
 
     all_cols = raw_sql(final_query)
@@ -575,7 +573,7 @@ def all_collections(request):
     for col in all_cols:
         col_id = col.get("id")
         slug = col.get("slug")
-        col['type'] = 'podcast'
+        col['type'] = 'game'
         collection_entry_data = get_collection_details(col_id, False)
         col['entries'] = collection_entry_data
         final_reponse.append(col)
@@ -586,13 +584,13 @@ def all_collections(request):
 
 def collection_details(request, slug):
 
-    data = PodcastCollection.objects.raw("""
+    data = GameCollection.objects.raw("""
                                       SELECT \
                                       id, \
                                       name, \
                                       description, \
                                       image_url \
-                                      FROM review_podcastcollection
+                                      FROM review_gamecollection
                                       where slug = '%s'
                                       """ % slug
                                        )
@@ -618,74 +616,74 @@ def collection_details(request, slug):
 
 
 def get_collection_details(collection_id, is_report):
-    report_predicate = "review_podcastcollection.is_report"
+    report_predicate = "review_gamecollection.is_report"
     if is_report:
-        report_predicate = "review_podcastcollection.is_report"
+        report_predicate = "review_gamecollection.is_report"
     else:
-        report_predicate = "not review_podcastcollection.is_report"
+        report_predicate = "not review_gamecollection.is_report"
     pprint("is_report " + str(is_report))
     final_query = """
                                                 SELECT \
-                                                review_podcastcollectiondetail.slug ,\
-                                                podcast_name as title, \
-                                                podcast_id_id as podcast_id, \
+                                                review_gamecollectiondetail.slug ,\
+                                                game_name, \
+                                                game_id_id as game_id, \
                                                 ebits_rating as rating, \
-                                                review_podcastcollectiondetail.description,\
+                                                review_gamecollectiondetail.description,\
                                                 thumbnail_image_url as bgImage, \
-                                                release_date as releaseDate, \
-                                                aspect_introduction, \
-                                                aspect_content, \
-                                                aspect_audioQuality, \
-                                                aspect_voices, \
-                                                aspect_outro, \
-                                                genres,  \
-                                                platform_id
-                                                FROM review_podcastcollectiondetail, review_podcastcollection
-                                                where review_podcastcollectiondetail.collection_id_id = review_podcastcollection.id
-                                                and review_podcastcollection.id = '%s' and %s
+                                                review_gamecollectiondetail.release_date as releaseDate, \
+                                                aspect_graphics, \
+                                                aspect_performance, \
+                                                aspect_animation, \
+                                                aspect_easeOfUse, \
+                                                genres  \
+                                                FROM review_gamecollectiondetail, review_gamecollection
+                                                where
+                                                review_gamecollectiondetail.collection_id_id = review_gamecollection.id
+                                                and review_gamecollection.id = '%s' and %s
                                                   """ % (collection_id, report_predicate)
+
+    platform_query = """select review_gplatform.name as platform, \
+           review_gplatform.platform_url, \
+           review_gplatform.image_url as platform_image_url from review_gplatform where name = '%s'
+           """
+
+    game_slug_query = """select review_gamepost.slug as \
+        game_slug from review_gamepost where review_gamepost.id = %s """
+
+    pprint(final_query)
+
     pprint(final_query)
     row_dict = raw_sql(final_query)
 
-    platform_query = """select name  as platform, image_url, platform_url from review_pplatform where \
-      review_pplatform.name = '%s' """
-
-    movie_slug_query = """select review_podcastpost.slug as \
-     podcast_slug from review_podcastpost where review_podcastpost.id = %s """
-
     entries = []
     for row in row_dict:
-        podcast_slug = ""
-        if row.get("podcast_id", None):
-            all_podcasts = raw_sql(movie_slug_query % row.get("podcast_id"))
-            if len(all_podcasts) > 0:
-                podcast_slug = all_podcasts[0].get("podcast_slug")
+        games_slug = ""
+        if row.get("game_id", None):
+            all_games = raw_sql(game_slug_query % row.get("game_id"))
+            if len(all_games) > 0:
+                games_slug = all_games[0].get("game_slug")
 
         entry = {"slug": row.get("slug"),
-                 "name": row.get("title"),
-                 "podcast_slug": podcast_slug,
+                 "name": row.get("game_name"),
+                 "games_slug": games_slug,
                  "ebitsRatings": row.get("rating"),
-                 "description": row.get("description"),
-                 "release_date": row.get("releaseDate"),
-                 "aspect_introduction": row.get("aspect_introduction"),
-                 "aspect_content": row.get("aspect_content"),
-                 "aspect_audioQuality": row.get("aspect_audioQuality"),
-                 "aspect_voices": row.get("aspect_voices"),
-                 "aspect_outro": row.get("aspect_outro"),
-                 "genres": row.get("genres"),
+                 "aspect_graphics": row.get("aspect_graphics"),
+                 "aspect_performance": row.get("aspect_performance"),
+                 "aspect_animation": row.get("aspect_animation"),
+                 "aspect_easeOfUse": row.get("aspect_easeOfUse"),
                  "image": row.get("bgImage")}
+
         if row.get("platform_id", None):
-           platform_dict = raw_sql(platform_query % row.get("platform_id"))
-           entry["platform_details"] = platform_dict
+            platform_dict = raw_sql(platform_query % row.get("platform_id"))
+            entry["platform_details"] = platform_dict
 
         entries.append(entry)
 
     return entries
 
 
-
 @require_http_methods(["POST"])
-def podcasts(request):
+def games(request):
     data = json.loads(request.body.decode("utf-8"))
     print(data)
     category_list = data.get('categories', [])
@@ -706,61 +704,61 @@ def podcasts(request):
         label_list = category_list + mood_list
         single_quoted_list = map(lambda s: "'" + s + "'", label_list)
         in_clause = ",".join(single_quoted_list)
-        filter_clause = filter_clause + " review_podcasttolabel.label_id in (%s)" % in_clause
+        filter_clause = filter_clause + " review_gametolabel.label_id in (%s)" % in_clause
 
     if not is_empty(certificate_list):
         single_quoted_list = map(lambda s: "'" + s + "'", certificate_list)
         in_clause = ",".join(single_quoted_list)
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcasttocertificate.certificate_id_id in (%s)" % in_clause
+            filter_clause = filter_clause + " review_gametocertificate.certificate_id_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_podcasttocertificate.certificate_id_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_gametocertificate.certificate_id_id in (%s)" % in_clause
 
     if not is_empty(genre_list):
         single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
         in_clause = ",".join(single_quoted_list)
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcasttogenre.genre_id in (%s)" % in_clause
+            filter_clause = filter_clause + " review_gametogenre.genre_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_podcasttogenre.genre_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_gametogenre.genre_id in (%s)" % in_clause
 
     if not is_empty(language_list):
         single_quoted_list = map(lambda s: "'" + s + "'", language_list)
         in_clause = ",".join(single_quoted_list)
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcasttolanguage.language_id_id in (%s)" % in_clause
+            filter_clause = filter_clause + " review_gametolanguage.language_id_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_podcasttolanguage.language_id_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_gametolanguage.language_id_id in (%s)" % in_clause
 
     if not is_empty(platform_list):
         single_quoted_list = map(lambda s: "'" + s + "'", platform_list)
         in_clause = ",".join(single_quoted_list)
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcasttoplatform.platform_id in (%s)" % in_clause
+            filter_clause = filter_clause + " review_gametoplatform.platform_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_podcasttoplatform.platform_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_gametoplatform.platform_id in (%s)" % in_clause
 
     if not is_empty(awards_list):
         single_quoted_list = map(lambda s: "'" + s + "'", awards_list)
         in_clause = ",".join(single_quoted_list)
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcasttoaward.award_name_id in (%s)" % in_clause
+            filter_clause = filter_clause + " review_gametoaward.award_name_id in (%s)" % in_clause
         else:
-            filter_clause = filter_clause + " and review_podcasttoaward.award_name_id in (%s)" % in_clause
+            filter_clause = filter_clause + " and review_gametoaward.award_name_id in (%s)" % in_clause
 
     if ebits_rating_range and not is_empty(ebits_rating_range):
         between_clause = "%s and %s " % (ebits_rating_range.get("low"), ebits_rating_range.get("high"))
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcastpost.ebits_rating between %s" % between_clause
+            filter_clause = filter_clause + " review_gamepost.ebits_rating between %s" % between_clause
         else:
-            filter_clause = filter_clause + " and review_podcastpost.ebits_rating between %s" % between_clause
+            filter_clause = filter_clause + " and review_gamepost.ebits_rating between %s" % between_clause
 
     if critics_rating_range and not is_empty(critics_rating_range):
         between_clause = "%s and %s " % (critics_rating_range.get("low"), critics_rating_range.get("high"))
         if is_empty(filter_clause):
-            filter_clause = filter_clause + " review_podcastpost.critics_rating between %s" % between_clause
+            filter_clause = filter_clause + " review_gamepost.critics_rating between %s" % between_clause
         else:
-            filter_clause = filter_clause + " and review_podcastpost.critics_rating between %s" % between_clause
+            filter_clause = filter_clause + " and review_gamepost.critics_rating between %s" % between_clause
 
     count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
@@ -778,117 +776,111 @@ def podcasts(request):
         filter_clause = filter_clause + limit_clause
 
     join_clause = """
-                                  left join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id \
-                                  left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id \
-                                  left join review_podcasttolanguage on review_podcastpost.id = review_podcasttolanguage.podcast_id_id \
-                                  left join review_podcasttocertificate on review_podcastpost.id = review_podcasttocertificate.podcast_id_id \
-                                  left join review_podcasttoaward on review_podcastpost.id = review_podcasttoaward.podcast_id_id \
-                                  left join review_podcasttoplatform on review_podcastpost.id = review_podcasttoplatform.podcast_id_id\
+              left join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id \
+              left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id \
+              left join review_gametolanguage on review_gamepost.id = review_gametolanguage.game_id_id \
+              left join review_gametocertificate on review_gamepost.id = review_gametocertificate.game_id_id \
+              left join review_gametoaward on review_gamepost.id = review_gametoaward.game_id_id \
+              left join review_gametoplatform on review_gamepost.id = review_gametoplatform.game_id_id\
     """
 
     final_query = """
                                   SELECT \
                                   distinct
-                                  review_podcastpost.id,
-                                  review_podcastpost.slug,
-                                  podcast_name as Title, \
-                                  podcaster_display_comma_separated as Podcaster, \
+                                  review_gamepost.id,
+                                  review_gamepost.slug,
+                                  game_name as Title, \
+                                  developer as Developer, \
+                                  provider as Provider, \
                                   release_date as ReleaseDate, \
                                   ebits_rating as ebitsRating, \
                                   critics_rating as criticsRating, \
                                   thumbnail_image_url as image \
                                   FROM
-                                  review_podcastpost \
+                                  review_gamepost \
                                   %s 
                                   WHERE   %s
                                   """ % (join_clause, filter_clause)
 
+
     count_query = """
-                                  SELECT \
-                                  count(DISTINCT review_podcastpost.id) as totalEntries
-                                  FROM
-                                  review_podcastpost \
-                                  %s 
-                                  WHERE   %s
-                                  """ % (join_clause, count_clause)
+                                      SELECT count(DISTINCT review_gamepost.id) as totalEntries  \
+                                      FROM
+                                      review_gamepost \
+                                      %s 
+                                      WHERE   %s
+                                      """ % (join_clause, count_clause)
 
     print(final_query)
-    print(count_query)
-
-    count_dict = raw_sql(count_query)
     row_dict = raw_sql(final_query)
+    count_dict = raw_sql(count_query)
 
     entries = []
     for row in row_dict:
-        photo_dict = get_podcast_photos(row.get("id"))
+        photo_dict = get_game_photos(row.get("id"))
+        trailer_dict = get_game_trailers(row.get("id"))
         row["photos"] = photo_dict
-        trailer_dict = get_podcast_trailers(row.get("id"))
         row["trailers"] = trailer_dict
-        row["genres"] = get_podcast_genres(row.get("id"))
+        row["genres"] = get_game_genres(row.get("id"))
         entries.append(row)
 
     total_count = count_dict[0].get("totalEntries") if count_dict and len(count_dict) > 0 else 0
-    final_output = {'totalEntries': total_count, 'podcasts': entries}
+    final_output = {'totalEntries': total_count, 'games': entries}
     return JsonResponse(final_output)
 
 
-def homepage_podcasts(request):
+def homepage_games(request):
     label = request.GET.get("label", "")
     if is_empty(label):
+        print("retrn from empty")
         return []
     final_query = """
                                       SELECT DISTINCT  \
-                                      review_podcastpost.id,
-                                      review_podcastpost.slug,
-                                      podcast_name as Title, \
-                                      release_date as ReleaseDate, \
+                                      review_gamepost.id,
+                                      review_gamepost.slug,
+                                      game_name as Title, \
+                                      release_date as RelaseDate, \
                                       ebits_rating as ebitsRating, \
                                       thumbnail_image_url as image, \
-                                      review_podcastpost.duration, \
-                                      aspect_introduction, \
-                                      aspect_content, \
-                                      aspect_audioQuality, \
-                                      aspect_voices, \
-                                      aspect_outro \
+                                      aspect_graphics, \
+                                      aspect_performance, \
+                                      aspect_animation, \
+                                      aspect_easeOfUse \
                                       FROM
-                                      review_podcastpost \
-                                      left join review_podcasttolabel \
-                                      on review_podcastpost.id = review_podcasttolabel.podcast_id_id \
-                                      WHERE   review_podcasttolabel.label_id = '%s' \
+                                      review_gamepost \
+                                      left join review_gametolabel \
+                                      on review_gamepost.id = review_gametolabel.game_id_id \
+                                      WHERE   review_gametolabel.label_id = '%s' \
                                        ORDER BY release_date desc limit 10 """ % label
+    print(final_query)                                   
 
     row_dict = raw_sql(final_query)
-
+    
     entries = []
     for row in row_dict:
-        photo_dict = get_podcast_photos(row.get("id"))
+        photo_dict = get_game_photos(row.get("id"))
         row["photos"] = photo_dict
-        row["genres"] = get_podcast_genres(row.get("id"))
-        row["platforms"] = get_podcast_platforms(row.get("id"))
+        row["genres"] = get_game_genres(row.get("id"))
+        row["platforms"] = get_game_platforms(row.get("id"))
         entries.append(row)
-
+        
     return entries
 
 
-def podcast_search(request):
+def games_search(request):
     keywords = request.GET["keywords"]
     if is_empty(keywords):
-        return JsonResponse({'podcasts': ""})
+        return JsonResponse({'movies': ""})
 
     serach_query = """SELECT id, slug,\
-     duration, \
      release_date, \
-     thumbnail_image_url from review_podcastpost where MATCH (podcast_name, description, ebits_review) \
+     thumbnail_image_url from review_gamepost where MATCH (game_name, description, ebits_review) \
                       AGAINST ('%s' IN NATURAL LANGUAGE MODE) """
 
     row_dict = raw_sql(serach_query % keywords)
-
     entries = []
     for row in row_dict:
-        row["genres"] = get_podcast_genres(row.get("id"))
+        row["genres"] = get_game_genres(row.get("id"))
         entries.append(row)
 
     return entries
-
-
-
