@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 
 import jwt
@@ -32,6 +34,7 @@ ID_TOKEN_ISSUER = (
 
 
 class GoogleOAuth2Adapter(OAuth2Adapter):
+
     provider_id = GoogleProvider.id
     access_token_url = ACCESS_TOKEN_URL
     authorize_url = AUTHORIZE_URL
@@ -39,8 +42,12 @@ class GoogleOAuth2Adapter(OAuth2Adapter):
 
     def complete_login(self, request, app, token, response, **kwargs):
         try:
+            print("Inside GoogleOAuth2Adapter")
+            payload = response["id_token"]
+            payload2 = json.loads(payload.replace("'", "\""))
+            data = payload2["id_token"]
             identity_data = jwt.decode(
-                response["id_token"],
+                data,
                 # Since the token was received by direct communication
                 # protected by TLS between this library and Google, we
                 # are allowed to skip checking the token signature

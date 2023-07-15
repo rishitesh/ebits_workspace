@@ -7,6 +7,7 @@ from .views import RegisterView, VerifyEmailView, ResendEmailVerificationView
 urlpatterns = [
     path('', RegisterView.as_view(), name='rest_register'),
     path('verify-email/', VerifyEmailView.as_view(), name='rest_verify_email'),
+    path('forgot-password/', VerifyEmailView.as_view(), name='rest_verify_email'),
     path('resend-email/', ResendEmailVerificationView.as_view(), name="rest_resend_email"),
 
     # This url is used by django-allauth and empty TemplateView is

@@ -512,7 +512,7 @@ class DefaultAccountAdapter(object):
         """
         url = reverse("account_confirm_email", args=[emailconfirmation.key])
         ret = build_absolute_uri(request, url)
-        return ret
+        return url
 
     def should_send_confirmation_mail(self, request, email_address):
         from allauth.account.models import EmailConfirmation
@@ -535,12 +535,12 @@ class DefaultAccountAdapter(object):
 
     def send_confirmation_mail(self, request, emailconfirmation, signup):
         current_site = get_current_site(request)
-        activate_url = self.get_email_confirmation_url(request, emailconfirmation)
+        otp = emailconfirmation.key
         ctx = {
             "user": emailconfirmation.email_address.user,
-            "activate_url": emailconfirmation.key,
+            "activate_url": otp,
             "current_site": current_site,
-            "key": emailconfirmation.key,
+            "key": otp,
         }
         if signup:
             email_template = "account/email/email_confirmation_signup"

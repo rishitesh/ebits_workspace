@@ -13,6 +13,7 @@ from .utils import user_email
 from pprint import pprint
 import pyotp
 import base64
+import random
 
 class EmailAddress(models.Model):
 
@@ -141,36 +142,28 @@ class generateKey:
 
 
 class EmailConfirmationHMAC:
+
+    htop = pyotp.HOTP('base32secret3232')
     def __init__(self, email_address):
         self.email_address = email_address
 
     @property
     def key(self):
-        self.email_address.counter += 1  # Update Counter At every Call
+        random_num = random.randint(0, 1000)
+        self.email_address.counter = random_num
         self.email_address.save()  # Save the data
-        keygen = generateKey()
-        key = base64.b32encode(keygen.returnValue(self.email_address.email).encode())  # Key is generated
-        OTP = pyotp.HOTP(key)
-        pprint(OTP.at(self.email_address.counter))
-        return OTP.at(self.email_address.counter)
+        otp = EmailConfirmationHMAC.htop.at(int(random_num))
+        return otp
 
     @classmethod
-    def from_key(cls, key, email_address):
-        try:
-            keygen = generateKey()
-            encoded_key = base64.b32encode(keygen.returnValue(email_address).encode())  # Generating Key
-            OTP = pyotp.HOTP(encoded_key)  # HOTP Model
-            email = EmailAddress.objects.get(email=email_address, verified=False)
-            email_address_obj = EmailConfirmationHMAC(email)
-            if email and OTP.verify(key, email.counter):
-                email.isVerified = True
-                email.save()
-
-        except (
-            signing.SignatureExpired,
-            signing.BadSignature,
-            EmailAddress.DoesNotExist,
-        ):
+    def from_key(cls, otp, email_address):
+        email = EmailAddress.objects.get(email=email_address, verified=False)
+        email_address_obj = EmailConfirmationHMAC(email)
+        verified = EmailConfirmationHMAC.htop.verify(otp, int(email.counter))
+        if email and verified:
+            email.isVerified = True
+            email.save()
+        else:
             email_address_obj = None
         return email_address_obj
 
@@ -186,7 +179,6 @@ class EmailConfirmationHMAC:
             return email_address
 
     def send(self, request=None, signup=False):
-        pprint("Sending confirmation email")
         get_adapter(request).send_confirmation_mail(request, self, signup)
         signals.email_confirmation_sent.send(
             sender=self.__class__,

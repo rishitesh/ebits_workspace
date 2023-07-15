@@ -91,7 +91,6 @@ class SocialLoginSerializer(serializers.Serializer):
 
         adapter = adapter_class(request)
         app = adapter.get_provider().get_app(request)
-
         # More info on code vs access_token
         # http://stackoverflow.com/questions/8666316/facebook-oauth-2-0-code-and-token
 
@@ -148,7 +147,7 @@ class SocialLoginSerializer(serializers.Serializer):
 
         try:
             if adapter.provider_id == 'google':
-                login = self.get_social_login(adapter, app, social_token, response={'id_token': token})
+                login = self.get_social_login(adapter, app, social_token, response={'id_token': str(token)})
             else:
                 login = self.get_social_login(adapter, app, social_token, token)
             ret = complete_social_login(request, login)

@@ -383,6 +383,7 @@ class ConfirmEmailView(TemplateResponseMixin, LogoutFunctionalityMixin, View):
         key = self.kwargs["key"]
         email_address = self.kwargs["email_address"]
         emailconfirmation = EmailConfirmationHMAC.from_key(key, email_address)
+        print("emailconfirmation" + str(emailconfirmation))
         if not emailconfirmation:
             if queryset is None:
                 queryset = self.get_queryset()

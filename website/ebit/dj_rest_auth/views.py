@@ -63,15 +63,20 @@ class LoginView(GenericAPIView):
         return response_serializer
 
     def login(self):
+        print("Inside login2")
         self.user = self.serializer.validated_data['user']
         token_model = get_token_model()
-
+        print("Inside login")
         if api_settings.USE_JWT:
+            print("Using JWT")
             self.access_token, self.refresh_token = jwt_encode(self.user)
         elif token_model:
+            print("TOken  model")
             self.token = api_settings.TOKEN_CREATOR(token_model, self.user, self.serializer)
+            print(str(self.token))
 
         if api_settings.SESSION_LOGIN:
+            print("Session login")
             self.process_login()
 
     def get_response(self):
@@ -121,7 +126,9 @@ class LoginView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         self.request = request
+        print("Inside login1")
         self.serializer = self.get_serializer(data=self.request.data)
+        print(str(self.serializer))
         self.serializer.is_valid(raise_exception=True)
 
         self.login()

@@ -27,6 +27,7 @@ def _process_signup(request, sociallogin):
         url = reverse("socialaccount_signup")
         ret = HttpResponseRedirect(url)
     else:
+        print("Inside not auto signup")
         # Ok, auto signup it is, at least the e-mail address is ok.
         # We still need to check the username though...
         if account_settings.USER_MODEL_USERNAME_FIELD:

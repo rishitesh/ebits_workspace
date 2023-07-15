@@ -140,9 +140,10 @@ class DefaultSocialAccountAdapter(object):
 
     def is_auto_signup_allowed(self, request, sociallogin):
         # If email is specified, check for duplicate and if so, no auto signup.
-        auto_signup = app_settings.AUTO_SIGNUP
+        auto_signup = True
         if auto_signup:
             email = user_email(sociallogin.user)
+            print(email)
             # Let's check if auto_signup is really possible...
             if email:
                 if account_settings.UNIQUE_EMAIL:

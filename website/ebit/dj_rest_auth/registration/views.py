@@ -158,6 +158,7 @@ class SocialLoginView(LoginView):
     serializer_class = SocialLoginSerializer
 
     def process_login(self):
+        print("Inside process login")
         get_adapter(self.request).login(self.request, self.user)
 
 
