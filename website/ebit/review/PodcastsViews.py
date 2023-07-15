@@ -795,6 +795,7 @@ def podcasts(request):
                                   podcaster_display_comma_separated as Podcaster, \
                                   release_date as ReleaseDate, \
                                   ebits_rating as ebitsRating, \
+                                  description, \
                                   critics_rating as criticsRating, \
                                   thumbnail_image_url as image \
                                   FROM

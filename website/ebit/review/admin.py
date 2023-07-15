@@ -30,7 +30,6 @@ admin.site.register(Genre)
 admin.site.register(MovieToGenre)
 admin.site.register(Language)
 admin.site.register(Certificate)
-admin.site.register(MovieToPhoto)
 admin.site.register(CastDetail)
 admin.site.register(Award)
 admin.site.register(MovieToAward)
@@ -46,10 +45,15 @@ admin.site.register(PhotoType)
 class MoviePostAdmin(admin.ModelAdmin):
     list_display = ['movie_name', 'release_date', 'actors_display_comma_separated']
     prepopulated_fields = {'slug': ('movie_name', 'release_date')}
+    search_fields = ['movie_name']
 
 
 admin.site.register(MoviePost, MoviePostAdmin)
 
+class MovieToPhotoAdmin(admin.ModelAdmin):
+    search_fields = ['movie_id__movie_name']
+
+admin.site.register(MovieToPhoto, MovieToPhotoAdmin)    
 
 class ColectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'publish_date']
@@ -103,7 +107,6 @@ admin.site.register(PodcastToPlatform)
 admin.site.register(PGenre)
 admin.site.register(PodcastToGenre)
 admin.site.register(PodcastToTrailer)
-admin.site.register(PodcastToPhoto)
 admin.site.register(PPhotoType)
 
 
@@ -113,6 +116,7 @@ class PUserReviewDetailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PUserReviewDetail, PUserReviewDetailAdmin)
+
 
 
 class PCriticReviewDetailAdmin(admin.ModelAdmin):
@@ -146,10 +150,15 @@ admin.site.register(PReport, PReportAdmin)
 class PodcastPostAdmin(admin.ModelAdmin):
     list_display = ['podcast_name', 'release_date', 'podcaster_display_comma_separated']
     prepopulated_fields = {'slug': ('podcast_name', 'release_date')}
+    search_fields = ['podcast_name']
 
 
 admin.site.register(PodcastPost, PodcastPostAdmin)
 
+class PodcastToPhotoAdmin(admin.ModelAdmin):
+    search_fields = ['podcast_id__podcast_name']
+
+admin.site.register(PodcastToPhoto, PodcastToPhotoAdmin)    
 
 #Books Section
 admin.site.register(BookLabel)
@@ -167,7 +176,6 @@ admin.site.register(BookToPlatform)
 admin.site.register(BGenre)
 admin.site.register(BookToGenre)
 admin.site.register(BookToTrailer)
-admin.site.register(BookToPhoto)
 admin.site.register(BPhotoType)
 
 
@@ -190,9 +198,15 @@ admin.site.register(BUserReviewDetail, BUserReviewDetailAdmin)
 class BookPostAdmin(admin.ModelAdmin):
     list_display = ['book_title', 'publish_date', 'author']
     prepopulated_fields = {'slug': ('book_title', 'publish_date')}
+    search_fields = ['book_title']
 
 
 admin.site.register(BookPost, BookPostAdmin)
+
+class BookToPhotoAdmin(admin.ModelAdmin):
+    search_fields = ['book_id__book_title']
+
+admin.site.register(BookToPhoto, BookToPhotoAdmin)    
 
 
 class BCollectionAdmin(admin.ModelAdmin):
