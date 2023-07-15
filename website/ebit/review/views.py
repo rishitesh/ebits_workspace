@@ -450,12 +450,19 @@ def all_genres(request):
 
 def all_platforms(request):
     data = list(Platform.objects.values())
+    priority_list = ["Prime Video", "Netflix", "SonyLIV", "TVFPlay", "Disney+Hotstar", "Hotstar"]
     js_val = {}
     records = []
+    priority = []
     for d in data:
         datum = {"name": d.get("name"), "image_url": d.get("image_url"), "platform_url": d.get("platform_url")}
-        records.append(datum)
-    js_val["platforms"] = records
+        if d.get("name") in  priority_list:
+            priority.append(datum)
+        else:
+            records.append(datum)
+
+    priority.extend(records)        
+    js_val["platforms"] = priority
     return JsonResponse(js_val, safe=False)
 
 
@@ -576,6 +583,7 @@ def all_collections(request):
                          name,\
                          description,\
                          image_url , \
+                         home_collection_banner_image, \
                          publish_date \
                          from  review_moviecollection \
                          where not is_report \

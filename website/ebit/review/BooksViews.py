@@ -817,6 +817,7 @@ def books(request):
                                   publisher as Publisher, \
                                   publish_date as PublishDate, \
                                   ebits_rating as ebitsRating, \
+                                  synopsis as description, \
                                   critics_rating as criticsRating, \
                                   thumbnail_image_url as image \
                                   FROM

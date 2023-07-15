@@ -297,7 +297,7 @@ class GameToPhoto(models.Model):
     photo_url = models.CharField(null=True, max_length=300)
 
     def __str__(self):
-        return "%s->%s" % (self.game_id, self.photo_type, self.photo_url)
+        return "%s->%s" % (self.game_id, self.photo_type)
 
 
 class GReport(models.Model):

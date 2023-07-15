@@ -305,7 +305,7 @@ class MovieToPhoto(models.Model):
     photo_url = models.CharField(null=True, max_length=300)
 
     def __str__(self):
-        return "%s->%s->%s" % (self.movie_id, self.photo_type, self.photo_url)
+        return "%s->%s" % (self.movie_id, self.photo_type)
 
 
 class Report(models.Model):

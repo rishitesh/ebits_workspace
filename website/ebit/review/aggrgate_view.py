@@ -7,6 +7,7 @@ from review.gamesViews import games_search, homepage_games
 from . import views, PodcastsViews, BooksViews, gamesViews
 from .utils import raw_sql
 
+
 def search(request):
     entries = {}
     movies = movie_search(request)
@@ -17,7 +18,7 @@ def search(request):
     entries["books"] = books
     games = games_search(request)
     entries["games"] = games
-    {'result': entries}
+    return JsonResponse({'result': entries})
 
 
 def post_entries(request):
