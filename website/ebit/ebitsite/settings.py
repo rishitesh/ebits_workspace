@@ -42,14 +42,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # The following apps are required:
+    'rest_framework.authtoken',
     'corsheaders',
-      # 'social_django',
-    'django.contrib.sites', # new
+    # 'social_django',
+    'django.contrib.sites',  # new
     'allauth',  # new
     'allauth.account',  # new
-    'allauth.socialaccount',# new
+    'allauth.socialaccount',  # new
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook'
+    'allauth.socialaccount.providers.facebook',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework',
+
+
 ]
 
 MIDDLEWARE = [
@@ -57,7 +64,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
@@ -92,10 +99,10 @@ WSGI_APPLICATION = 'ebitsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eqbits',
-        'USER': 'eqbits',
-        'PASSWORD': 'eqbits@2023',
-        'HOST': '34.133.134.125',
+        'NAME': 'eqbits_new3',
+        'USER': 'jeffrey',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
@@ -128,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -174,17 +181,15 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 AUTHENTICATION_BACKENDS = [
-    # 'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend"
 ]
 
-SITE_ID = 1
+SITE_ID = 3
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
@@ -192,7 +197,11 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
-EMAIL_VERIFICATION=True
+ACCOUNT_EMAIL_VERIFICATION = True
+ACCOUNT_LOGOUT_ON_GET=True
+CONFIRM_EMAIL_ON_GET=True
+
+SESSION_LOGIN=False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
 EMAIL_HOST = 'smtp-relay.sendinblue.com' #new
@@ -200,6 +209,10 @@ EMAIL_PORT = 587 #new
 EMAIL_HOST_USER = 'rishi80.mishra@gmail.com'  #new
 EMAIL_HOST_PASSWORD = "qyEzKM6S9GXkZxBf" #new
 EMAIL_USE_TLS = True #new
+
+REGISTER_SERIALIZER='review.regserializer.CustomRegisterSerializer',
+
+REDIRECT_URL="http://localhost:4040"
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -224,3 +237,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 
 }
+
+

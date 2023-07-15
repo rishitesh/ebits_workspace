@@ -1,11 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 
-from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews, blog_views
+from . import views, PodcastsViews, BooksViews, aggrgate_view, gamesViews, blog_views, GoogleLoginAdapter
 
 urlpatterns = [
+    path('api/v1/auth/', include('dj_rest_auth.urls')),
+    path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/v1/auth/google/', GoogleLoginAdapter.GoogleLoginAdapter.as_view(), name="google-login"),
     path('api/v1/collections/', views.all_collections, name='collections'),
     path('api/v1/collections/<slug:slug>/', views.collection_details, name='collection_details'),
     path('api/v1/moods/', views.all_moods, name='movie-moods'),
