@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +31,22 @@ SECRET_KEY = 'django-insecure-ail5!%#z!#7tjb3y+m#se=h4nsn_w7-y5ke@ya!f!-se@dr!=l
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOW_CREDENTIALS=True
 
+default_headers_new = (
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "authentication",
+)
+CORS_ALLOW_HEADERS=default_headers_new
 
 # Application definition
 
@@ -42,14 +58,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # The following apps are required:
+    'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
-      # 'social_django',
-    'django.contrib.sites', # new
+    # 'social_django',
+    'django.contrib.sites',  # new
     'allauth',  # new
     'allauth.account',  # new
-    'allauth.socialaccount',# new
+    'allauth.socialaccount',  # new
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook'
+    'allauth.socialaccount.providers.facebook',
+    'dj_rest_auth',
+    'dj_rest_auth.registration'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +78,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
@@ -84,6 +105,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ebitsite.wsgi.application'
+
+
 
 
 # Database
@@ -166,40 +189,65 @@ PATTERN_LIBRARY = {
     "BASE_TEMPLATE_NAMES": ["patterns/base_page.html"],
 }
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ]
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ),
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 AUTHENTICATION_BACKENDS = [
-    # 'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend"
 ]
 
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
+
 SITE_ID = 1
 
+
+# All auth & dj-rest-auth configs
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
-EMAIL_VERIFICATION=True
+ACCOUNT_EMAIL_VERIFICATION = True
+ACCOUNT_LOGOUT_ON_GET = True
+CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+SESSION_LOGIN = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_REQUIRED = False
 
+USE_JWT = True
+
+# Config for email sender
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #new
-EMAIL_HOST = 'smtp-relay.sendinblue.com' #new
-EMAIL_PORT = 587 #new
-EMAIL_HOST_USER = 'rishi80.mishra@gmail.com'  #new
-EMAIL_HOST_PASSWORD = "qyEzKM6S9GXkZxBf" #new
+EMAIL_HOST = 'smtp-relay.brevo.com' # new
+EMAIL_PORT = 587 # new
+EMAIL_HOST_USER = 'rishi80.mishra@gmail.com'  # new
+EMAIL_HOST_PASSWORD = "qyEzKM6S9GXkZxBf" # new
 EMAIL_USE_TLS = True #new
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
+    'UPDATE_LAST_LOGIN': True,
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -209,7 +257,16 @@ SOCIALACCOUNT_PROVIDERS = {
         'APP': {
             'client_id': '1045365462856-ghgu034il5ta5j0gfr0nmih03j8vcuho.apps.googleusercontent.com',
             'secret': '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',
-            'key': ''
+            'key': 'AIzaSyAX19sexaI90KVD513Lv88HIcr5u2_M3gY'
+        },
+        # These are provider-specific settings that can only be
+        # listed here:
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
         }
     },
     'facebook': {
@@ -224,3 +281,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 
 }
+

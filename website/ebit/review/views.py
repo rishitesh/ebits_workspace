@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 
 from review.models import Award, UserReviewDetail
 from review.serializers import *
-from review.utils import format_uuid, is_empty, raw_sql
+from review.utils import format_uuid, is_empty, raw_sql, authenticated
 
 
 def index(request):
@@ -167,21 +167,25 @@ def get_movie_awards(movie_id):
 
 @require_http_methods(["POST"])
 def add_likes(request):
-    data = json.loads(request.body.decode("utf-8"))
-    slug = data.get('slug', [])
-    user_review = UserReviewDetail.objects.get(slug=slug)
-    if not user_review:
-        return JsonResponse({"message": "User review with slug %s not found " % slug})
+    if authenticated(request):
+        data = json.loads(request.body.decode("utf-8"))
+        slug = data.get('slug', [])
+        user_review = UserReviewDetail.objects.get(slug=slug)
+        if not user_review:
+            return JsonResponse({"message": "User review with slug %s not found " % slug})
 
-    total_likes = user_review.review_likes
-    if total_likes:
-        total_likes = total_likes + 1
+        total_likes = user_review.review_likes
+        if total_likes:
+            total_likes = total_likes + 1
+        else:
+            total_likes = 1
+        user_review.review_likes = total_likes
+        user_review.save()
+        message = "Successfully added user comment likes"
+        return JsonResponse({"message": message})
     else:
-        total_likes = 1
-    user_review.review_likes = total_likes
-    user_review.save()
-    message = "Successfully added user comment likes"
-    return JsonResponse({"message": message})
+        return HttpResponse('Unauthorized', status=401)
+
 
 
 @require_http_methods(["POST"])
@@ -461,7 +465,7 @@ def all_platforms(request):
         else:
             records.append(datum)
 
-    priority.extend(records)        
+    priority.extend(records)
     js_val["platforms"] = priority
     return JsonResponse(js_val, safe=False)
 

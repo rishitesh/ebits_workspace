@@ -2,7 +2,9 @@ import datetime
 import json
 
 from django.db import connection
+from rest_framework.authentication import TokenAuthentication
 
+auth = TokenAuthentication()
 
 def format_uuid(value):
     return value.replace("-", "")
@@ -44,3 +46,13 @@ def clean_json_dump(item):
       indent=1,
       default=default
     )
+
+def authenticated(request):
+    try:
+        user = auth.authenticate(request)
+        if user:
+            return True
+        else:
+            return False
+    except :
+        return False
