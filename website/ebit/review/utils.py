@@ -3,7 +3,6 @@ import json
 
 from django.db import connection
 from rest_framework.authentication import TokenAuthentication
-
 auth = TokenAuthentication()
 
 def format_uuid(value):
@@ -47,6 +46,7 @@ def clean_json_dump(item):
       default=default
     )
 
+
 def authenticated(request):
     try:
         user = auth.authenticate(request)
@@ -56,3 +56,4 @@ def authenticated(request):
             return False
     except :
         return False
+

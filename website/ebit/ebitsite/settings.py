@@ -108,17 +108,16 @@ WSGI_APPLICATION = 'ebitsite.wsgi.application'
 
 
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eqbits',
-        'USER': 'eqbits',
-        'PASSWORD': 'eqbits@2023',
-        'HOST': '34.133.134.125',
+        'NAME': 'eqbits_new3',
+        'USER': 'jeffrey',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
