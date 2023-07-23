@@ -184,8 +184,7 @@ def add_likes(request):
         message = "Successfully added user comment likes"
         return JsonResponse({"message": message})
     else:
-        return JsonResponse({"message": "Invalid request, Login via valid means"})
-
+        return HttpResponse('Unauthorized', status=401)
 
 
 

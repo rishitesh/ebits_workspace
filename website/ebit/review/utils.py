@@ -54,6 +54,10 @@ def authenticated(request):
     try:
         user = auth.authenticate(request)
         print(user)
-        return True
+        if user:
+            return True
+        else:
+            return False
     except :
         return False
+
