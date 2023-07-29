@@ -21,7 +21,8 @@ from .providers.base import AuthError, AuthProcess
 
 
 def _process_signup(request, sociallogin):
-    auto_signup = get_adapter(request).is_auto_signup_allowed(request, sociallogin)
+    # auto_signup = get_adapter(request).is_auto_signup_allowed(request, sociallogin)
+    auto_signup = True
     if not auto_signup:
         request.session["socialaccount_sociallogin"] = sociallogin.serialize()
         url = reverse("socialaccount_signup")
