@@ -1,5 +1,6 @@
 from django.utils.functional import lazy
-
+from rest_framework.authentication import TokenAuthentication
+auth = TokenAuthentication()
 
 def default_create_token(token_model, user, serializer):
     token, _ = token_model.objects.get_or_create(user=user)
@@ -20,3 +21,8 @@ def format_lazy(s, *args, **kwargs):
 
 
 format_lazy = lazy(format_lazy, str)
+
+
+def authenticated(request):
+    return auth.authenticate(request)
+

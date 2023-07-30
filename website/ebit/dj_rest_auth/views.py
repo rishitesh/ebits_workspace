@@ -19,13 +19,13 @@ from .models import get_token_model
 from .utils import jwt_encode
 
 from django.views.decorators.csrf import csrf_exempt
+from dj_rest_auth.utils import authenticated
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
         'password', 'old_password', 'new_password1', 'new_password2',
     ),
 )
-
 
 
 class LoginView(GenericAPIView):
@@ -155,21 +155,17 @@ class LogoutView(APIView):
         return self.logout(request)
 
     def logout(self, request):
+        print("inside logout")
         try:
-            print("inside logout")
-            auth = TokenAuthentication()
-            user = auth.authenticate(request)
+            (user, token) = authenticated(request)
+            print(token)
+            token.delete()
+            if api_settings.SESSION_LOGIN:
+                django_logout(request)
+                response = Response({'detail': _('Successfully logged out.')}, status=status.HTTP_200_OK)
+        except:
+            response = Response({'detail': _('Invalid Credentials')}, status=status.HTTP_204_NO_CONTENT)
 
-            if user:
-                user.auth_token.delete()
-                if api_settings.SESSION_LOGIN:
-                    django_logout(request)
-                    response = Response( {'detail': _('Successfully logged out.')}, status=status.HTTP_200_OK,
-                    )
-            else:
-                response = Response({'detail': _('Invalid Credentials')}, status=status.HTTP_204_NO_CONTENT)
-        except (AttributeError, ObjectDoesNotExist):
-            pass
         return response
 
 
@@ -235,16 +231,6 @@ class PasswordResetConfirmView(GenericAPIView):
     permission_classes = (AllowAny,)
     throttle_scope = 'dj_rest_auth'
 
-
-    def get_object_for_otp(self, queryset=None):
-        from allauth.account.models import EmailConfirmationHMAC
-        key = self.kwargs["key"]
-        email_address = self.kwargs["email"]
-        emailconfirmation = EmailConfirmationHMAC.from_key_otp(key, email_address)
-        if not emailconfirmation:
-                emailconfirmation = None
-        return emailconfirmation
-
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -252,17 +238,12 @@ class PasswordResetConfirmView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.kwargs['key'] = serializer.validated_data['key']
         self.kwargs['email'] = serializer.validated_data['email']
-        confirmation = self.get_object_for_otp()
-        print(confirmation)
-        if confirmation:
-            serializer.save()
-            return Response(
-                {'detail': _('Password has been reset with the new password.')},
-            )
-        else:
-            return Response({'detail': _('Invalid OTP')}, status=status.HTTP_204_NO_CONTENT)
+        authenticated(request)
+        serializer.save()
+        return Response(
+            {'detail': _('Password has been reset with the new password.')},
+        )
 
 
 class PasswordChangeView(GenericAPIView):

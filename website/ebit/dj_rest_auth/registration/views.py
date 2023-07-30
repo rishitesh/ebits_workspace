@@ -17,15 +17,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from dj_rest_auth.app_settings import api_settings
-from dj_rest_auth.models import TokenModel
+from dj_rest_auth.models import TokenModel, get_token_model
 from dj_rest_auth.registration.serializers import (
     SocialAccountSerializer, SocialConnectSerializer, SocialLoginSerializer,
     VerifyEmailSerializer, ResendEmailVerificationSerializer
 )
-from dj_rest_auth.utils import jwt_encode
+from dj_rest_auth.utils import jwt_encode, default_create_token
 from dj_rest_auth.views import LoginView
 from pprint import pprint
 from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.authtoken.models import Token
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters('password1', 'password2'),
@@ -132,9 +134,12 @@ class VerifyOTPView(APIView, ConfirmEmailView):
         self.kwargs['key'] = serializer.validated_data['key']
         self.kwargs['email_address'] = serializer.validated_data['email_address']
         confirmation = self.get_object_for_otp()
-        print(confirmation)
         if confirmation:
-            return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
+            users = EmailAddress.objects.get_users_for(self.kwargs['email_address'])
+            token_model = get_token_model()
+            token = default_create_token(token_model, users[0], api_settings.TOKEN_SERIALIZER)
+            response = {'key': token.key, 'user': str(users[0]), 'email':self.kwargs['email_address']}
+            return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({'detail': _('Invalid OTP')}, status=status.HTTP_204_NO_CONTENT)
 

@@ -267,7 +267,6 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     """
     email = serializers.EmailField()
     new_password = serializers.CharField(max_length=128)
-    key = serializers.CharField()
 
     reset_form = None
 
