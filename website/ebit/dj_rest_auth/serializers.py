@@ -237,8 +237,7 @@ class PasswordResetSerializer(serializers.Serializer):
         # Create PasswordResetForm with the serializer
         self.reset_form = self.password_reset_form_class(data=self.initial_data)
         if not self.reset_form.is_valid():
-            raise serializers.ValidationError(self.reset_form.errors)
-
+            raise serializers.ValidationError(self.reset_form.errors.get("email"))
         return value
 
     def save(self):
@@ -281,12 +280,21 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
         self.request = self.context.get('request')
 
-    def validate_email(self, value):
+    def validate_new_password(self, value):
         # Create PasswordResetForm with the serializer
         self.reset_form = self.password_reset_confirm_form_class(data=self.initial_data)
         if not self.reset_form.is_valid():
-            raise serializers.ValidationError(self.reset_form.errors)
+            temp = serializers.ValidationError(self.reset_form.errors)
+            raise serializers.ValidationError(temp.detail.get("new_password"))
 
+        return value
+
+    def validate_email(self, value):
+        users = filter_users_by_email(value, is_active=True)
+        if len(users) == 0:
+            raise serializers.ValidationError(
+                "The e-mail address is not assigned to any user account"
+            )
         return value
 
     def custom_validation(self, attrs):

@@ -33,6 +33,10 @@ class AllAuthPasswordResetForm(DefaultPasswordResetForm):
         email = self.cleaned_data["email"]
         email = get_adapter().clean_email(email)
         self.users = filter_users_by_email(email, is_active=True)
+        if len(self.users) == 0:
+            raise forms.ValidationError(
+                ("The e-mail address is not assigned to any user account")
+            )
         return self.cleaned_data["email"]
 
     def save(self, request, **kwargs):
@@ -44,6 +48,7 @@ class AllAuthPasswordResetForm(DefaultPasswordResetForm):
             from allauth.account.models import EmailAddress
 
             emailaddress = EmailAddress.objects.get_for_user(user, email)
+            print(emailaddress)
             emailEmac = EmailConfirmationHMAC(emailaddress)
             key = emailEmac.key
 
@@ -81,7 +86,6 @@ class AllAuthPasswordResetConfirmForm(DefaultPasswordResetForm):
         for unit test: test_password_reset_with_invalid_email
         """
         email = self.cleaned_data["email"]
-        print("clean email called " + str(email))
         email = get_adapter().clean_email(email)
         users = filter_users_by_email(email, is_active=True)
         if users and len(users) > 0:
@@ -89,18 +93,15 @@ class AllAuthPasswordResetConfirmForm(DefaultPasswordResetForm):
         else:
             self.user = None
 
-        print("clean email called " + str(self.user))
         return self.cleaned_data["email"]
 
     def clean_new_password(self):
         password = self.cleaned_data.get('new_password')
-        print("clean_new_password called " + str(password))
         password_validation.validate_password(password, self.user)
         return password
 
     def save(self, request, **kwargs):
         password = self.cleaned_data.get('new_password')
-        print(self.user)
         self.user.set_password(password)
         self.user.save()
         return self.user
