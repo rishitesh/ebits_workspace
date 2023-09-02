@@ -55,7 +55,7 @@ def get_user_reviews(movie_id):
                                    review_dislikes, \
                                    slug \
                                    from review_userreviewdetail
-                                    where movie_id_id = '%s' and review_approved is True""" % movie_id
+                                    where movie_id_id = '%s' and review_approved is True order by review_date desc""" % movie_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -258,7 +258,7 @@ def similar_by_genres(request, slug):
     filter_clause = " review_movietogenre.genre_id in (%s)" % in_clause
 
     final_query = """
-                                      SELECT \
+                                      SELECT DISTINCT \
                                       review_moviepost.slug as slug, 
                                       movie_name, \
                                       duration, \
@@ -268,13 +268,19 @@ def similar_by_genres(request, slug):
                                       release_date, \
                                       ebits_rating, \
                                       critics_rating , \
-                                      thumbnail_image_url \
+                                      photo_url \
                                       FROM 
                                       review_moviepost,\
-                                      review_movietogenre
+                                      review_movietogenre,\
+                                      review_movietophoto,\
+                                      review_phototype \
                                       
                                       WHERE review_moviepost.id = review_movietogenre.movie_id_id \
+                                      and review_movietophoto.movie_id_id = review_moviepost.id \
                                       and review_moviepost.id != '%s' \
+                                      and review_phototype.id = review_movietophoto.photo_type_id \
+                                      and review_phototype.name = 'Cards_Listing_Similar_By_Genre' \
+                                      
                                       and  %s ORDER BY rand()  limit 10
                                       """ % (movie_id, filter_clause)
     # print(final_query)
@@ -284,10 +290,10 @@ def similar_by_genres(request, slug):
     for row in similar_movies_row:
         movie = {'slug': row.get("slug"),
                                'title': row.get("movie_name"),
-                               'description': row.get("duration"),
-                               'image': row.get("thumbnail_image_url"),
+                               'description': row.get("description"),
+                               'image': row.get("photo_url"),
                                'releaseDate': row.get("release_date"),
-                               'duration': row.get("review_date"),
+                               'duration': row.get("duration"),
                                'ebitsRatings': row.get("ebits_rating"),
                                'criticRatings': row.get("critics_rating"),
                                'directors': row.get("directors_display_comma_separated"),
@@ -297,6 +303,7 @@ def similar_by_genres(request, slug):
         similar_movies_list.append(movie)
 
     return JsonResponse({"movies": similar_movies_list})
+
 
 
 def movie_details(request, slug):

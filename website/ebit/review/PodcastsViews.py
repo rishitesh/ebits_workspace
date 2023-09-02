@@ -56,7 +56,7 @@ def get_user_reviews(podcast_id):
                                    review_dislikes, \
                                    slug 
                                    from review_puserreviewdetail
-                                    where podcast_id_id = '%s' and review_approved is True""" % podcast_id
+                                    where podcast_id_id = '%s' and review_approved is True order by review_date desc """ % podcast_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:

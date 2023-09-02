@@ -57,7 +57,7 @@ def get_user_reviews(game_id):
                                    review_dislikes, \
                                    slug 
                                    from review_guserreviewdetail
-                                    where game_id_id = '%s' and review_approved is True""" % game_id
+                                    where game_id_id = '%s' and review_approved is True order by review_date desc""" % game_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -363,7 +363,7 @@ def game_details(request, slug):
     overview_dict = {"releaseDate": game_dict.get("release_date"),
                      "game": game_dict.get("game"),
                      "developer": game_dict.get("developer"),
-                     "description": game_dict.get("description"),
+                     "storyline": game_dict.get("description"),
                      "provider": game_dict.get("provider"),
                      "ebitsRating": game_dict.get("ebits_rating"),
                      "ebitsReview": game_dict.get("ebits_review"),
