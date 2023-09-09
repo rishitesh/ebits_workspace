@@ -63,7 +63,7 @@ def get_user_reviews(podcast_id):
         user_review = {'authorName': row.get("review_author"),
                        'ratings': row.get("review_rating"),
                        'title': row.get("review_title"),
-                       'review': row.get("critic_review"),
+                       'review': row.get("review_text"),
                        'dateTime': row.get("review_date"),
                        'image': row.get("reviewer_image_url"),
                        'likes': row.get("review_likes"),

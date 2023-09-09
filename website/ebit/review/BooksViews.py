@@ -266,12 +266,18 @@ def similar_by_genres(request, slug):
                                       publish_date, \
                                       ebits_rating, \
                                       critics_rating , \
-                                      thumbnail_image_url \
+                                      photo_url \
                                       FROM 
                                       review_bookpost,\
-                                      review_booktogenre
-
+                                      review_booktogenre,\
+                                      review_booktophoto,\
+                                      review_bphototype\
+                                      
                                       WHERE review_bookpost.id = review_booktogenre.book_id_id \
+                                      and review_booktophoto.book_id_id = review_bookpost.id \
+                                      and review_bphototype.id = review_booktophoto.photo_type_id \
+                                      and review_bphototype.name = 'Cards_Listing_Similar_By_Genre' \
+                                      
                                       and review_bookpost.id != '%s' \
                                       and  %s ORDER BY rand()  limit 10
                                       """ % (book_id, filter_clause)
@@ -283,7 +289,7 @@ def similar_by_genres(request, slug):
         book = {'id': row.get("id"),
                  'title': row.get("book_title"),
                  'synopsis': row.get("synopsis"),
-                 'image': row.get("thumbnail_image_url"),
+                 'image': row.get("photo_url"),
                  'publishDate': row.get("publish_date"),
                  'ebitsRatings': row.get("ebits_rating"),
                  'criticRatings': row.get("critics_rating"),
@@ -294,6 +300,7 @@ def similar_by_genres(request, slug):
         similar_book_list.append(book)
 
     return JsonResponse({"books": similar_book_list})
+
 
 
 def book_details(request, slug):
