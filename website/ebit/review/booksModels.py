@@ -188,6 +188,7 @@ class BUserReviewDetail(models.Model):
     review_rating = models.FloatField()
     review_title = models.TextField()
     review_date = models.DateField()
+    review_time = models.DateTimeField(default=datetime.now, blank=True)
     review_text = models.TextField()
     review_approved = models.BooleanField(default=False)
     review_likes = models.IntegerField(default=None, null=True, blank=True)

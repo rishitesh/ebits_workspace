@@ -55,7 +55,7 @@ def get_user_reviews(movie_id):
                                    review_dislikes, \
                                    slug \
                                    from review_userreviewdetail
-                                    where movie_id_id = '%s' and review_approved is True order by review_date desc""" % movie_id
+                                    where movie_id_id = '%s' and review_approved is True order by review_time desc""" % movie_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -210,7 +210,6 @@ def add_dislikes(request):
 @require_http_methods(["POST"])
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
-    print(data)
     slug = data.get('slug', [])
     movie_query = """select id from review_moviepost where slug='%s' limit 1""" % slug
     movie_row = raw_sql(movie_query)[0]
@@ -228,6 +227,10 @@ def add_user_comment(request):
         message = "Invalid movie reference"
         return JsonResponse({"message": message})
 
+    auto_approve = False
+    if len(review_text) == 0 and len(review_title) == 0:
+        auto_approve = True
+
     user_review = UserReviewDetail(movie_id=movie,
                                    review_author= review_author,
                                    review_rating=review_rating,
@@ -235,7 +238,7 @@ def add_user_comment(request):
                                    review_date=date.today(),
                                    review_text=review_text,
                                    reviewer_image_url=reviewer_image,
-                                   review_approved=False)
+                                   review_approved=auto_approve)
 
     user_review.save()
 
@@ -551,6 +554,7 @@ def report_details(request, slug):
                          review_report.slug as slug, \
                          review_report.collection_id_id as collectionId,\
                          review_moviecollection.name as title,\
+                         review_moviecollection.image_url,\
                          description as summary,\
                          chart_data_json as chart \
                          from  review_report, review_moviecollection \
@@ -570,6 +574,7 @@ def report_details(request, slug):
     report = {'slug': first_entry.get("slug"),
          'title': first_entry.get("title"),
          'summary': first_entry.get("summary"),
+         'image_url' : first_entry.get("image_url"),
          'chart': json.loads(first_entry.get("chart"))
          }
 

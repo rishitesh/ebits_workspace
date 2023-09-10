@@ -57,14 +57,14 @@ def get_user_reviews(game_id):
                                    review_dislikes, \
                                    slug 
                                    from review_guserreviewdetail
-                                    where game_id_id = '%s' and review_approved is True order by review_date desc""" % game_id
+                                    where game_id_id = '%s' and review_approved is True order by review_time desc""" % game_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
         user_review = {'authorName': row.get("review_author"),
                        'ratings': row.get("review_rating"),
                        'title': row.get("review_title"),
-                       'review': row.get("critic_review"),
+                       'review': row.get("review_text"),
                        'dateTime': row.get("review_date"),
                        'image': row.get("reviewer_image_url"),
                        'likes': row.get("review_likes"),
@@ -209,7 +209,6 @@ def add_dislikes(request):
 @require_http_methods(["POST"])
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
-    print(data)
     slug = data.get('slug', [])
     game_query = """select id from review_gamepost where slug='%s' limit 1""" % slug
     game_row = raw_sql(game_query)[0]
@@ -227,6 +226,10 @@ def add_user_comment(request):
         message = "Invalid podcast reference"
         return JsonResponse({"message": message})
 
+    auto_approve = False
+    if len(review_text) == 0 and len(review_title) == 0:
+        auto_approve = True
+
     user_review = GUserReviewDetail(game_id=game,
                                    review_author=review_author,
                                    review_rating=review_rating,
@@ -234,7 +237,7 @@ def add_user_comment(request):
                                    review_date=date.today(),
                                    review_text=review_text,
                                    reviewer_image_url=reviewer_image,
-                                   review_approved=False)
+                                   review_approved=auto_approve)
 
     user_review.save()
 
@@ -366,6 +369,7 @@ def game_details(request, slug):
                      "storyline": game_dict.get("description"),
                      "provider": game_dict.get("provider"),
                      "ebitsRating": game_dict.get("ebits_rating"),
+                     "averageCriticsRating": game_dict.get("critics_rating"),
                      "ebitsReview": game_dict.get("ebits_review"),
                      "ebitsReviewer": game_dict.get("ebits_reviewer_name"),
                      "ebitsReviewerImage": game_dict.get("ebits_reviewer_image"),

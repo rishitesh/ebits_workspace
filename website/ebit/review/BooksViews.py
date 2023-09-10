@@ -56,14 +56,14 @@ def get_user_reviews(book_id):
                                    review_dislikes, \
                                    slug 
                                    from review_buserreviewdetail
-                                    where book_id_id = '%s' and review_approved is True order by review_date desc""" % book_id
+                                    where book_id_id = '%s' and review_approved is True order by review_time desc""" % book_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
         user_review = {'authorName': row.get("review_author"),
                        'ratings': row.get("review_rating"),
                        'title': row.get("review_title"),
-                       'review': row.get("critic_review"),
+                       'review': row.get("review_text"),
                        'dateTime': row.get("review_date"),
                        'image': row.get("reviewer_image_url"),
                        'likes': row.get("review_likes"),
@@ -227,6 +227,10 @@ def add_user_comment(request):
         message = "Invalid podcast reference"
         return JsonResponse({"message": message})
 
+    auto_approve = False
+    if len(review_text) == 0 and len(review_title) == 0:
+        auto_approve = True
+
     user_review = BUserReviewDetail(book_id=book,
                                    review_author=review_author,
                                    review_rating=review_rating,
@@ -234,7 +238,7 @@ def add_user_comment(request):
                                    review_date=date.today(),
                                    review_text=review_text,
                                    reviewer_image_url=reviewer_image,
-                                   review_approved=False)
+                                   review_approved=auto_approve)
 
     user_review.save()
 
@@ -417,7 +421,7 @@ def book_details(request, slug):
 
 
 def all_moods(request):
-    final_query = """ select label_id as name , count(*) as cnt from review_bookpost
+    final_query = """ select label_id as name ,photo_url as url, count(*) as cnt from review_bookpost
       left join review_booktolabel on review_bookpost.id = review_booktolabel.book_id_id
       join  review_booklabel on  review_booktolabel.label_id = review_booklabel.name
       and LOWER(review_booklabel.type) = 'mood' group by label_id """
@@ -425,7 +429,7 @@ def all_moods(request):
     js_val = {}
     records = []
     for d in row_dict:
-        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        datum = {"name": d.get("name"), "count": d.get("cnt"), "url": d.get("url")}
         records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)

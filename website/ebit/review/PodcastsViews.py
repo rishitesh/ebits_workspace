@@ -56,7 +56,7 @@ def get_user_reviews(podcast_id):
                                    review_dislikes, \
                                    slug 
                                    from review_puserreviewdetail
-                                    where podcast_id_id = '%s' and review_approved is True order by review_date desc """ % podcast_id
+                                    where podcast_id_id = '%s' and review_approved is True order by review_time desc """ % podcast_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -209,7 +209,6 @@ def add_dislikes(request):
 @require_http_methods(["POST"])
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
-    print(data)
     slug = data.get('slug', [])
     podcast_query = """select id from review_podcastpost where slug='%s' limit 1""" % slug
     podcast_row = raw_sql(podcast_query)[0]
@@ -227,6 +226,10 @@ def add_user_comment(request):
         message = "Invalid podcast reference"
         return JsonResponse({"message": message})
 
+    auto_approve = False
+    if len(review_text) == 0 and len(review_title) == 0:
+        auto_approve = True
+
     user_review = PUserReviewDetail(podcast_id=podcast,
                                    review_author=review_author,
                                    review_rating=review_rating,
@@ -234,7 +237,7 @@ def add_user_comment(request):
                                    review_date=date.today(),
                                    review_text=review_text,
                                    reviewer_image_url=reviewer_image,
-                                   review_approved=False)
+                                   review_approved=auto_approve)
 
     user_review.save()
 
