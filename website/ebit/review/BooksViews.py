@@ -209,7 +209,6 @@ def add_dislikes(request):
 @require_http_methods(["POST"])
 def add_user_comment(request):
     data = json.loads(request.body.decode("utf-8"))
-    print(data)
     slug = data.get('slug', [])
     book_query = """select id from review_bookpost where slug='%s' limit 1""" % slug
     book_row = raw_sql(book_query)[0]
@@ -386,7 +385,7 @@ def book_details(request, slug):
                     "takeaway": book_dict.get("aspect_takeaway"),
                     }
 
-    overview_dict = {"publishDate": book_dict.get("publish_date"),
+    overview_dict = {"PublishDate": book_dict.get("publish_date"),
                      "storyline": book_dict.get("description"),
                      "author": book_dict.get("author"),
                      "publisher": book_dict.get("publisher"),
@@ -585,6 +584,7 @@ def all_collections(request):
                          title,\
                          synopsis,\
                          image_url , \
+                         home_collection_banner_image, \
                          publish_date \
                          from  review_bookcollection \
                          where not is_report \
@@ -698,8 +698,8 @@ def get_collection_details(collection_id, is_report):
                  "name": row.get("book_name"),
                  "book_slug": book_slug,
                  "ebitsRatings": row.get("rating"),
-                 "synopsis": row.get("synopsis"),
-                 "publishDate": row.get("publishDate"),
+                 "description": row.get("synopsis"),
+                 "release_date": row.get("publishDate"),
                  "aspect_plot": row.get("plot"),
                  "aspect_setting": row.get("setting"),
                  "aspect_characters": row.get("characters"),
@@ -824,9 +824,10 @@ def books(request):
                                   review_bookpost.id,
                                   review_bookpost.slug,
                                   book_title as Title, \
+                                  review_bookpost.pages as Pages,        
                                   author as Author, \
                                   publisher as Publisher, \
-                                  publish_date as PublishDate, \
+                                  publish_date as ReleaseDate, \
                                   ebits_rating as ebitsRating, \
                                   synopsis as description, \
                                   critics_rating as criticsRating, \

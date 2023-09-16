@@ -256,9 +256,8 @@ def similar_by_genres(request, slug):
     if is_empty(genre_list):
         return JsonResponse({})
 
-    single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
-    in_clause = ",".join(single_quoted_list)
-    filter_clause = " review_movietogenre.genre_id in (%s)" % in_clause
+    first_genre = genre_list[0]
+    filter_clause = " review_movietogenre.genre_id = '%s' " % first_genre
 
     final_query = """
                                       SELECT DISTINCT \
@@ -286,7 +285,7 @@ def similar_by_genres(request, slug):
                                       
                                       and  %s ORDER BY rand()  limit 10
                                       """ % (movie_id, filter_clause)
-    # print(final_query)
+    print(final_query)
     similar_movies_row = raw_sql(final_query)
 
     similar_movies_list = []
