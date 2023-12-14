@@ -397,7 +397,7 @@ def game_details(request, slug):
 
 
 def all_moods(request):
-    final_query = """ select label_id as name , count(*) as cnt from review_gamepost
+    final_query = """ select label_id as name ,photo_url as url, count(*) as cnt from review_gamepost
       left join review_gametolabel on review_gamepost.id = review_gametolabel.game_id_id
       join  review_gamelabel on  review_gametolabel.label_id = review_gamelabel.name
       and LOWER(review_gamelabel.type) = 'mood' group by label_id """
@@ -405,7 +405,7 @@ def all_moods(request):
     js_val = {}
     records = []
     for d in row_dict:
-        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        datum = {"name": d.get("name"),  "url": d.get("url"), "count": d.get("cnt")}
         records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)
@@ -561,6 +561,7 @@ def all_collections(request):
                          name,\
                          description,\
                          image_url , \
+                         home_collection_banner_image, \
                          release_date \
                          from  review_gamecollection \
                          where not is_report \
@@ -632,7 +633,7 @@ def get_collection_details(collection_id, is_report):
                                                 game_name, \
                                                 game_id_id as game_id, \
                                                 ebits_rating as rating, \
-                                                review_gamecollectiondetail.description,\
+                                                review_gamecollectiondetail.description as description,\
                                                 thumbnail_image_url as bgImage, \
                                                 review_gamecollectiondetail.release_date as releaseDate, \
                                                 aspect_graphics, \
@@ -670,6 +671,8 @@ def get_collection_details(collection_id, is_report):
         entry = {"slug": row.get("slug"),
                  "name": row.get("game_name"),
                  "games_slug": games_slug,
+                 "release_date": row.get("releaseDate"),
+                 "description": row.get("description"),
                  "ebitsRatings": row.get("rating"),
                  "aspect_graphics": row.get("aspect_graphics"),
                  "aspect_performance": row.get("aspect_performance"),

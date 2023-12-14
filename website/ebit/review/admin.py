@@ -133,7 +133,7 @@ class PCollectionAdmin(admin.ModelAdmin):
 
 
 class PCollectionDetailsAdmin(admin.ModelAdmin):
-    list_display = ['podcast_name', 'release_date', 'genres']
+    list_display = ['collection_id', 'podcast_name', 'release_date', 'genres']
     prepopulated_fields = {'slug': ('podcast_name', 'release_date')}
 
 
@@ -215,7 +215,7 @@ class BCollectionAdmin(admin.ModelAdmin):
 
 
 class BCollectionDetailsAdmin(admin.ModelAdmin):
-    list_display = ['book_name', 'publish_date', 'genres']
+    list_display = ['collection_id', 'book_name', 'publish_date', 'genres']
     prepopulated_fields = {'slug': ('book_name', 'publish_date')}
 
 
@@ -271,7 +271,7 @@ class GCollectionAdmin(admin.ModelAdmin):
 
 
 class GCollectionDetailsAdmin(admin.ModelAdmin):
-    list_display = ['game_name', 'release_date', 'genres']
+    list_display = ['collection_id', 'game_name', 'release_date', 'genres']
     prepopulated_fields = {'slug': ('game_name', 'release_date')}
 
 

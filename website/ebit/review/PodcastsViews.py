@@ -562,6 +562,7 @@ def all_collections(request):
                          name,\
                          description,\
                          image_url , \
+                         home_collection_banner_image, \
                          publish_date \
                          from  review_podcastcollection \
                          where not is_report \

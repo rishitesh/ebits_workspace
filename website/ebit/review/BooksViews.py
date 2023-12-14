@@ -255,9 +255,8 @@ def similar_by_genres(request, slug):
     if is_empty(genre_list):
         return JsonResponse({})
 
-    single_quoted_list = map(lambda s: "'" + s + "'", genre_list)
-    in_clause = ",".join(single_quoted_list)
-    filter_clause = " review_booktogenre.genre_id in (%s)" % in_clause
+    first_genre = genre_list[0]
+    filter_clause = " review_booktogenre.genre_id = '%s' " % first_genre
 
     final_query = """
                                       SELECT \
@@ -581,7 +580,7 @@ def all_collections(request):
     final_query = """Select
                          id, \
                          slug, \
-                         title,\
+                         title as name,\
                          synopsis,\
                          image_url , \
                          home_collection_banner_image, \
