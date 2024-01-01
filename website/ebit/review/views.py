@@ -811,7 +811,10 @@ def movies(request):
         else:
             filter_clause = filter_clause + " and review_moviepost.critics_rating between %s" % between_clause
 
-    count_clause = filter_clause
+    if is_empty(filter_clause):
+        filter_clause = " 1 = 1"
+
+    count_clause = filter_clause    
     filter_clause = filter_clause + " ORDER BY release_date desc "
 
     if offset_range and not is_empty(offset_range):

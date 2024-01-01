@@ -269,13 +269,18 @@ def similar_by_genres(request, slug):
                                       release_date, \
                                       ebits_rating, \
                                       critics_rating , \
-                                      thumbnail_image_url \
+                                      photo_url \
                                       FROM 
                                       review_podcastpost,\
-                                      review_podcasttogenre
+                                      review_podcasttogenre,\
+                                      review_podcasttophoto,\
+                                      review_pphototype \
 
                                       WHERE review_podcastpost.id = review_podcasttogenre.podcast_id_id \
+                                      and review_podcasttophoto.podcast_id_id = review_podcastpost.id \
                                       and review_podcastpost.id != '%s' \
+                                      and review_pphototype.id = review_podcasttophoto.photo_type_id \
+                                      and review_pphototype.name = 'Cards_Listing_Similar_By_Genre' \
                                       and  %s ORDER BY rand()  limit 10
                                       """ % (podcast_id, filter_clause)
     # print(final_query)
@@ -286,7 +291,7 @@ def similar_by_genres(request, slug):
         movie = {'slug': row.get("slug"),
                  'title': row.get("podcast_name"),
                  'description': row.get("duration"),
-                 'image': row.get("thumbnail_image_url"),
+                 'image': row.get("photo_url"),
                  'releaseDate': row.get("release_date"),
                  'duration': row.get("review_date"),
                  'ebitsRatings': row.get("ebits_rating"),
@@ -398,7 +403,7 @@ def podcast_details(request, slug):
 
 
 def all_moods(request):
-    final_query = """ select label_id as name , count(*) as cnt from review_podcastpost
+    final_query = """ select label_id as name ,photo_url as url, count(*) as cnt from review_podcastpost
       left join review_podcasttolabel on review_podcastpost.id = review_podcasttolabel.podcast_id_id
       join  review_podcastlabel on  review_podcasttolabel.label_id = review_podcastlabel.name
       and LOWER(review_podcastlabel.type) = 'mood' group by label_id """
@@ -406,7 +411,7 @@ def all_moods(request):
     js_val = {}
     records = []
     for d in row_dict:
-        datum = {"name": d.get("name"), "count": d.get("cnt")}
+        datum = {"name": d.get("name"), "count": d.get("cnt"), "url": d.get("url")}
         records.append(datum)
     js_val["moods"] = records
     return JsonResponse(js_val)
@@ -766,6 +771,9 @@ def podcasts(request):
         else:
             filter_clause = filter_clause + " and review_podcastpost.critics_rating between %s" % between_clause
 
+    if is_empty(filter_clause):
+        filter_clause = " 1 = 1"
+    
     count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
 

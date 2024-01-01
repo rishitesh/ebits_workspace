@@ -261,6 +261,7 @@ def similar_by_genres(request, slug):
     final_query = """
                                       SELECT \
                                       review_bookpost.id as id, 
+                                      review_bookpost.slug as slug, 
                                       book_title, \
                                       synopsis, \
                                       author, \
@@ -288,7 +289,8 @@ def similar_by_genres(request, slug):
 
     similar_book_list = []
     for row in similar_book_row:
-        book = {'id': row.get("id"),
+        book = {'slug': row.get("slug"),
+                'id': row.get("id"),
                  'title': row.get("book_title"),
                  'synopsis': row.get("synopsis"),
                  'image': row.get("photo_url"),
@@ -316,7 +318,7 @@ def book_details(request, slug):
                                       isFiction, \
                                       pages, \
                                       publish_date, \
-                                      synopsis, \
+                                      synopsis as description, \
                                       author,\
                                       publisher,\
 
@@ -384,7 +386,7 @@ def book_details(request, slug):
                     "takeaway": book_dict.get("aspect_takeaway"),
                     }
 
-    overview_dict = {"PublishDate": book_dict.get("publish_date"),
+    overview_dict = {"releaseDate": book_dict.get("publish_date"),
                      "storyline": book_dict.get("description"),
                      "author": book_dict.get("author"),
                      "publisher": book_dict.get("publisher"),
@@ -792,6 +794,10 @@ def books(request):
             filter_clause = filter_clause + " review_bookpost.critics_rating between %s" % between_clause
         else:
             filter_clause = filter_clause + " and review_bookpost.critics_rating between %s" % between_clause
+
+    
+    if is_empty(filter_clause):
+        filter_clause = " 1 = 1"
 
     count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY publish_date desc "

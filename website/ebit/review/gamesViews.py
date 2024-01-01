@@ -262,6 +262,7 @@ def similar_by_genres(request, slug):
     final_query = """
                                       SELECT \
                                       review_gamepost.id as id, 
+                                      review_gamepost.slug as slug, 
                                       game_name, \
                                       description, \
                                       developer, \
@@ -283,7 +284,8 @@ def similar_by_genres(request, slug):
 
     similar_game_list = []
     for row in similar_game_row:
-        game = {'id': row.get("id"),
+        game = {'slug': row.get("slug"),
+                 'id': row.get("id"),
                  'name': row.get("game_name"),
                  'description': row.get("description"),
                  'image': row.get("thumbnail_image_url"),
@@ -767,6 +769,9 @@ def games(request):
         else:
             filter_clause = filter_clause + " and review_gamepost.critics_rating between %s" % between_clause
 
+    if is_empty(filter_clause):
+        filter_clause = " 1 = 1"
+    
     count_clause = filter_clause
     filter_clause = filter_clause + " ORDER BY release_date desc "
 
