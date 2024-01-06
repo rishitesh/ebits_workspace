@@ -57,7 +57,7 @@ def get_user_reviews(game_id):
                                    review_dislikes, \
                                    slug 
                                    from review_guserreviewdetail
-                                    where game_id_id = '%s' and review_approved is True order by review_time desc""" % game_id
+                                    where game_id_id = '%s' and review_approved is True and review_text != '[]' order by review_time desc""" % game_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
@@ -270,13 +270,18 @@ def similar_by_genres(request, slug):
                                       release_date, \
                                       ebits_rating, \
                                       critics_rating , \
-                                      thumbnail_image_url \
+                                      photo_url \
                                       FROM 
                                       review_gamepost,\
-                                      review_gametogenre
+                                      review_gametogenre,\
+                                      review_gametophoto,\
+                                      review_gphototype \
 
                                       WHERE review_gamepost.id = review_gametogenre.game_id_id \
+                                      and review_gametophoto.game_id_id = review_gamepost.id \
                                       and review_gamepost.id != '%s' \
+                                      and review_gphototype.id = review_gametophoto.photo_type_id \
+                                      and review_gphototype.name = 'Cards_Listing_Similar_By_Genre' \
                                       and  %s ORDER BY rand()  limit 10
                                       """ % (game_id, filter_clause)
     # print(final_query)
@@ -288,7 +293,7 @@ def similar_by_genres(request, slug):
                  'id': row.get("id"),
                  'name': row.get("game_name"),
                  'description': row.get("description"),
-                 'image': row.get("thumbnail_image_url"),
+                 'image': row.get("photo_url"),
                  'releaseDate': row.get("release_date"),
                  'ebitsRatings': row.get("ebits_rating"),
                  'criticRatings': row.get("critics_rating"),
@@ -299,6 +304,7 @@ def similar_by_genres(request, slug):
         similar_game_list.append(game)
 
     return JsonResponse({"games": similar_game_list})
+
 
 
 def game_details(request, slug):

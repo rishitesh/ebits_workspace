@@ -135,6 +135,10 @@ class BlogInterviewPost(models.Model):
 
     likes = models.IntegerField(default=0)
 
+    # Images
+    thumbnailImage_url = models.CharField(null=True, blank=True, max_length=300)
+    bannerImage_url = models.CharField(null=True, blank=True, max_length=300)
+
     def __str__(self):
         return "%s->%s" % (self.id, self.title)
 

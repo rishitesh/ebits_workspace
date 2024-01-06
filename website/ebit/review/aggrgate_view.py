@@ -23,6 +23,12 @@ def search(request):
 
 def post_entries(request):
     entries = {}
+    label = request.GET.get("label", "")
+    if label == "New And Notable":
+        movies = homepage_movies(request)
+        entries["movies"] = movies
+        return JsonResponse({'result': entries})
+
     movies = homepage_movies(request)
     entries["movies"] = movies
     podcasts = homepage_podcasts(request)

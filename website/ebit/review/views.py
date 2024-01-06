@@ -55,7 +55,7 @@ def get_user_reviews(movie_id):
                                    review_dislikes, \
                                    slug \
                                    from review_userreviewdetail
-                                    where movie_id_id = '%s' and review_approved is True order by review_time desc""" % movie_id
+                                    where movie_id_id = '%s' and review_approved is True and review_text != '[]' order by review_time desc""" % movie_id
     user_review_rows = raw_sql(user_reviews_query)
     user_reviews_list = []
     for row in user_review_rows:
