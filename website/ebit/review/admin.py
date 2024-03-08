@@ -27,7 +27,6 @@ from .common_model import PostText, CommonImage
 # Movie Section
 admin.site.register(Platform)
 admin.site.register(Genre)
-admin.site.register(MovieToGenre)
 admin.site.register(Language)
 admin.site.register(Certificate)
 admin.site.register(CastDetail)
@@ -49,6 +48,13 @@ class MoviePostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(MoviePost, MoviePostAdmin)
+
+class MovieToGenreAdmin(admin.ModelAdmin):
+    search_fields = ['movie_id__movie_name']
+
+
+admin.site.register(MovieToGenre, MovieToGenreAdmin)
+
 
 class MovieToPhotoAdmin(admin.ModelAdmin):
     search_fields = ['movie_id__movie_name']

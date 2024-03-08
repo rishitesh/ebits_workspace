@@ -125,6 +125,8 @@ class PodcastCollectionDetail(models.Model):
     ebits_rating = models.FloatField()
     thumbnail_image_url = models.CharField(null=True, blank=True, max_length=300)
 
+    podcaster_display_comma_separated = models.CharField(max_length=200, default=None, null=True, blank=True)
+
     def __str__(self):
         return "%s->%s" % (self.id, self.podcast_name)
 
