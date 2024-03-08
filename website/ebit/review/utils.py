@@ -54,6 +54,6 @@ def authenticated(request):
             return True
         else:
             return False
-    except :
+    except Exception as err:
+        print(Exception, err)
         return False
-

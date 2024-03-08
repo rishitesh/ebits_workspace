@@ -447,7 +447,7 @@ def all_labels(request):
 
 def all_genres(request):
     final_query = """ select genre_id as name , count(*) as cnt from review_gamepost \
-     left join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id group by genre_id """
+      join review_gametogenre on review_gamepost.id = review_gametogenre.game_id_id group by genre_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -648,7 +648,8 @@ def get_collection_details(collection_id, is_report):
                                                 aspect_performance, \
                                                 aspect_animation, \
                                                 aspect_easeOfUse, \
-                                                genres  \
+                                                genres, \
+                                                platform_id \
                                                 FROM review_gamecollectiondetail, review_gamecollection
                                                 where
                                                 review_gamecollectiondetail.collection_id_id = review_gamecollection.id
@@ -686,6 +687,7 @@ def get_collection_details(collection_id, is_report):
                  "aspect_performance": row.get("aspect_performance"),
                  "aspect_animation": row.get("aspect_animation"),
                  "aspect_easeOfUse": row.get("aspect_easeOfUse"),
+                 "genres": row.get("genres"),
                  "image": row.get("bgImage")}
 
         if row.get("platform_id", None):

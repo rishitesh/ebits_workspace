@@ -5,11 +5,14 @@ from datetime import date
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import authentication_classes, permission_classes
 
 from review.models import Award, UserReviewDetail
 from review.serializers import *
 from review.utils import format_uuid, is_empty, raw_sql, authenticated
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 def index(request):
     template = loader.get_template('review/index.html')
@@ -166,6 +169,7 @@ def get_movie_awards(movie_id):
 
 
 @require_http_methods(["POST"])
+@authentication_classes([TokenAuthentication])
 def add_likes(request):
     if authenticated(request):
         data = json.loads(request.body.decode("utf-8"))
@@ -187,24 +191,26 @@ def add_likes(request):
         return HttpResponse('Unauthorized', status=401)
 
 
-
 @require_http_methods(["POST"])
 def add_dislikes(request):
-    data = json.loads(request.body.decode("utf-8"))
-    slug = data.get('slug', [])
-    user_review = UserReviewDetail.objects.get(slug=slug)
-    if not user_review:
-        return JsonResponse({"message": "User review with slug %s not found " % slug})
+    if authenticated(request):
+        data = json.loads(request.body.decode("utf-8"))
+        slug = data.get('slug', [])
+        user_review = UserReviewDetail.objects.get(slug=slug)
+        if not user_review:
+            return JsonResponse({"message": "User review with slug %s not found " % slug})
 
-    total_dislikes = user_review.review_dislikes
-    if total_dislikes:
-        total_dislikes = total_dislikes + 1
+        total_dislikes = user_review.review_dislikes
+        if total_dislikes:
+            total_dislikes = total_dislikes + 1
+        else:
+            total_dislikes = 1
+        user_review.review_dislikes = total_dislikes
+        user_review.save()
+        message = "Successfully added user comment dislikes"
+        return JsonResponse({"message": message})
     else:
-        total_dislikes = 1
-    user_review.review_dislikes = total_dislikes
-    user_review.save()
-    message = "Successfully added user comment dislikes"
-    return JsonResponse({"message": message})
+        return HttpResponse('Unauthorized', status=401)
 
 
 @require_http_methods(["POST"])
@@ -437,7 +443,7 @@ def all_labels(request):
     final_query = """ select label_id as name , count(*) as cnt from review_moviepost
       left join review_movietolabel on review_moviepost.id = review_movietolabel.movie_id_id
       join  review_label on  review_movietolabel.label_id = review_label.name
-      and LOWER(review_label.type) != 'mood' group by label_id """
+      and LOWER(review_label.type) != 'mood' group by label_id order by label_id"""
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -450,7 +456,7 @@ def all_labels(request):
 
 def all_genres(request):
     final_query = """ select genre_id as name , count(*) as cnt from review_moviepost \
-     left join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id group by genre_id """
+      join review_movietogenre on review_moviepost.id = review_movietogenre.movie_id_id group by genre_id order by genre_id"""
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -905,7 +911,8 @@ def homepage_movies(request):
                                       aspect_performance, \
                                       aspect_costume, \
                                       aspect_screenplay, \
-                                      aspect_vfx \
+                                      aspect_vfx,\
+                                      isSeries \
                                       FROM
                                       review_moviepost \
                                       left join review_movietolabel \

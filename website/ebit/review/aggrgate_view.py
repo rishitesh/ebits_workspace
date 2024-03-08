@@ -1,5 +1,6 @@
 import json
 from django.http import HttpResponse, JsonResponse
+from django.core.mail import send_mail
 from review.BooksViews import book_search, homepage_books
 from review.PodcastsViews import podcast_search, homepage_podcasts
 from review.views import movie_search, homepage_movies
@@ -26,7 +27,7 @@ def post_entries(request):
     label = request.GET.get("label", "")
     if label == "New And Notable":
         movies = homepage_movies(request)
-        entries["movies"] = movies
+        entries["movies"] = movies[0:5]
         return JsonResponse({'result': entries})
 
     movies = homepage_movies(request)
@@ -38,6 +39,24 @@ def post_entries(request):
     games = homepage_games(request)
     entries["games"] = games
     return JsonResponse({'result': entries})
+
+
+
+def send_mail_to(request):
+    data = json.loads(request.body.decode("utf-8"))
+    name = data.get('name', '')
+    email = data.get('email', '')
+    company = data.get('company', '')
+    designation = data.get('designation', '')
+    message = data.get('message', '')
+
+    subject = "Contact Us From : " + str(name) + " - " + str(company) + " - " + str(designation)
+    send_mail(subject,
+              message,
+              email,
+              ['rishi80.mishra@gmail.com'], fail_silently=False)
+    return JsonResponse({'result': ""})
+
 
 
 

@@ -445,7 +445,7 @@ def all_labels(request):
 
 def all_genres(request):
     final_query = """ select genre_id as name , count(*) as cnt from review_podcastpost \
-     left join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id group by genre_id """
+      join review_podcasttogenre on review_podcastpost.id = review_podcasttogenre.podcast_id_id group by genre_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -527,15 +527,19 @@ def all_reports(request):
 def report_details(request, slug):
 
     final_query = """Select
-                         review_preport.id, \
-                         review_preport.collection_id_id as collectionId,\
-                         review_podcastcollection.name as title,\
-                         description as summary,\
-                         chart_data_json \
+                         review_preport.id,
+                         review_preport.slug as slug,        
+                         review_preport.collection_id_id as collectionId,
+                         review_podcastcollection.name as title,
+                         review_podcastcollection.image_url,
+                         description as summary,
+                         chart_data_json as chart 
                          from  review_preport, review_podcastcollection \
                          where review_preport.collection_id_id = review_podcastcollection.id \
                          and   review_preport.slug = '%s'
                          """ % slug
+
+    pprint(final_query)                     
     row_dict = raw_sql(final_query)
     pprint(row_dict)
     if is_empty(row_dict):
@@ -546,10 +550,18 @@ def report_details(request, slug):
     if not collection_id:
         return JsonResponse({})
 
+
+    report = {'slug': first_entry.get("slug"),
+         'title': first_entry.get("title"),
+         'summary': first_entry.get("summary"),
+         'image_url' : first_entry.get("image_url"),
+         'chart': json.loads(first_entry.get("chart"))
+         }
+
     collection_entry_data = get_collection_details(collection_id, True)
 
-    first_entry['entries'] = collection_entry_data
-    response = {'report': first_entry}
+    report['entries'] = collection_entry_data
+    response = {'report': report}
 
     return JsonResponse(response)
 
@@ -634,27 +646,30 @@ def get_collection_details(collection_id, is_report):
         report_predicate = "not review_podcastcollection.is_report"
     pprint("is_report " + str(is_report))
     final_query = """
-                                                SELECT \
-                                                review_podcastcollectiondetail.slug ,\
-                                                podcast_name as title, \
-                                                podcast_id_id as podcast_id, \
-                                                ebits_rating as rating, \
-                                                review_podcastcollectiondetail.description,\
-                                                thumbnail_image_url as bgImage, \
-                                                release_date as releaseDate, \
-                                                aspect_introduction, \
-                                                aspect_content, \
-                                                aspect_audioQuality, \
-                                                aspect_voices, \
-                                                aspect_outro, \
-                                                genres,  \
-                                                platform_id
+                                                SELECT 
+                                                review_podcastcollectiondetail.slug ,
+                                                podcast_name as title, 
+                                                podcast_id_id as podcast_id,
+                                                ebits_rating as rating, 
+                                                review_podcastcollectiondetail.description,
+                                                thumbnail_image_url as bgImage, 
+                                                release_date as releaseDate, 
+                                                aspect_introduction, 
+                                                aspect_content, 
+                                                aspect_audioQuality, 
+                                                aspect_voices, 
+                                                aspect_outro, 
+                                                genres,  
+                                                platform_id , 
+                                                podcaster_display_comma_separated as podcasters 
                                                 FROM review_podcastcollectiondetail, review_podcastcollection
                                                 where review_podcastcollectiondetail.collection_id_id = review_podcastcollection.id
-                                                and review_podcastcollection.id = '%s' and %s
+                                                and review_podcastcollection.id = %s and %s
                                                   """ % (collection_id, report_predicate)
     pprint(final_query)
     row_dict = raw_sql(final_query)
+
+    pprint(row_dict)
 
     platform_query = """select name  as platform, image_url, platform_url from review_pplatform where \
       review_pplatform.name = '%s' """
@@ -669,7 +684,8 @@ def get_collection_details(collection_id, is_report):
             all_podcasts = raw_sql(movie_slug_query % row.get("podcast_id"))
             if len(all_podcasts) > 0:
                 podcast_slug = all_podcasts[0].get("podcast_slug")
-
+        
+        pprint("entries")
         entry = {"slug": row.get("slug"),
                  "name": row.get("title"),
                  "podcast_slug": podcast_slug,
@@ -682,6 +698,7 @@ def get_collection_details(collection_id, is_report):
                  "aspect_voices": row.get("aspect_voices"),
                  "aspect_outro": row.get("aspect_outro"),
                  "genres": row.get("genres"),
+                 "podcasters" :row.get("podcasters"),
                  "image": row.get("bgImage")}
         if row.get("platform_id", None):
            platform_dict = raw_sql(platform_query % row.get("platform_id"))

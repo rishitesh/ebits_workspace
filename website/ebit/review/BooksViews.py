@@ -463,7 +463,7 @@ def all_labels(request):
 
 def all_genres(request):
     final_query = """ select genre_id as name , count(*) as cnt from review_bookpost \
-     left join review_booktogenre on review_bookpost.id = review_booktogenre.book_id_id group by genre_id """
+      join review_booktogenre on review_bookpost.id = review_booktogenre.book_id_id group by genre_id """
     row_dict = raw_sql(final_query)
     js_val = {}
     records = []
@@ -548,8 +548,9 @@ def report_details(request, slug):
                          review_breport.id, \
                          review_breport.collection_id_id as collectionId,\
                          review_bookcollection.title as title,\
+                         review_bookcollection.image_url,\
                          synopsis as summary,\
-                         chart_data_json \
+                         chart_data_json as chart\
                          from  review_breport, review_bookcollection \
                          where review_breport.collection_id_id = review_bookcollection.id \
                          and   review_breport.slug = '%s'
@@ -564,10 +565,18 @@ def report_details(request, slug):
     if not collection_id:
         return JsonResponse({})
 
+
+    report = {'slug': first_entry.get("slug"),
+         'title': first_entry.get("title"),
+         'summary': first_entry.get("summary"),
+         'image_url' : first_entry.get("image_url"),
+         'chart': json.loads(first_entry.get("chart"))
+         }
+
     collection_entry_data = get_collection_details(collection_id, True)
 
-    first_entry['entries'] = collection_entry_data
-    response = {'report': first_entry}
+    report['entries'] = collection_entry_data
+    response = {'report': report}
 
     return JsonResponse(response)
 
