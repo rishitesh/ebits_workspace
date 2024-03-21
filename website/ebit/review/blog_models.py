@@ -150,3 +150,18 @@ class BlogInterviewPost(models.Model):
             self.slug = slugify(self.title, self.date)
         super(BlogInterviewPost, self).save(*args, **kwargs)
 
+
+class BlogUserLikes(models.Model):
+    id = models.AutoField(primary_key=True)
+    blog_slug = models.TextField(default=None, null=False, blank=False)
+    user_name = models.TextField(default=None, null=False, blank=False)
+    like_date = models.DateField()
+
+    def __str__(self):
+        return "%s->%s" % (self.blog_slug, self.user_name)
+
+    def get_absolute_url(self):
+        return reverse("blog_user_likes", kwargs={'blog_slug': self.blog_slug})
+
+    def save(self, *args, **kwargs):
+        super(BlogUserLikes, self).save(*args, **kwargs)

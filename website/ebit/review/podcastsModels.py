@@ -69,6 +69,7 @@ class PodcastCollection(models.Model):
     description = models.TextField()
     image_url = models.CharField(null=True, blank=True, max_length=300)
     home_collection_banner_image = models.CharField(null=True, blank=True, max_length=300)
+    home_collection_responsive_image = models.CharField(default="", null=True, blank=True, max_length=300)
 
     is_report = models.BooleanField(default=False)
     publish_date = models.DateField(default=datetime.now)

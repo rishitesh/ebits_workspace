@@ -595,6 +595,7 @@ def all_collections(request):
                          synopsis,\
                          image_url , \
                          home_collection_banner_image, \
+                         home_collection_responsive_image, \
                          publish_date \
                          from  review_bookcollection \
                          where not is_report \
@@ -627,7 +628,8 @@ def collection_details(request, slug):
                                       id, \
                                       title, \
                                       synopsis, \
-                                      image_url \
+                                      image_url, \
+                                      home_collection_responsive_image
                                       FROM review_bookcollection
                                       where slug = '%s'
                                       """ % slug

@@ -580,6 +580,7 @@ def all_collections(request):
                          description,\
                          image_url , \
                          home_collection_banner_image, \
+                         home_collection_responsive_image, \
                          publish_date \
                          from  review_podcastcollection \
                          where not is_report \
@@ -612,7 +613,8 @@ def collection_details(request, slug):
                                       id, \
                                       name, \
                                       description, \
-                                      image_url \
+                                      image_url, \
+                                      home_collection_responsive_image \
                                       FROM review_podcastcollection
                                       where slug = '%s'
                                       """ % slug

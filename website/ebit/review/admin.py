@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .blog_models import BlogArticlePost, BlogInterviewPost, BlogEventPost
+from .blog_models import BlogArticlePost, BlogInterviewPost, BlogEventPost, BlogUserLikes
 
 from .booksModels import BookLabel, BookToLabel, AuthorDetail, BCriticReviewDetail, BookAward, BookToAward, \
     BCertificate, BookToCertificate, BLanguage, BookToLanguage, BPlatform, BookToPlatform, BGenre, BookToGenre, \
@@ -302,6 +302,9 @@ class BlogArticleAdmin(admin.ModelAdmin):
 
 admin.site.register(BlogArticlePost, BlogArticleAdmin)
 
+class BlogUserLikesAdmin(admin.ModelAdmin):
+    list_display = ['user_name', 'blog_slug']
+
 
 class BlogInterviewAdmin(admin.ModelAdmin):
     list_display = ['title', 'publish_date']
@@ -309,6 +312,7 @@ class BlogInterviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BlogInterviewPost, BlogInterviewAdmin)
+admin.site.register(BlogUserLikes, BlogUserLikesAdmin)
 
 
 class BlogEventAdmin(admin.ModelAdmin):

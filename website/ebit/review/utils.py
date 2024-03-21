@@ -57,3 +57,7 @@ def authenticated(request):
     except Exception as err:
         print(Exception, err)
         return False
+
+
+def user_from_request(request):
+    return auth.authenticate(request)    

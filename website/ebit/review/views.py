@@ -605,6 +605,7 @@ def all_collections(request):
                          description,\
                          image_url , \
                          home_collection_banner_image, \
+                         home_collection_responsive_image, \
                          publish_date \
                          from  review_moviecollection \
                          where not is_report \
@@ -637,7 +638,8 @@ def collection_details(request, slug):
                                       id, \
                                       name, \
                                       description, \
-                                      image_url \
+                                      image_url, \
+                                      home_collection_responsive_image \
                                       FROM review_moviecollection
                                       where slug = '%s'
                                       """ % slug
@@ -856,7 +858,8 @@ def movies(request):
                                   critics_rating as criticsRating, \
                                   thumbnail_image_url as image, \
                                   review_moviepost.description, \
-                                  review_moviepost.duration
+                                  review_moviepost.duration, \
+                                  review_moviepost.isSeries \
                                   FROM
                                   review_moviepost \
                                   %s 

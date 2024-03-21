@@ -11,7 +11,8 @@ class CollectionSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'synopsis',
-            'image_url'
+            'image_url',
+            'home_collection_responsive_image'
         ]
 
 
