@@ -91,6 +91,8 @@ class OAuth2Client(object):
                 access_token = dict(parse_qsl(resp.text))
         if not access_token or "access_token" not in access_token:
             raise OAuth2Error("Error retrieving access token: %s" % resp.content)
+
+        print("access_token from oauthe" + str(access_token))
         return access_token
 
     def _strip_empty_keys(self, params):

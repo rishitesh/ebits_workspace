@@ -113,8 +113,13 @@ class VerifyEmailView(APIView, ConfirmEmailView):
         serializer.is_valid(raise_exception=True)
         self.kwargs['key'] = serializer.validated_data['key']
         self.kwargs['email_address'] = serializer.validated_data['email_address']
-        confirmation = self.get_object()
-        confirmation.confirm(self.request)
+        try:
+            print("Inside verifyemail")
+            confirmation = self.get_object()
+            confirmation.confirm(self.request)
+        except Exception:
+            return Response({'detail': _('Invalid OTP')}, status=status.HTTP_401_UNAUTHORIZED)
+
         return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
@@ -141,7 +146,7 @@ class VerifyOTPView(APIView, ConfirmEmailView):
             response = {'key': token.key, 'user': str(users[0]), 'email':self.kwargs['email_address']}
             return Response(response, status=status.HTTP_200_OK)
         else:
-            return Response({'detail': _('Invalid OTP')}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'detail': _('Invalid OTP')}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ResendEmailVerificationView(CreateAPIView):

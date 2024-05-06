@@ -915,7 +915,8 @@ def homepage_movies(request):
                                       aspect_costume, \
                                       aspect_screenplay, \
                                       aspect_vfx,\
-                                      isSeries \
+                                      isSeries, \
+                                      episodes
                                       FROM
                                       review_moviepost \
                                       left join review_movietolabel \

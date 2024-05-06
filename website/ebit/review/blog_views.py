@@ -141,7 +141,28 @@ def article_details(request, slug):
         """
     article = raw_sql(articles_query % slug)
     ret = article[0] if article and len(article) > 0 else {}
-    return JsonResponse({'result': ret})
+
+    descriptions = []
+    response = {"id": ret.get("id"),
+                "title": ret.get("title"),
+                "publish_date": ret.get("publish_date"),
+                "slug": ret.get("slug"),
+                "likes": ret.get("likes"),
+                "blogger_details": ret.get("blogger_details"),
+                "blogger_name": ret.get("blogger_name"),
+                "blogger_image": ret.get("blogger_image"),
+                "banner_image_url": ret.get("banner_image_url"),
+                "thumbnail_image_url": ret.get("thumbnail_image_url"),
+                }
+
+    for i in range(1, 11):
+        qs = ret.get("description" + str(i))
+        if qs and qs != "":
+            descriptions_dict = {"description": qs, "desc_image_url": ret.get("desc_image_url" + str(i))}
+            descriptions.append(descriptions_dict)
+
+    response["descriptions"] = descriptions
+    return JsonResponse({'result': response})
 
 
 def event_details(request, slug):
@@ -150,7 +171,40 @@ def event_details(request, slug):
         """
     event = raw_sql(event_query % slug)
     ret = event[0] if event and len(event) > 0 else {}
-    return JsonResponse({'result': ret})
+
+    descriptions = []
+    programs = []
+    response = {"id": ret.get("id"),
+                "title": ret.get("title"),
+                "publish_date": ret.get("publish_date"),
+                "slug": ret.get("slug"),
+                "likes": ret.get("likes"),
+                "suitableFor": ret.get("suitableFor"),
+                "fees": ret.get("fees"),
+                "event_time_end": ret.get("event_time_end"),
+                "event_time_start": ret.get("event_time_start"),
+                "subTitle": ret.get("subTitle"),
+                "organiser_name": ret.get("organiser_name"),
+                "organiser_profile": ret.get("organiser_profile"),
+                "bannerImage_url": ret.get("bannerImage_url"),
+                "thumbnailImage_url": ret.get("thumbnailImage_url"),
+                }
+
+    for i in range(1, 11):
+        qs = ret.get("description" + str(i))
+        if qs and qs != "":
+            descriptions_dict = {"description": qs, "desc_image_url": ret.get("desc_image_url" + str(i))}
+            descriptions.append(descriptions_dict)
+
+    for i in range(1, 5):
+        qs = ret.get("program_name" + str(i))
+        if qs and qs != "":
+            program_dict = {"program_name": qs, "program_time": ret.get("program_time" + str(i))}
+            programs.append(program_dict)
+
+    response["descriptions"] = descriptions
+    response["program_details"] = programs
+    return JsonResponse({'result': response})
 
 
 def interview_details(request, slug):
@@ -160,7 +214,46 @@ def interview_details(request, slug):
     interview = raw_sql(interview_query % slug)
     ret = interview[0] if interview and len(interview) > 0 else {}
 
-    return JsonResponse({'result': ret})
+    question_answers = []
+    response = {"id": ret.get("id"),
+                "title": ret.get("title"),
+                "publish_date": ret.get("publish_date"),
+                "venue": ret.get("venue"),
+                "slug": ret.get("slug"),
+                "introduction": ret.get("introduction"),
+                "conclusion": ret.get("conclusion"),
+                "likes": ret.get("likes"),
+                "subTitle": ret.get("subTitle"),
+                "bannerImage_url": ret.get("bannerImage_url"),
+                "thumbnailImage_url": ret.get("thumbnailImage_url"),
+                }
+
+    interviewee_details = {"name": ret.get("interviewee_name1"),
+                           "profile": ret.get("interviewee_profile1"),
+                           "image": ret.get("interviewee_image1"),
+
+                           }
+
+    interviewer_details = {"name": ret.get("interviewer_name2"),
+                           "profile": ret.get("interviewer_profile2"),
+                           "image": ret.get("interviewee_image2"),
+
+                           }
+
+    response["interviewer_details"] = interviewer_details
+    response["interviewee_details"] = interviewee_details
+
+    for i in range(1, 11):
+        qs = ret.get("question" + str(i))
+        if qs and qs != "":
+            question_answer_dict = {"question": qs, "answer": ret.get("response" + str(i))}
+            question_answers.append(question_answer_dict)
+
+
+    response["question_answers"] = question_answers
+
+    return JsonResponse({'result': response})
+
 
 
 @require_http_methods(["POST"])

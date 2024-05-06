@@ -46,6 +46,7 @@ class GoogleOAuth2Adapter(OAuth2Adapter):
             payload = response["id_token"]
             payload2 = json.loads(payload.replace("'", "\""))
             data = payload2["id_token"]
+            print("data" + str(data))
             identity_data = jwt.decode(
                 data,
                 # Since the token was received by direct communication

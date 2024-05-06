@@ -158,7 +158,11 @@ class EmailConfirmationHMAC:
 
     @classmethod
     def from_key(cls, otp, email_address):
-        email = EmailAddress.objects.get(email=email_address, verified=False)
+        try:
+            email = EmailAddress.objects.get(email=email_address, verified=False)
+        except EmailAddress.DoesNotExist:
+            return None
+
         email_address_obj = EmailConfirmationHMAC(email)
         verified = EmailConfirmationHMAC.htop.verify(otp, int(email.counter))
         if email and verified:

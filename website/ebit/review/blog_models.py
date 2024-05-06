@@ -30,6 +30,9 @@ class BlogArticlePost(models.Model):
     thumbnail_image_url = models.CharField(null=True, blank=True, max_length=300)
     banner_image_url = models.CharField(null=True, blank=True, max_length=300)
 
+    thumbnail_image_mobile = models.CharField(null=True, blank=True, max_length=300)
+    banner_image_mobile = models.CharField(null=True, blank=True, max_length=300)
+
     likes = models.IntegerField(default=0)
 
     blogger_details = models.TextField(default=None, null=True, blank=True)
@@ -73,6 +76,9 @@ class BlogEventPost(models.Model):
     # Images
     thumbnailImage_url = models.CharField(null=True, blank=True, max_length=300)
     bannerImage_url = models.CharField(null=True, blank=True, max_length=300)
+
+    thumbnail_image_mobile = models.CharField(null=True, blank=True, max_length=300)
+    banner_image_mobile = models.CharField(null=True, blank=True, max_length=300)
 
     organiser_name = models.CharField(max_length=120, null=True, blank=True)
     organiser_profile = models.TextField(default=None, null=True, blank=True)
@@ -131,6 +137,17 @@ class BlogInterviewPost(models.Model):
     question5 = models.TextField(default=None, null=True, blank=True)
     response5 = models.TextField(default=None, null=True, blank=True)
 
+    question6 = models.TextField(default=None, null=True, blank=True)
+    response6 = models.TextField(default=None, null=True, blank=True)
+    question7 = models.TextField(default=None, null=True, blank=True)
+    response7 = models.TextField(default=None, null=True, blank=True)
+    question8 = models.TextField(default=None, null=True, blank=True)
+    response8 = models.TextField(default=None, null=True, blank=True)
+    question9 = models.TextField(default=None, null=True, blank=True)
+    response9 = models.TextField(default=None, null=True, blank=True)
+    question10 = models.TextField(default=None, null=True, blank=True)
+    response10 = models.TextField(default=None, null=True, blank=True)
+
     conclusion = models.TextField(default=None, null=True, blank=True)
 
     likes = models.IntegerField(default=0)
@@ -138,6 +155,9 @@ class BlogInterviewPost(models.Model):
     # Images
     thumbnailImage_url = models.CharField(null=True, blank=True, max_length=300)
     bannerImage_url = models.CharField(null=True, blank=True, max_length=300)
+
+    thumbnail_image_mobile = models.CharField(null=True, blank=True, max_length=300)
+    banner_image_mobile = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "%s->%s" % (self.id, self.title)

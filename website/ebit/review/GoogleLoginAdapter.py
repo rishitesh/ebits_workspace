@@ -5,5 +5,5 @@ from dj_rest_auth.registration.views import SocialLoginView
 
 class GoogleLoginAdapter(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "http://localhost:8000/accounts/google/login/callback/"
+    callback_url = "https://eqbits.in/login"
     client_class = OAuth2Client

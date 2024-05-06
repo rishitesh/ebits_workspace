@@ -60,4 +60,7 @@ def authenticated(request):
 
 
 def user_from_request(request):
-    return auth.authenticate(request)    
+    try:
+        return auth.authenticate(request)
+    except:
+        return None, None
